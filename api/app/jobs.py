@@ -7,25 +7,31 @@ from sqlalchemy.engine import Engine
 from sqlmodel import Session, col, delete, select
 
 from app.audio import Decoder, TranscriptionError, wav_duration
+from app.errors import Cancelled
 from app.models import ACTIVE_STATUSES, Call, CallStatus, Segment
 from app.storage import Storage
-from app.transcribe import Cancelled, Transcriber, TranscriptResult
+from app.transcribe import Transcriber, TranscriptResult
 
 # Only ids and statuses are logged here, never file names, transcript text or notes.
 log = logging.getLogger("scopewise.jobs")
 
 
 class TranscriptionManager:
-    """Runs one transcription at a time on a worker thread and tracks cancellation."""
+    """Queues transcriptions on the shared worker thread and tracks their cancellation."""
 
     def __init__(
-        self, engine: Engine, storage: Storage, transcriber: Transcriber, decoder: Decoder
+        self,
+        engine: Engine,
+        storage: Storage,
+        transcriber: Transcriber,
+        decoder: Decoder,
+        executor: ThreadPoolExecutor,
     ) -> None:
         self._engine = engine
         self._storage = storage
         self._transcriber = transcriber
         self._decoder = decoder
-        self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="transcribe")
+        self._executor = executor
         self._cancels: dict[str, threading.Event] = {}
         self._lock = threading.Lock()
         self._stopping = False
@@ -59,13 +65,12 @@ class TranscriptionManager:
         if event is not None:
             event.set()
 
-    def shutdown(self) -> None:
+    def stop(self) -> None:
         """Stop the running job but keep its audio, so it shows as interrupted next time."""
         self._stopping = True
         with self._lock:
             for event in self._cancels.values():
                 event.set()
-        self._executor.shutdown(wait=True, cancel_futures=True)
 
     def _run(self, call_id: str) -> None:
         with self._lock:

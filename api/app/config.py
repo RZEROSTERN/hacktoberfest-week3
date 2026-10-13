@@ -25,3 +25,12 @@ class Settings(BaseSettings):
     whisper_cli: Path | None = None
     whisper_model: Path | None = None
     whisper_threads: int = Field(default=4, ge=1)
+
+    # Language model. The tag is NOT hard-coded anywhere: the model in use is read from the local
+    # settings table. This variable only seeds that table on start when nothing is stored yet
+    # (development); the setup wizard writes it in the packaged app.
+    llm_model: str | None = None
+
+    # Folder with the versioned prompt files; defaults to the `prompts` folder next to the app
+    # package (which is also where the packaged binary unpacks it).
+    prompts_dir: Path | None = None

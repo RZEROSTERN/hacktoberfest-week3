@@ -1,6 +1,8 @@
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import Any
 
+from sqlalchemy import JSON, Column
 from sqlmodel import Field, SQLModel
 
 
@@ -43,3 +45,52 @@ class Segment(SQLModel, table=True):
     start: float
     end: float
     text: str
+
+
+class AppSetting(SQLModel, table=True):
+    """Local settings (key/value). Holds the language model in use under `llm_model`."""
+
+    key: str = Field(primary_key=True)
+    value: str
+
+
+class Profile(SQLModel, table=True):
+    """The freelancer's profile. There is one row (id 1). Rates are free text in any currency."""
+
+    id: int = Field(default=1, primary_key=True)
+    name: str
+    services: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    hourly_rate: str | None = None
+    project_rates: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    payment_terms: str = ""
+    sections: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    tone: str = ""
+
+
+class DraftStatus(StrEnum):
+    QUEUED = "queued"
+    EXTRACTING = "extracting"
+    DRAFTING = "drafting"
+    DONE = "done"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+ACTIVE_DRAFT_STATUSES = (DraftStatus.QUEUED, DraftStatus.EXTRACTING, DraftStatus.DRAFTING)
+
+
+class Draft(SQLModel, table=True):
+    """The call notes and proposal draft for one call, plus the state of the job that made them."""
+
+    call_id: str = Field(foreign_key="call.id", primary_key=True)
+    status: DraftStatus = DraftStatus.QUEUED
+    progress: float = 0.0
+    stage_detail: str | None = None  # e.g. "2/5": which part of the call is being read
+    error_code: str | None = None
+    language: str  # language the proposal is written in
+    model: str | None = None  # language model that produced it
+    notes: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+    proposal: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+    warnings: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    created_at: datetime = Field(default_factory=utcnow)
+    updated_at: datetime = Field(default_factory=utcnow)

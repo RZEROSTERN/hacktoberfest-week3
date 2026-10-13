@@ -9,7 +9,7 @@ from sqlmodel import Session, col, delete, select
 
 from app.audio import SUPPORTED_EXTENSIONS
 from app.jobs import TranscriptionManager
-from app.models import ACTIVE_STATUSES, Call, CallStatus, Segment
+from app.models import ACTIVE_DRAFT_STATUSES, ACTIVE_STATUSES, Call, CallStatus, Draft, Segment
 from app.schemas import CallRead, SegmentRead, TranscriptRead
 from app.storage import Storage
 
@@ -130,6 +130,10 @@ def delete_call(request: Request, session: SessionDep, call_id: str) -> None:
     call = _get_call(session, call_id)
     if call.status in ACTIVE_STATUSES:
         raise HTTPException(409, "Cancel the transcription before deleting it.")
+    draft = session.get(Draft, call_id)
+    if draft is not None and draft.status in ACTIVE_DRAFT_STATUSES:
+        raise HTTPException(409, "Cancel the draft before deleting the call.")
+    session.exec(delete(Draft).where(col(Draft.call_id) == call_id))
     session.exec(delete(Segment).where(col(Segment.call_id) == call_id))
     session.delete(call)
     session.commit()
