@@ -19,3 +19,9 @@ class Settings(BaseSettings):
     models_dir: Path
     ollama_url: str
     cors_origins: list[str] = []
+
+    # Transcription engine. Both are optional so the api still starts before the models are
+    # downloaded; a transcription then fails with a clear "engine/model missing" error.
+    whisper_cli: Path | None = None
+    whisper_model: Path | None = None
+    whisper_threads: int = Field(default=4, ge=1)
