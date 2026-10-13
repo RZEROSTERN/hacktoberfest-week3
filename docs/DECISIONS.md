@@ -153,3 +153,61 @@ under `api/prompts/`.
 **The key facts file is a draft written from a Whisper transcript.** A model cannot hear the
 audio, so a person who was on the call must confirm it. The fact counts in BENCHMARKS.md are
 provisional until then.
+
+## 2026-10-13: Transcription
+
+**A recording is a `call`; its job state lives on the same row.** `POST /calls` uploads,
+`GET /calls/{id}` returns status and progress, plus `transcript`, `cancel`, `retry` and
+`DELETE`. A separate jobs table would add nothing while there is one job per call. Statuses:
+queued, converting, transcribing, done, failed, cancelled.
+
+**Progress is polled once a second, not streamed.** One small JSON request is the simplest
+thing that works for one running job. Server-Sent Events stay reserved for model downloads
+(step 8), where the brief asks for them.
+
+**One transcription at a time.** A single worker thread runs the queue. Whisper is heavy, a
+second parallel run would only slow both, and the owner asked to keep other jobs usable.
+whisper.cpp uses 4 threads by default (`SCOPEWISE_WHISPER_THREADS`).
+
+**Uploads are streamed to disk and named by id.** Allowed extensions: mp3, m4a, wav, mp4. The
+file lands at `<data_dir>/audio/<id>/original.<ext>`; the user's file name is kept only as a
+display title (path parts removed) and is never logged.
+
+**Audio retention.** Deleted as soon as the transcript is saved, unless "keep the audio" was
+ticked. Kept when the job fails or is interrupted, so Try again works without re-uploading
+(deleted after a successful retry or when the call is deleted). Deleted when the user cancels.
+The temporary WAV is always deleted.
+
+**Progress comes from `whisper-cli -pp`, never goes backwards, and stops at 99% until saved.**
+If the `-mc 0` re-run starts, the bar holds at its last value instead of restarting.
+
+**Degenerate-output guard.** A transcript with at least 20 segments where more than 40% have
+two words or fewer is re-run once with `-mc 0`. Thresholds come from the spike: the broken run
+had 69% such segments, every healthy run 15% or less.
+
+**Whisper paths are plain optional env vars for now** (`SCOPEWISE_WHISPER_CLI`,
+`SCOPEWISE_WHISPER_MODEL`). The api starts without them and a job fails with "engine/model
+missing". Step 8 replaces the model path with the model chosen in local settings.
+
+**Audio decoding verified for mp3, m4a, wav and audio-only mp4.** The integration test makes
+AAC m4a and mp4 files with `afconvert` and transcribes them. An mp4 that contains video is not
+tested (no tool here can make one).
+
+**Process lifecycle.** A clean shutdown (SIGTERM) or a cancel kills `whisper-cli`, checked
+with the real binary. A hard kill of the api (SIGKILL) would leave `whisper-cli` running until
+it ends on its own, so the desktop shell must stop the whole process tree. On the next start,
+jobs found running are marked failed with `interrupted` and keep their audio.
+
+**SQLite in WAL mode, tables created on start, no migrations yet.** The schema may still
+change before the first release, and there is no user data to preserve, so a migration tool
+is deferred.
+
+**Tests.** Unit tests use a fake decoder and transcriber, and a stand-in `whisper-cli` script
+so the real subprocess code (progress parsing, cancel, crash, `-mc 0` re-run) is exercised
+without a model. One integration test runs `afconvert` and whisper.cpp on a 20 s clip as wav,
+m4a and mp4 with the small `base` q5_1 model (60 MB) and is skipped when the engine or model is
+missing.
+
+**Web.** The upload uses XMLHttpRequest because `fetch` cannot report upload progress, and it
+can be cancelled. Transcript lines have ids `segment-<id>` so source links can jump to them
+later. The UI has not been looked at in a browser: no browser tool was available.

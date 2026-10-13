@@ -10,7 +10,7 @@ notes and drafts the proposal, everything runs on the user's machine.
   `spike/` model benchmark scripts (not shipped; see docs/BENCHMARKS.md)
 
 ## Commands (from repo root)
-- Install: `make setup` (uv sync, npm install, creates `.env`)
+- Install: `make setup` (uv sync, npm install, creates `.env`); `make whisper-dev` builds whisper.cpp + models
 - Run everything: `make dev` (api on 8765, web on 3000); `make dev-api`, `make dev-web`
 - Check Ollama: `make ollama-check`
 - Test / lint / typecheck: `make test`, `make lint`, `make typecheck` (`make format` fixes ruff)
@@ -51,6 +51,7 @@ notes and drafts the proposal, everything runs on the user's machine.
   backwards.
 - Docker holds port 8000 on the dev Mac; use `127.0.0.1` and the 8765 default, not `localhost`.
 - `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
+- Hard-killing the api leaves `whisper-cli` running: stop the process tree. Tests use the small `base` Whisper model.
 - whisper.cpp reads only 16-bit WAV: convert with `afconvert -f WAVE -d LEI16@16000 -c 1`. On long
   audio, if the output is a flood of tiny segments, re-run with `-mc 0` (see docs/BENCHMARKS.md).
 - Machine-specific values (RAM, pulled models, Whisper path) live in `CLAUDE.local.md`.
