@@ -1,0 +1,663 @@
+{
+ "model": "gemma4:e4b",
+ "label": "gemma4-e4b-32min-v1",
+ "audio_segments": 388,
+ "notes_chunks": 5,
+ "notes_s": 176.9,
+ "notes_check": {
+  "items": 53,
+  "unsourced": 0,
+  "bad_segment_ids": 1,
+  "verbatim_quotes": 38
+ },
+ "notes": {
+  "client": "Trevos",
+  "client_context": [
+   {
+    "text": "él tiene actualmente una pizzería que se llama Trevos",
+    "quote": "él tiene actualmente una pizzería que se llama Trevos",
+    "segment_ids": [
+     5,
+     68
+    ]
+   },
+   {
+    "text": "actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "quote": "actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "segment_ids": [
+     5,
+     69
+    ]
+   },
+   {
+    "text": "tenemos dos aquí en Cancún",
+    "quote": "tenemos dos aquí en Cancún",
+    "segment_ids": [
+     30
+    ]
+   },
+   {
+    "text": "una está ubicada en la supermanzana 316",
+    "quote": "una está ubicada en la supermanzana 316",
+    "segment_ids": [
+     31
+    ]
+   },
+   {
+    "text": "y la otra está ubicada en Bonfi",
+    "quote": "y la otra está ubicada en Bonfi",
+    "segment_ids": [
+     32
+    ]
+   },
+   {
+    "text": "y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Kakun.",
+    "quote": "y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Kakun.",
+    "segment_ids": [
+     172
+    ]
+   },
+   {
+    "text": "Una está ubicada en la supermanzada 316",
+    "quote": "Una está ubicada en la supermanzada 316",
+    "segment_ids": [
+     131
+    ]
+   },
+   {
+    "text": "Y la otra está ubicada en Bonfil",
+    "quote": "Y la otra está ubicada en Bonfil",
+    "segment_ids": [
+     132
+    ]
+   },
+   {
+    "text": "tenemos dos aquí en Cancún, una está ubicada en la supermanzada 316 y la otra está ubicada en Bonfi.",
+    "quote": "Como dijiste al principio, tenemos dos aquí en Cancún, una está ubicada en la supermanzada 316 y la otra está ubicada en Bonfi.",
+    "segment_ids": [
+     193
+    ]
+   },
+   {
+    "text": "Y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún",
+    "quote": "Y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún",
+    "segment_ids": [
+     205,
+     291,
+     292
+    ]
+   },
+   {
+    "text": "tiene actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Kakun.",
+    "quote": "tiene actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Kakun.",
+    "segment_ids": [
+     351
+    ]
+   },
+   {
+    "text": "Una está ubicada en la supermanzada 316 y la otra está ubicada en Bonfil.",
+    "quote": "Una está ubicada en la supermanzada 316 y la otra está ubicada en Bonfil.",
+    "segment_ids": [
+     376
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "el problema que tenemos en la pizzería es que la manejamos mediante Facebook",
+    "quote": "Bueno, el problema que tenemos en la pizzería es que la manejamos mediante Facebook",
+    "segment_ids": [
+     8,
+     74
+    ]
+   },
+   {
+    "text": "Facebook tiene algunas limitaciones",
+    "quote": "Y Facebook tiene algunas limitaciones",
+    "segment_ids": [
+     9,
+     75
+    ]
+   },
+   {
+    "text": "el problema que tenemos en la especialidad es que la manejamos mediante Facebook, y Facebook tiene algunas limitaciones.",
+    "quote": "Bueno, el problema que tenemos en la especialidad es que la manejamos mediante Facebook, y Facebook tiene algunas limitaciones.",
+    "segment_ids": [
+     176
+    ]
+   },
+   {
+    "text": "Entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "quote": "Entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     177
+    ]
+   },
+   {
+    "text": "el problema que tenemos en la piciaría es que la manejamos mediante Facebook",
+    "quote": "Bueno, el problema que tenemos en la piciaría es que la manejamos mediante Facebook",
+    "segment_ids": [
+     210,
+     298
+    ]
+   },
+   {
+    "text": "Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "quote": "y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     356,
+     357
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "nos gustaría quitar esas limitaciones implementando un sistema en línea",
+    "quote": "Entonces nos gustaría quitar esas limitaciones implementando un sistema en línea",
+    "segment_ids": [
+     10,
+     76
+    ]
+   },
+   {
+    "text": "Que nos permita manejar mejor el negocio",
+    "quote": "Que nos permita manejar mejor el negocio",
+    "segment_ids": [
+     11,
+     76
+    ]
+   },
+   {
+    "text": "tener un menú de facturación",
+    "quote": "O sea, quieres tener un menú de facturación",
+    "segment_ids": [
+     187
+    ]
+   },
+   {
+    "text": "tener una galería de tu pizzería, de sus locales.",
+    "quote": "quieres tener una galería de tu pizzería, de sus locales.",
+    "segment_ids": [
+     187
+    ]
+   },
+   {
+    "text": "también quieres reservas",
+    "quote": "Bueno, también quieres reservas, ahorita me acabas de decir",
+    "segment_ids": [
+     188
+    ]
+   },
+   {
+    "text": "nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "quote": "entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     212,
+     300
+    ]
+   },
+   {
+    "text": "que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario",
+    "quote": "Bueno, lo que queremos implementar es que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario",
+    "segment_ids": [
+     359
+    ]
+   },
+   {
+    "text": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería, que puedan ser reservaciones.",
+    "quote": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería, que puedan ser reservaciones.",
+    "segment_ids": [
+     360
+    ]
+   },
+   {
+    "text": "mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "quote": "y mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     362
+    ]
+   },
+   {
+    "text": "un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "quote": "y un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     363
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario",
+    "quote": "Lo que queremos implementar es que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario,",
+    "segment_ids": [
+     14,
+     79
+    ]
+   },
+   {
+    "text": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería",
+    "quote": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería,",
+    "segment_ids": [
+     15,
+     80
+    ]
+   },
+   {
+    "text": "que puedan hacer reservaciones sin necesidad de mandar mensajes por Facebook",
+    "quote": "que puedan hacer reservaciones sin necesidad de mandar mensajes por Facebook,",
+    "segment_ids": [
+     16,
+     80
+    ]
+   },
+   {
+    "text": "o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "quote": "o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     17,
+     84
+    ]
+   },
+   {
+    "text": "un sistema de facturación automático, que eso viene al momento de que ellos hagan una reservación.",
+    "quote": "y un sistema de facturación automático, que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     18,
+     91
+    ]
+   },
+   {
+    "text": "quieres tener un menú de facturación",
+    "quote": "o sea, quieres tener un menú de facturación",
+    "segment_ids": [
+     21
+    ]
+   },
+   {
+    "text": "quieres tener una galería de tu pizzería, de sus locales",
+    "quote": "quieres tener una galería de tu pizzería, de sus locales,",
+    "segment_ids": [
+     21
+    ]
+   },
+   {
+    "text": "quieres reservas",
+    "quote": "Bueno, también quieres reservas, ahorita me acabas de decir,",
+    "segment_ids": [
+     22
+    ]
+   },
+   {
+    "text": "tener un menú de facturación",
+    "quote": "quieres tener un menú de facturación",
+    "segment_ids": [
+     102
+    ]
+   },
+   {
+    "text": "tener una galería de tu pizzería, de sus locales",
+    "quote": "quieres tener una galería de tu pizzería, de sus locales",
+    "segment_ids": [
+     104
+    ]
+   },
+   {
+    "text": "quieres tener reservas",
+    "quote": "Bueno, también quieres reservas",
+    "segment_ids": [
+     106
+    ]
+   },
+   {
+    "text": "que puedan hacer reservaciones.",
+    "quote": "que puedan hacer reservaciones.",
+    "segment_ids": [
+     180
+    ]
+   },
+   {
+    "text": "mostrarles cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "quote": "mostrarles cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     182
+    ]
+   },
+   {
+    "text": "invitar a mandar mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "quote": "Es invitar a mandar mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     217,
+     1095,
+     308,
+     311,
+     312
+    ]
+   },
+   {
+    "text": "también quieres reservas",
+    "quote": "Bueno, también quieres reservas, ahorita me acabas de decir",
+    "segment_ids": [
+     368
+    ]
+   },
+   {
+    "text": "que dentro de tu sistema se otorguen permisos especiales para tú o alguno de tus socios, alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros que tienen.",
+    "quote": "quieres que dentro de tu sistema se otorguen permisos especiales para tú o alguno de tus socios, alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros que tienen.",
+    "segment_ids": [
+     369
+    ]
+   },
+   {
+    "text": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería, que puedan ser reservaciones.",
+    "quote": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería, que puedan ser reservaciones.",
+    "segment_ids": [
+     360
+    ]
+   },
+   {
+    "text": "mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "quote": "y mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     362
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas. Entonces esa sección no nos serviría por el momento.",
+    "quote": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas. Entonces esa sección no nos serviría por el momento.",
+    "segment_ids": [
+     26,
+     27
+    ]
+   },
+   {
+    "text": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas.",
+    "quote": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas.",
+    "segment_ids": [
+     190
+    ]
+   },
+   {
+    "text": "Entonces esa sección no nos serviría por el momento.",
+    "quote": "Entonces esa sección no nos serviría por el momento.",
+    "segment_ids": [
+     191
+    ]
+   },
+   {
+    "text": "No, porque la mayoría de nuestros clientes O son clientes frecuentes O es gente que nada más Quiere probar cosas nuevas Entonces esa excepción No nos serviría por el momento",
+    "quote": "No, porque la mayoría de nuestros clientes O son clientes frecuentes O es gente que nada más Quiere probar cosas nuevas Entonces esa excepción No nos serviría por el momento",
+    "segment_ids": [
+     248,
+     253
+    ]
+   }
+  ],
+  "budget_or_deadlines": [
+   {
+    "text": "voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios y me digas qué partes quieres modificar",
+    "quote": "voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios y me digas qué partes quieres modificar",
+    "segment_ids": [
+     49,
+     51
+    ]
+   },
+   {
+    "text": "Voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios y me digas que partes quieres modificar",
+    "quote": "y voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios y me digas que partes quieres modificar",
+    "segment_ids": [
+     196
+    ]
+   },
+   {
+    "text": "Y voy a enviártelo durante las siguientes semanas Para que me des un visto bueno O para que me des comentarios y me digas que partes quieres modificar",
+    "quote": "Y voy a enviártelo durante las siguientes semanas Para que me des un visto bueno O para que me des comentarios y me digas que partes quieres modificar",
+    "segment_ids": [
+     272,
+     273,
+     274
+    ]
+   }
+  ],
+  "risks": [],
+  "open_questions": [
+   "¿Quieres que dentro de tu sistema se otorguen permisos especiales para tú o alguno de tus socios, alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros que tienen?",
+   "¿Quieren algún permiso especial?",
+   "¿Quieren editarlo?",
+   "¿Qué partes quieres modificar?",
+   "What is the scope of the design work?",
+   "What is the budget for this project?",
+   "What is the scope of the project?"
+  ]
+ },
+ "ollama_ps": [
+  {
+   "name": "gemma4:e4b",
+   "size": 279047043,
+   "size_vram": 279047043,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 47.1,
+ "proposal_stats": [
+  {
+   "total_s": 47.037770583,
+   "load_s": 0.00597275,
+   "prompt_tokens": 2773,
+   "prompt_s": 9.141789,
+   "output_tokens": 1202,
+   "output_s": 37.802405,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Se busca implementar un sistema en línea para la pizzería Trevos, con el objetivo de superar las limitaciones de la gestión actual a través de Facebook y mejorar la experiencia del usuario en el negocio.",
+  "problem_understanding": "Actualmente, la gestión de la pizzería Trevos, que opera dos locales en Cancún (uno en supermanzana 316 y otro en Bonfil), se maneja mediante Facebook, lo cual presenta ciertas limitaciones. El objetivo es implementar un sistema en línea para mejorar la gestión del negocio.",
+  "scope": [
+   {
+    "text": "Implementar un sistema en línea para manejar mejor el negocio",
+    "segment_ids": [
+     177,
+     357
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario",
+    "segment_ids": [
+     14,
+     79
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería",
+    "segment_ids": [
+     15,
+     80
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que puedan hacer reservaciones sin necesidad de mandar mensajes por Facebook",
+    "segment_ids": [
+     16,
+     80
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     17,
+     84
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Un sistema de facturación automático, que eso viene al momento de que ellos hagan una reservación",
+    "segment_ids": [
+     18,
+     91
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Tener un menú de facturación",
+    "segment_ids": [
+     21,
+     102
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Tener una galería de tu pizzería, de sus locales",
+    "segment_ids": [
+     21,
+     104
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Queres reservas",
+    "segment_ids": [
+     22,
+     106
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que puedan hacer reservaciones",
+    "segment_ids": [
+     180
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Mostrarles cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas",
+    "segment_ids": [
+     182
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Un menú de facturación",
+    "segment_ids": [
+     187
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Una galería de tu pizzería, de sus locales",
+    "segment_ids": [
+     187
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Reservas",
+    "segment_ids": [
+     188
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Un sistema de facturación automático que viene al momento de que ellos hagan una reservación",
+    "segment_ids": [
+     363
+    ],
+    "assumption": false
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "Se descartaría una sección específica porque la mayoría de los clientes son frecuentes o solo quieren probar cosas nuevas.",
+    "segment_ids": [
+     26,
+     27,
+     190,
+     191,
+     248,
+     253
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "No se proporcionó información sobre el cronograma.",
+  "open_questions": [
+   "¿Quieres que dentro de tu sistema se otorguen permisos especiales para tú o alguno de tus socios, alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros que tienen?",
+   "¿Quieren algún permiso especial?",
+   "¿Quieren editarlo?",
+   "¿Qué partes quieres modificar?",
+   "What is the scope of the design work?",
+   "What is the budget for this project?",
+   "What is the scope of the project?"
+  ],
+  "investment": "Para cotizar el proyecto, se requiere definir el alcance del trabajo. Las tarifas disponibles son: 650 MXN por hora o 24,000 MXN por un Sitio web de hasta 5 secciones.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 16
+ },
+ "trap_hits": [],
+ "wall_s": 224.0,
+ "notes_stats": [
+  {
+   "total_s": 50.038771167,
+   "load_s": 12.933681959,
+   "prompt_tokens": 3011,
+   "prompt_s": 7.01287,
+   "output_tokens": 1443,
+   "output_s": 29.728,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 38.854199292,
+   "load_s": 0.035426084,
+   "prompt_tokens": 3189,
+   "prompt_s": 7.470304,
+   "output_tokens": 1559,
+   "output_s": 30.92502,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 33.232380833,
+   "load_s": 0.041926417,
+   "prompt_tokens": 3509,
+   "prompt_s": 8.211202999,
+   "output_tokens": 1227,
+   "output_s": 24.671779,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 49.224647333,
+   "load_s": 0.038075416,
+   "prompt_tokens": 2749,
+   "prompt_s": 6.255712,
+   "output_tokens": 1894,
+   "output_s": 42.862175,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 5.24003,
+   "load_s": 0.01905325,
+   "prompt_tokens": 953,
+   "prompt_s": 3.113754,
+   "output_tokens": 82,
+   "output_s": 2.014708,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 4681,
+ "peak_system_growth_mb": 3729
+}

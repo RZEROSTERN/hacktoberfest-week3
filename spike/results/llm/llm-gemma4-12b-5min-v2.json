@@ -1,0 +1,157 @@
+{
+ "model": "gemma4:12b",
+ "label": "gemma4-12b-5min-v2",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 164.3,
+ "notes_check": {
+  "items": 6,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 0
+ },
+ "notes": {
+  "client": "Trevos",
+  "client_context": [
+   {
+    "text": "Es una pizzería con dos locales en Cancún.",
+    "segment_ids": [
+     5
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "La pizzería se maneja mediante Facebook y tiene algunas limitaciones.",
+    "segment_ids": [
+     8,
+     9
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Quitar las limitaciones de Facebook.",
+    "segment_ids": [
+     9
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "Implementar un sistema en línea para manejar mejor el negocio.",
+    "segment_ids": [
+     10
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No se requiere una sección de permisos especiales para editar clientes o registros por el momento.",
+    "segment_ids": [
+     39,
+     41,
+     42
+    ]
+   }
+  ],
+  "budget_or_deadlines": [
+   {
+    "text": "El primer prototipo se enviará durante las siguientes semanas.",
+    "segment_ids": [
+     50
+    ]
+   }
+  ],
+  "risks": [],
+  "open_questions": [
+   "¿Cuál es el presupuesto para el desarrollo del sistema?",
+   "¿Cuál es la fecha límite para la implementación final?"
+  ]
+ },
+ "ollama_ps": [
+  {
+   "name": "gemma4:12b",
+   "size": 889423133,
+   "size_vram": 889423133,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 74.2,
+ "proposal_stats": [
+  {
+   "total_s": 72.9241605,
+   "load_s": 0.275094083,
+   "prompt_tokens": 1085,
+   "prompt_s": 12.146495,
+   "output_tokens": 414,
+   "output_s": 31.881118,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Desarrollo de un sistema en línea para la pizzería Trevos en Cancún con el fin de optimizar la gestión del negocio y superar las limitaciones actuales de Facebook.",
+  "problem_understanding": "La pizzería actualmente opera a través de Facebook, lo cual presenta limitaciones operativas. El objetivo es implementar un sistema propio que permita una gestión más eficiente de los dos locales.",
+  "scope": [
+   {
+    "text": "Implementar un sistema en línea para manejar mejor el negocio.",
+    "segment_ids": [
+     10
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Primer prototipo del sistema.",
+    "segment_ids": [
+     50
+    ],
+    "assumption": false
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "Sección de permisos especiales para editar clientes o registros.",
+    "segment_ids": [
+     39,
+     41,
+     42
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "El primer prototipo se enviará durante las siguientes semanas. La fecha límite para la implementación final no ha sido proporcionada.",
+  "open_questions": [
+   "¿Cuál es el presupuesto para el desarrollo del sistema?",
+   "¿Cuál es la fecha límite para la implementación final?"
+  ],
+  "investment": "Para proporcionar un presupuesto exacto, es necesario definir el alcance detallado del sistema. La tarifa base es de 650 MXN por hora o 24,000 MXN por un sitio web de hasta 5 secciones.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 3
+ },
+ "trap_hits": [],
+ "wall_s": 239.2,
+ "notes_stats": [
+  {
+   "total_s": 162.899241083,
+   "load_s": 0.799500166,
+   "prompt_tokens": 2232,
+   "prompt_s": 63.592586,
+   "output_tokens": 235,
+   "output_s": 78.505977,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 873,
+ "peak_system_growth_mb": 424
+}

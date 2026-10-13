@@ -1,0 +1,302 @@
+[
+ {
+  "start": 0.0,
+  "end": 3.38,
+  "text": "Buenas tardes, Ingeniero Moisés."
+ },
+ {
+  "start": 4.54,
+  "end": 11.74,
+  "text": "Nuestra siguiente aportación es una entrevista de lo que sería una simulación real a una entrevista"
+ },
+ {
+  "start": 11.74,
+  "end": 20.78,
+  "text": "que alguien que requiera un sistema para su negocio, para su empresa, para su organización, para cualquier cosa."
+ },
+ {
+  "start": 21.72,
+  "end": 27.94,
+  "text": "Y para ponerles un poco en contexto, en esta ocasión tenemos a mi compañero Kevin."
+ },
+ {
+  "start": 27.94,
+  "end": 28.92,
+  "text": "Buenas noches."
+ },
+ {
+  "start": 29.82,
+  "end": 47.18,
+  "text": "Que, bueno, él tiene actualmente una pizzería que se llama Trevos y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún."
+ },
+ {
+  "start": 47.96,
+  "end": 61.36,
+  "text": "Voy a empezar nuestra entrevista preguntándole a Kevin, primero gracias por preferirnos para su sistema."
+ },
+ {
+  "start": 63.9,
+  "end": 75.02,
+  "text": "La primera pregunta que le voy a hacer es, ¿cuál es el problema o por qué usted requiere un sistema que se implemente en su negocio?"
+ },
+ {
+  "start": 75.02,
+  "end": 80.78,
+  "text": "Bueno, el problema que tenemos en la pizzería es que la manejamos mediante Facebook"
+ },
+ {
+  "start": 80.78,
+  "end": 86.34,
+  "text": "y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones"
+ },
+ {
+  "start": 86.34,
+  "end": 92.02,
+  "text": "implementando un sistema en línea que nos permita manejar mejor el negocio."
+ },
+ {
+  "start": 94.24,
+  "end": 99.56,
+  "text": "Ok, entonces ustedes tienen restricciones en Facebook,"
+ },
+ {
+  "start": 99.56,
+  "end": 104.88,
+  "text": "pero ¿cuáles son esas restricciones que quieren implementar en una página en línea?"
+ },
+ {
+  "start": 105.02,
+  "end": 109.9,
+  "text": "Bueno, lo que queremos implementar es que al momento de que entre en la página tenga"
+ },
+ {
+  "start": 109.9,
+  "end": 116.72,
+  "text": "un menú más elegante, que sea bien para el usuario, que tenga una sección donde puedan"
+ },
+ {
+  "start": 116.72,
+  "end": 123.12,
+  "text": "ver los distintos tipos de menús que manejamos en la pizzería, que puedan hacer reservaciones"
+ },
+ {
+  "start": 123.12,
+  "end": 132.46,
+  "text": "sin estar mandando mensajes por Facebook o mostrarles una galería en la cual les mostremos"
+ },
+ {
+  "start": 132.46,
+  "end": 135.8,
+  "text": "cómo son las instalaciones, nuestras diversas instalaciones"
+ },
+ {
+  "start": 135.8,
+  "end": 137.54,
+  "text": "cómo preparamos las pizzas"
+ },
+ {
+  "start": 137.54,
+  "end": 141.18,
+  "text": "y un sistema de facturación automático"
+ },
+ {
+  "start": 141.18,
+  "end": 144.4,
+  "text": "que eso viene al momento de que ellos"
+ },
+ {
+  "start": 144.4,
+  "end": 145.9,
+  "text": "hagan una reservación"
+ },
+ {
+  "start": 145.9,
+  "end": 149.4,
+  "text": "estas son las limitaciones que"
+ },
+ {
+  "start": 149.4,
+  "end": 151.12,
+  "text": "se hacen"
+ },
+ {
+  "start": 151.12,
+  "end": 156.98,
+  "text": "me queda más o menos claro"
+ },
+ {
+  "start": 156.98,
+  "end": 160.56,
+  "text": "el sistema que tú quieres diseñar"
+ },
+ {
+  "start": 160.56,
+  "end": 165.06,
+  "text": "Ok, entonces ya"
+ },
+ {
+  "start": 165.06,
+  "end": 167.42,
+  "text": "Bueno, más o menos me está quedando"
+ },
+ {
+  "start": 167.42,
+  "end": 169.14,
+  "text": "Clara la idea del sistema"
+ },
+ {
+  "start": 169.14,
+  "end": 170.54,
+  "text": "Que quieres desarrollar"
+ },
+ {
+  "start": 170.54,
+  "end": 172.18,
+  "text": "O sea, quieres tener"
+ },
+ {
+  "start": 172.18,
+  "end": 174.12,
+  "text": "Un menú de facturación"
+ },
+ {
+  "start": 174.12,
+  "end": 175.56,
+  "text": "Quieres tener"
+ },
+ {
+  "start": 175.56,
+  "end": 178.56,
+  "text": "Una galería de tu pizzería"
+ },
+ {
+  "start": 178.56,
+  "end": 180.32,
+  "text": "De sus locales"
+ },
+ {
+  "start": 180.32,
+  "end": 182.7,
+  "text": "Bueno, también quieres"
+ },
+ {
+  "start": 182.7,
+  "end": 184.7,
+  "text": "Reservas, ahorita me acabas de decir"
+ },
+ {
+  "start": 184.7,
+  "end": 185.06,
+  "text": "Pero"
+ },
+ {
+  "start": 185.06,
+  "end": 187.74,
+  "text": "Quieres que"
+ },
+ {
+  "start": 187.74,
+  "end": 207.4,
+  "text": "Que dentro de tu sistema se otorguen permisos especiales para tú o alguno de tus socios, alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros que tienen?"
+ },
+ {
+  "start": 208.96,
+  "end": 212.72,
+  "text": "¿Quieren algún permiso especial? ¿Quieren editarlo?"
+ },
+ {
+  "start": 213.44,
+  "end": 222.0,
+  "text": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas."
+ },
+ {
+  "start": 222.28,
+  "end": 225.68,
+  "text": "Entonces, esa sección no nos serviría por el momento."
+ },
+ {
+  "start": 236.28,
+  "end": 238.96,
+  "text": "¿Actualmente no está su localización de sus pizzerías?"
+ },
+ {
+  "start": 240.08,
+  "end": 243.24,
+  "text": "Como dijiste al principio, tenemos dos aquí en Cancún."
+ },
+ {
+  "start": 243.44,
+  "end": 252.78,
+  "text": "Una está ubicada en la Supermanzada 316 y la otra está ubicada en Bofi."
+ },
+ {
+  "start": 258.18,
+  "end": 271.96,
+  "text": "Bueno, más o menos yo me estoy imaginando, con todo lo que me acabas de decir, yo me estoy imaginando un menú en esta parte."
+ },
+ {
+  "start": 273.1,
+  "end": 277.54,
+  "text": "Y todos los elementos que acabas de decir"
+ },
+ {
+  "start": 277.54,
+  "end": 282.36,
+  "text": "Y aquí abajo ponerle los contactos, las galerías"
+ },
+ {
+  "start": 282.36,
+  "end": 285.6,
+  "text": "Este nada más es el primer prototipo"
+ },
+ {
+  "start": 285.6,
+  "end": 292.06,
+  "text": "Y voy a enviártelo durante las siguientes semanas"
+ },
+ {
+  "start": 292.06,
+  "end": 296.2,
+  "text": "Para que me des un visto bueno"
+ },
+ {
+  "start": 296.2,
+  "end": 299.56,
+  "text": "O para que me des comentarios y me digas que partes quieres modificar"
+ },
+ {
+  "start": 299.56,
+  "end": 304.18,
+  "text": "Para que a lo mejor nada más es de diseño"
+ },
+ {
+  "start": 304.18,
+  "end": 310.16,
+  "text": "Pero yo creo que eso sería todo"
+ },
+ {
+  "start": 310.16,
+  "end": 313.46,
+  "text": "Sí, me parece perfecto"
+ },
+ {
+  "start": 313.46,
+  "end": 315.5,
+  "text": "Solo la vista contigo"
+ },
+ {
+  "start": 315.5,
+  "end": 318.54,
+  "text": "Muchas gracias por la entrevista"
+ },
+ {
+  "start": 318.54,
+  "end": 320.76,
+  "text": "Y voy a estar en contacto con usted"
+ },
+ {
+  "start": 320.76,
+  "end": 321.68,
+  "text": "Muchas gracias"
+ }
+]

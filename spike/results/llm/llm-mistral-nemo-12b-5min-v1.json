@@ -1,0 +1,192 @@
+{
+ "model": "mistral-nemo:12b",
+ "label": "mistral-nemo-12b-5min-v1",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 146.8,
+ "notes_check": {
+  "items": 5,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 0
+ },
+ "notes": {
+  "client": "Trevos",
+  "client_context": [
+   {
+    "text": "Trevos is a pizzería that currently operates in two locations in Cancún, one at Supermanzada 316 and the other at Bofi.",
+    "quote": "Trevos is a pizzería that currently operates in two locations in Cancún, one at Supermanzada 316 and the other at Bofi.",
+    "segment_ids": [
+     5,
+     44,
+     45
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "The problem with Trevos is that they manage their business through Facebook, which has some limitations.",
+    "quote": "The problem with Trevos is that they manage their business through Facebook, which has some limitations.",
+    "segment_ids": [
+     8,
+     9
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Trevos wants to implement an online system to better manage their business.",
+    "quote": "Trevos wants to implement an online system to better manage their business.",
+    "segment_ids": [
+     10
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "The system should have a more elegant menu for users, a section to view different types of menus, the ability to make reservations without messaging on Facebook, a gallery to show installations and pizza preparation, and an automatic billing system.",
+    "quote": "The system should have a more elegant menu for users, a section to view different types of menus, the ability to make reservations without messaging on Facebook, a gallery to show installations and pizza preparation, and an automatic billing system.",
+    "segment_ids": [
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "Trevos does not need a section to edit clients or their registration system at this time.",
+    "quote": "Trevos does not need a section to edit clients or their registration system at this time.",
+    "segment_ids": [
+     41,
+     42
+    ]
+   }
+  ],
+  "budget_or_deadlines": [],
+  "risks": [],
+  "open_questions": [
+   "What is the budget for this project?",
+   "What is the deadline for the completion of this project?"
+  ]
+ },
+ "ollama_ps": [
+  {
+   "name": "mistral-nemo:12b",
+   "size": 7525283921,
+   "size_vram": 7525283921,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 50.9,
+ "proposal_stats": [
+  {
+   "total_s": 49.442626708,
+   "load_s": 1.336174667,
+   "prompt_tokens": 1156,
+   "prompt_s": 8.196474,
+   "output_tokens": 479,
+   "output_s": 37.275508,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Propuesta para implementar un sistema en línea para Trevos",
+  "problem_understanding": "Trevos necesita un sistema en línea para mejorar la gestión de su negocio, ya que actualmente utilizan Facebook que tiene algunas limitaciones.",
+  "scope": [
+   {
+    "text": "Desarrollar un sistema en línea para Trevos",
+    "segment_ids": [
+     10
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Crear un menú más elegante para los usuarios",
+    "segment_ids": [
+     13
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Incluir una sección para ver diferentes tipos de menú",
+    "segment_ids": [
+     14
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Permitir reservaciones sin enviar mensajes en Facebook",
+    "segment_ids": [
+     15
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Crear una galería para mostrar instalaciones y preparación de pizza",
+    "segment_ids": [
+     16
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Incluir un sistema de facturación automático",
+    "segment_ids": [
+     17
+    ],
+    "assumption": false
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "No se requiere una sección para editar clientes o su sistema de registro en este momento",
+    "segment_ids": [
+     41
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "Pendiente definir el cronograma del proyecto",
+  "open_questions": [
+   "¿Cuál es el presupuesto para este proyecto?",
+   "¿Cuál es la fecha límite para la finalización del proyecto?",
+   "¿Se requiere mantenimiento web una vez que el sistema esté en línea?"
+  ],
+  "investment": "El costo del proyecto dependerá del alcance y la complejidad del sistema a desarrollar. Por favor, consulte mi perfil para conocer mis tarifas.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 7
+ },
+ "trap_hits": [],
+ "wall_s": 198.4,
+ "notes_stats": [
+  {
+   "total_s": 145.117354042,
+   "load_s": 41.236401917,
+   "prompt_tokens": 2225,
+   "prompt_s": 55.452262,
+   "output_tokens": 527,
+   "output_s": 44.548125,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 7593,
+ "peak_system_growth_mb": 5642
+}
