@@ -291,3 +291,40 @@ on the sample transcript and is opt-in because it loads about 4.6 GB into memory
 
 **No screen yet.** This step is API only. The profile screen and the generate button with
 progress and cancel come next, then the editor with source links.
+
+## 2026-10-13: Profile screen and the draft in the UI
+
+**Profile form.** Name, services (one per line), hourly rate and project rates as free text in
+any currency, payment terms, tone, and the preferred sections with up/down buttons. The form
+mirrors the API rule that pricing always comes after the scope: the investment row cannot be moved
+above scope. Saving "all sections in the default order" stores an empty list, which means the
+default. The UI never builds or formats a price: rates reach proposals exactly as typed.
+
+**Draft panel on the call page.** Language choice (default: the call's language), Draft proposal,
+a progress bar with plain labels ("Reading the call (part 2 of 5)", "Writing the proposal"), and
+Cancel. Cancelling takes as long as the model needs to produce its next token (33 s measured
+while the model was still loading), so the button switches to "Cancelling…" at once. Failed drafts
+show the API's plain-language message and Try again; Draft again asks before replacing a finished
+draft.
+
+**Source links.** Every item with sources shows a chip per source with its time. Clicking a chip
+opens the quote from the call with its timestamp; "Show in transcript" opens the transcript,
+scrolls to that segment and highlights it. Items the model could not source are marked
+"Assumption". A second view, "What the draft is based on", lists the notes the same way. This is
+read-only: editing and export are the next step.
+
+**The UI was verified in a real browser this time.** `web/ui-check/` drives the installed Google
+Chrome headlessly over the DevTools protocol (no installs, no dependencies) and saves screenshots.
+It covered the profile flow, the real-model draft with cancel and source links, a phone-width
+layout and the production static build; no console errors. Unit tests cover the helpers (section
+order, form conversion, labels, error messages).
+
+**Static build and routing.** `nuxt generate` writes only `index.html`, `200.html` and `404.html`,
+so a plain static server answers 404 on `/profile` or `/calls/<id>`. With a fallback to `200.html`
+everything works, including deep links. The desktop shell must do the same, or the app should use
+hash routing; decide in the desktop step. The Nuxt dev server listens on `localhost:3000` over IPv6
+only, which is why the api's allowed origins include `localhost`.
+
+**Known limits of the draft view.** A real run on the sample put the interviewer's slip "menú de
+facturación" into scope and deliverables, and one open question repeated an interviewer question.
+Both are sourced, so the user can see where they came from and remove them in the editor.

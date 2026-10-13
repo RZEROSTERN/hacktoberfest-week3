@@ -2,6 +2,8 @@
 import type { Call } from '~/types/api'
 
 const api = useCalls()
+const profileApi = useProfile()
+const hasProfile = ref(true) // assume yes until we know, to avoid a flash of the notice
 const calls = ref<Call[]>([])
 const loading = ref(true)
 const loadError = ref<string | null>(null)
@@ -9,6 +11,7 @@ const loadError = ref<string | null>(null)
 onMounted(async () => {
   try {
     calls.value = await api.list()
+    hasProfile.value = (await profileApi.load()) !== null
   } catch {
     loadError.value = 'Could not reach the local engine. Is the app still running?'
   } finally {
@@ -23,6 +26,17 @@ onMounted(async () => {
     <p class="muted">
       Turn a recorded client call into a draft proposal. Everything stays on this computer.
     </p>
+    <aside
+      v-if="!hasProfile"
+      class="notice"
+      role="note"
+    >
+      <strong>Set up your profile first.</strong>
+      Your services, rates and payment terms go into every proposal.
+      <NuxtLink to="/profile">
+        Set up my profile
+      </NuxtLink>
+    </aside>
     <NuxtLink
       to="/new"
       class="button"

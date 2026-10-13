@@ -1,4 +1,4 @@
-import type { Call, CallStatus } from '~/types/api'
+import type { Call, CallStatus, Draft, DraftStatus } from '~/types/api'
 
 const ACTIVE: CallStatus[] = ['queued', 'converting', 'transcribing']
 
@@ -52,4 +52,50 @@ export function uploadErrorMessage(status: number, body: string): string {
   return status === 0
     ? 'Could not reach the local engine. Is the app still running?'
     : `The upload failed (error ${status}).`
+}
+
+const DRAFT_ACTIVE: DraftStatus[] = ['queued', 'extracting', 'drafting']
+
+export function isDraftActive(status: DraftStatus): boolean {
+  return DRAFT_ACTIVE.includes(status)
+}
+
+/** "2/5" -> "Reading the call (part 2 of 5)" */
+export function draftStatusLabel(draft: Pick<Draft, 'status' | 'stage_detail'>): string {
+  switch (draft.status) {
+    case 'queued':
+      return 'Waiting to start'
+    case 'extracting': {
+      const [part, total] = (draft.stage_detail ?? '').split('/')
+      return part && total && total !== '1' ? `Reading the call (part ${part} of ${total})` : 'Reading the call'
+    }
+    case 'drafting':
+      return 'Writing the proposal'
+    case 'done':
+      return 'Draft ready'
+    case 'failed':
+      return 'Failed'
+    case 'cancelled':
+      return 'Cancelled'
+  }
+}
+
+/** Languages the proposal can be written in. The fixed wording (titles, price sentence) is translated for these. */
+export const PROPOSAL_LANGUAGES: { code: string, label: string }[] = [
+  { code: 'es', label: 'Spanish' },
+  { code: 'en', label: 'English' },
+  { code: 'pt', label: 'Portuguese' },
+  { code: 'fr', label: 'French' },
+  { code: 'de', label: 'German' },
+  { code: 'it', label: 'Italian' },
+]
+
+export function languageLabel(code: string | null): string {
+  return PROPOSAL_LANGUAGES.find(l => l.code === code)?.label ?? code ?? ''
+}
+
+/** Plain-language message for an API error (FastAPI puts text in `detail`). */
+export function apiErrorMessage(error: unknown, fallback: string): string {
+  const data = (error as { data?: { detail?: unknown } } | null)?.data
+  return typeof data?.detail === 'string' ? data.detail : fallback
 }

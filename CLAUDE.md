@@ -10,12 +10,11 @@ notes and drafts the proposal, everything runs on the user's machine.
   `spike/` model benchmark scripts (not shipped; see docs/BENCHMARKS.md)
 
 ## Commands (from repo root)
-- Install: `make setup` (uv sync, npm install, creates `.env`); `make whisper-dev` builds whisper.cpp + models
+- Install: `make setup` (uv sync, npm install, `.env`); `make whisper-dev` builds whisper.cpp + models
 - Run everything: `make dev` (api on 8765, web on 3000); `make dev-api`, `make dev-web`
-- Check Ollama: `make ollama-check`
-- Test / lint / typecheck: `make test`, `make lint`, `make typecheck` (`make format` fixes ruff)
-- Real language-model test on the sample call (loads ~4.6 GB, opt-in): `make test-llm`
-- Desktop build commands: added in the desktop step
+- Check Ollama: `make ollama-check`. Test / lint / typecheck: `make test`, `make lint`,
+  `make typecheck` (`make format` fixes ruff). Real model on the sample (opt-in, ~4.6 GB): `make test-llm`
+- Look at the real UI: `web/ui-check/README.md` (headless Chrome). Desktop commands: added later
 
 ## Git: GitFlow, no stacked PRs
 - `master` is production. `develop` is integration. Never commit to either directly.
@@ -50,10 +49,11 @@ notes and drafts the proposal, everything runs on the user's machine.
   uses only its bundled Ollama, never a system one.
 - Ollama pull progress is reported per layer: sum bytes across layers and never move the bar
   backwards.
-- Docker holds port 8000 on the dev Mac; use `127.0.0.1` and the 8765 default, not `localhost`.
+- Docker holds port 8000 on the dev Mac: the api uses `127.0.0.1:8765`. Nuxt dev listens on
+  `localhost:3000` (IPv6 only). The static build needs an SPA fallback to `200.html` on deep links.
 - `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
-- Prompt examples must not be in a specific language: an English example made Spanish calls come back in English.
-- Hard-killing the api leaves `whisper-cli` running: stop the process tree. Tests use the small `base` Whisper model.
+- Prompt examples must not be in a specific language: an English one made Spanish calls come back in English.
+- Hard-killing the api leaves `whisper-cli` running: stop the process tree.
 - whisper.cpp reads only 16-bit WAV: convert with `afconvert -f WAVE -d LEI16@16000 -c 1`. On long
   audio, if the output is a flood of tiny segments, re-run with `-mc 0` (see docs/BENCHMARKS.md).
 - Machine-specific values (RAM, pulled models, Whisper path) live in `CLAUDE.local.md`.

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { TranscriptSegment } from '~/types/api'
 
-defineProps<{ segments: TranscriptSegment[] }>()
+defineProps<{
+  segments: TranscriptSegment[]
+  /** Segment to highlight, e.g. after the user clicks a source link. */
+  highlightId?: number | null
+}>()
 </script>
 
 <template>
@@ -16,6 +20,7 @@ defineProps<{ segments: TranscriptSegment[] }>()
       v-for="segment in segments"
       :id="`segment-${segment.id}`"
       :key="segment.id"
+      :class="{ highlight: segment.id === highlightId }"
     >
       <time class="stamp">{{ formatTimestamp(segment.start) }}</time>
       <span>{{ segment.text }}</span>

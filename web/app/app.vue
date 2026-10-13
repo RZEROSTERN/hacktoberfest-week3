@@ -7,6 +7,14 @@
       >
         Scopewise
       </NuxtLink>
+      <nav aria-label="Main">
+        <NuxtLink to="/">
+          Calls
+        </NuxtLink>
+        <NuxtLink to="/profile">
+          Profile
+        </NuxtLink>
+      </nav>
     </header>
     <NuxtRouteAnnouncer />
     <main>
