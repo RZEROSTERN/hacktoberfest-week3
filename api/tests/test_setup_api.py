@@ -343,6 +343,28 @@ def test_a_killed_app_leaves_a_running_run_that_is_marked_interrupted(rig: Rig) 
     assert restarted.get("/setup/progress").json()["overall"]["fraction"] == pytest.approx(0.4)
 
 
+def test_after_a_kill_the_progress_shows_what_is_really_on_disk(rig: Rig) -> None:
+    with Session(rig.client.app.state.engine) as session:  # type: ignore[attr-defined]
+        steps = [
+            {"id": i, "state": "pending", "completed": 0, "total": 0} for i in setup_steps.STEP_IDS
+        ]
+        steps[2] = {
+            "id": "whisper",
+            "state": "running",
+            "completed": 100,
+            "total": len(DATA),
+        }  # stale
+        session.add(SetupRun(id=1, state=SetupState.RUNNING, llm_model="gemma4:e4b", steps=steps))
+        session.commit()
+    part = rig.settings.models_dir / "whisper" / (rig.catalog.whisper.file + ".part")
+    part.parent.mkdir(parents=True)
+    part.write_bytes(DATA[:1_500_000])  # what had actually arrived when the app was killed
+    restarted = rig.new_client()
+    whisper = restarted.get("/setup/progress").json()["steps"][2]
+    assert whisper["completed"] == 1_500_000 and whisper["total"] == len(DATA)
+    assert restarted.get("/setup/status").json()["whisper"]["state"] == "partial"
+
+
 def test_there_is_nothing_to_resume_at_first(rig: Rig) -> None:
     assert rig.client.post("/setup/resume").status_code == 409
 

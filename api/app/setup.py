@@ -126,6 +126,13 @@ class SetupManager:
                 )
                 for s in run.steps
             ]
+        # The file on disk is the truth about a partly downloaded speech model, not the last save.
+        state, on_disk = self.whisper.state()
+        if state == "partial":
+            step = self._step("whisper")
+            step.completed = max(step.completed, on_disk)
+            step.total = max(step.total, self.whisper.model.size_bytes)
+            self._update_fraction()
         self._persist()
 
     def stop(self) -> None:
