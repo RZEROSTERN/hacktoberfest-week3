@@ -64,3 +64,16 @@ free port at runtime.
 **Ollama health check uses `GET /api/tags`.** It is documented in the official Ollama API
 reference and doubles as the list of local models. We did not find `/api/version` in the
 docs, so we do not use it.
+
+## 2026-10-13: Claude Code memory
+
+**`CLAUDE.md` is short (53 lines) and committed; scope-specific rules are path-scoped files.**
+The official memory docs recommend under 200 lines and say rules with a `paths` frontmatter
+field load only when Claude touches matching files. So `.claude/rules/api.md` (`api/**`) and
+`.claude/rules/web.md` (`web/**`) carry the per-part rules, and `desktop.md` arrives with the
+desktop step. Only what cannot be inferred from the code is written down.
+
+**`CLAUDE.local.md` keeps the full challenge brief plus a machine-specific section.** The
+plan was for it to hold only machine settings. The brief (product flow, build order) is long
+and mostly useful to the person building, so it stays local rather than shipping in the
+public repo; `CLAUDE.md` carries the condensed rules. Revisit if the brief should be public.
