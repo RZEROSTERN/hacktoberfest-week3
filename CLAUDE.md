@@ -13,7 +13,7 @@ notes and drafts the proposal, everything runs on the user's machine.
 - Install: `make setup` (uv sync, npm install, `.env`); `make whisper-dev` builds whisper.cpp + models
 - Run everything: `make dev` (api on 8765, web on 3000); `make dev-api`, `make dev-web`
 - Check Ollama: `make ollama-check`. Test / lint / typecheck: `make test`, `make lint`,
-  `make typecheck` (`make format` fixes ruff). Real model on the sample (opt-in, ~4.6 GB): `make test-llm`
+  `make typecheck` (`make format` fixes ruff). Opt-in with real models: `make test-llm` (~4.6 GB), `make test-setup` (pulls ~270 MB)
 - Look at the real UI: `web/ui-check/README.md` (headless Chrome). Desktop commands: added later
 
 ## Git: GitFlow, no stacked PRs

@@ -377,3 +377,97 @@ items, a price refused with a message, saving and reloading, the unsaved-changes
 Markdown and PDF downloads with the right names, a refused PDF shown as a message, source links
 inside the editor, and no horizontal scroll at phone width. The PDF was also rendered with macOS
 Quick Look and looked at.
+
+## 2026-10-13: First-launch setup and model management
+
+**What the user is offered.** The list is a versioned file, `api/data/models.json`, built from
+BENCHMARKS.md: for each model its size, the memory it needs, its license and a note on speed and
+quality. Only `gemma4:e4b` is recommended and preselected (the earlier open question: the others
+are shown, unselected, under "Other models we tested", with their notes). A model whose memory
+need is more than the computer's total is badged "Not recommended for this computer" and can
+still be picked, with the numbers shown (on this 16 GB Mac only Gemma 4 12B is flagged). The
+memory figures are our estimates from the benchmark runs, not measurements on other machines.
+An "Advanced" field takes any Ollama name and tag, with a link to the Ollama library and a note
+that untested models may give lower quality.
+
+**The speech model is pinned.** The catalog URL points to one Hugging Face revision (not a moving
+branch) and carries the size and SHA-256. The checksum was cross-checked against the one Hugging
+Face publishes for the file (`x-linked-etag`) and against the file used in the spike. A real
+download through the app's own downloader: 574 MB in 11 s, checksum verified.
+
+**Six steps, one run.** Prepare the engine (wait up to 30 s for Ollama; the desktop shell starts
+the bundled one before the api), language model, speech model, verify, check the model works,
+ready. Steps with nothing to do (already on this computer) are marked and count for little in
+the overall bar. The bar is a weighted sum (the two downloads and the check weigh most) and never
+moves backwards. The same run serves the first launch, switching to another model and downloading
+a new one from Settings.
+
+**Names.** Checked locally (shape, and cloud models are refused: `gemma4:cloud` and
+`...-cloud` would send calls to Ollama's servers). Whether a model exists is left to Ollama,
+which answers a pull for an unknown name inside the stream (`pull model manifest: file does not
+exist`) before any bytes move; the docs do not say this, it was observed on Ollama 0.35.1, as was
+HTTP 400 `invalid model name`. After a pull, a model that Ollama lists with a `remote_host` is
+deleted and refused.
+
+**Progress for a pull sums all layers and never goes back.** Ollama reports one layer at a time:
+the weights first, then a few tiny layers that each start at 0. The app sums completed and total
+over the layers seen and keeps the highest of each. Verified on the real Ollama that after a
+disconnect the next pull starts from the exact byte where the first one stopped (92,888,266 bytes
+in the test), although the docs do not promise resuming.
+
+**Pause, failure, and closing the app.** Pause stops the transfer and keeps what has arrived (the
+`.part` file, Ollama's layers). A network error ends in "failed" with a retry that continues. A run
+found running at start (the app was killed or quit) becomes "interrupted": it is offered, never
+resumed silently, because downloading is the user's decision. After a restart the speech model's
+progress is read from the file on disk, not from the last saved value (saves are throttled to every
+2 s, and a browser check showed the saved value was up to 100 MB behind).
+
+**Whisper download.** HTTP range requests resume from the size of the `.part` file; a server that
+ignores the range restarts from zero; a finished `.part` that was never renamed is completed
+without downloading again; the file is only moved into place after its size and SHA-256 match, and
+is deleted on a mismatch. Data is written in 64 KiB chunks: with 1 MiB chunks a connection that
+dropped early left an empty file and lost up to 1 MiB.
+
+**Disk space.** Needed = what is still to download plus 1 GiB of room, checked before anything
+starts. A model outside the catalog has no known size, so it is checked as soon as its first layer
+reports one. The screen shows needed and available, and disables "Download now" when short.
+
+**The compatibility check runs the real task.** The model gets a short built-in English call
+through the app's notes prompt and schema. It passes when the notes are valid, their sources
+exist and there is a problem, a goal or a requirement to build on. Output is capped at 1,200
+tokens: a model that rambles past that is failing, and the cap turned a 5-minute failure into a
+45-second one. Real runs: `smollm2:135m` fails (`compat_invalid_output`), `gemma4:e4b` passes. It
+cannot judge quality beyond that: structured output is constrained, so any chat model returns
+valid JSON, and "found something useful" is the part that catches too-small models. A failing
+model stays downloaded but is not activated; the screen offers the recommended model and a way to
+choose another.
+
+**Settings.** Lists the models on the computer (in use first), with "Use this model" for ones
+already checked, "Check and use" for the rest (the same run, skipping downloads), delete (never the
+one in use), "Download another model" (the same picker) and the speech model with delete. Deleting
+the speech model sends the app back to the setup request.
+
+**Nothing works before setup.** A route guard sends every page to `/setup` until the api reports
+ready (models present, selected model installed and checked, speech model whole). "Not now" shows a
+page that says so and the request returns on the next launch. The web page cannot close the window:
+the desktop shell decides what "Not now" does there. If the engine is not answering, the page says
+so instead of asking for downloads.
+
+**Progress stream.** `GET /setup/events` sends Server-Sent Events when the snapshot changes
+(speed and time left make it change about twice a second while downloading) and ends when the run
+does. The web app falls back to polling every 2 s if the stream cannot open.
+
+**Development goes through the same setup.** `make dev` no longer points the app at a hand-made
+Whisper file: the speech model is downloaded once by the wizard into `<models_dir>/whisper/`
+(`SCOPEWISE_WHISPER_MODEL` remains an override for tests). `SCOPEWISE_LLM_MODEL` still seeds the
+selected model but a model is only "ready" once it has passed the check.
+
+**What was and was not verified.** Unit tests use a fake engine, a local range-capable HTTP server
+and a scripted compatibility check (interruptions of both downloads, resume, pause, restart, wrong
+checksum, short disk, cloud models, model management). `make test-setup` uses the real Ollama: a
+proxy cuts the connection mid-pull and the pull is resumed; a tiny model fails the real check and
+the recommended one passes. A 39-check browser run used the real engines from a fresh state. Not
+verified: a real Wi-Fi drop between Ollama and its registry (that failure arrives as an `error`
+line, which is mapped from real message patterns but was not seen live), a drop during a real
+Hugging Face download (tested against a local server plus one full real download), and the
+bundled Ollama (desktop step).
