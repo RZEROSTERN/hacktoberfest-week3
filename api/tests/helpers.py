@@ -1,7 +1,13 @@
+from typing import Any, cast
+
 from fastapi import FastAPI
+from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from app.models import Call, CallStatus, Segment
+from tests.fakes import wait_until
+
+FINISHED = {"done", "failed", "cancelled"}
 
 TRANSCRIPT = [
     (0.0, "Kevin tiene una pizzería con dos locales en Cancún."),
@@ -33,3 +39,25 @@ def add_done_call(
             session.add(Segment(call_id=call_id, idx=idx, start=start, end=start + 4, text=text))
         session.commit()
     return call_id
+
+
+def app_of(client: TestClient) -> FastAPI:
+    return cast(FastAPI, client.app)
+
+
+def draft_status(client: TestClient, call_id: str) -> str:
+    return str(client.get(f"/calls/{call_id}/draft").json()["status"])
+
+
+def generate(client: TestClient, call_id: str = "call1", **body: Any) -> dict[str, Any]:
+    """Start a draft and wait for the job to finish."""
+    response = client.post(f"/calls/{call_id}/draft", json=body or None)
+    assert response.status_code == 202, response.text
+    wait_until(lambda: draft_status(client, call_id) in FINISHED)
+    result: dict[str, Any] = client.get(f"/calls/{call_id}/draft").json()
+    return result
+
+
+def section(draft: dict[str, Any], section_id: str) -> dict[str, Any]:
+    found: dict[str, Any] = next(s for s in draft["proposal"]["sections"] if s["id"] == section_id)
+    return found
