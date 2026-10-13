@@ -244,6 +244,13 @@ def test_the_export_follows_the_profile_section_order_and_language(
     assert "- Reservations (to be confirmed)" in text
 
 
+def test_the_browser_may_read_the_export_file_name(drafted: TestClient) -> None:
+    response = drafted.get(
+        "/calls/call1/draft/export?format=pdf", headers={"Origin": "http://localhost:3000"}
+    )
+    assert "Content-Disposition" in response.headers["access-control-expose-headers"]
+
+
 def test_unknown_export_format(drafted: TestClient) -> None:
     assert drafted.get("/calls/call1/draft/export?format=docx").status_code == 422
     assert drafted.get("/calls/call1/draft/export").status_code == 422
