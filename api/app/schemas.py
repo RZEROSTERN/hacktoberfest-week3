@@ -3,8 +3,9 @@ from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 
 from app import i18n
+from app.catalog import LlmModel, WhisperModel
 from app.drafting import DraftItem, ProposalDraft
-from app.models import Call, CallStatus, Draft, DraftStatus, Profile, Segment
+from app.models import Call, CallStatus, Draft, DraftStatus, Profile, Segment, SetupState
 from app.notes import GROUPS, Notes
 
 ERROR_MESSAGES = {
@@ -26,6 +27,43 @@ ERROR_MESSAGES = {
     "profile_missing": "Set up your profile first.",
     "empty_transcript": "The transcript is empty, so there is nothing to draft from.",
     "generation_failed": "Something went wrong while drafting. You can try again.",
+    "ollama_unreachable": "The local AI engine is not running.",
+    "ollama_failed": "The local AI engine returned an error. Try again.",
+    "model_not_found": "No model with that name exists in the Ollama library. Check name and tag.",
+    "invalid_model_name": "That is not a valid model name. Use name:tag, for example gemma4:e4b.",
+    "cloud_model": (
+        "Cloud models send your calls to a server. "
+        "Scopewise only uses models that run on this computer."
+    ),
+    "network_error": (
+        "The download stopped because the network connection was lost. "
+        "Try again: it continues where it left off."
+    ),
+    "checksum_mismatch": "The downloaded file was damaged, so it was deleted. Try again.",
+    "download_failed": "The download server did not send the expected file. Try again later.",
+    "pull_failed": "The model could not be downloaded. Try again.",
+    "not_enough_disk": "There is not enough free disk space for this download.",
+    "model_not_installed": "That model is not on this computer.",
+    "setup_failed": "Something went wrong during setup. Try again.",
+    "setup_busy": "A download is already in progress.",
+    "nothing_to_resume": "There is no interrupted download to resume.",
+    "compat_needed": "This model has not been checked on this computer yet.",
+    "model_in_use": "This is the model in use. Switch to another model first.",
+    "compat_no_chat": (
+        "This model could not be run for writing tasks. "
+        "It may be built for something else, like search."
+    ),
+    "compat_invalid_output": (
+        "This model did not return the structured notes the app needs, even after a retry."
+    ),
+    "compat_not_enough": (
+        "This model ran, but it found nothing useful in a short test call. "
+        "It is probably too small."
+    ),
+    "compat_timeout": (
+        "This model took too long on a short test. It may be too big for this computer."
+    ),
+    "compat_model_missing": "The model disappeared before it could be tested. Try again.",
 }
 
 
@@ -259,3 +297,141 @@ def _sections(p: ProposalDraft, segments: dict[int, Segment]) -> list[SectionRea
                 section.text = p.terms
         sections.append(section)
     return sections
+
+
+# -- setup and models ----------------------------------------------------------------------------
+
+
+class SystemRead(BaseModel):
+    total_ram_bytes: int
+    free_disk_bytes: int
+
+
+class WhisperInfoRead(BaseModel):
+    id: str
+    title: str
+    size_bytes: int
+    license: str
+    note: str
+    state: str  # missing | partial | ready
+    bytes_on_disk: int
+
+
+class LlmChoiceRead(BaseModel):
+    model: str
+    title: str
+    recommended: bool
+    size_bytes: int
+    size_exact: bool
+    ram_gb: int
+    license: str
+    note: str
+    not_recommended_for_this_computer: bool
+    installed: bool
+
+    @classmethod
+    def from_catalog(cls, m: LlmModel, total_ram: int, installed: bool) -> "LlmChoiceRead":
+        return cls(
+            **m.model_dump(),
+            not_recommended_for_this_computer=m.ram_gb * 2**30 > total_ram,
+            installed=installed,
+        )
+
+
+class RecommendedRead(BaseModel):
+    version: int
+    updated: str
+    system: SystemRead
+    whisper: WhisperInfoRead
+    llm: list[LlmChoiceRead]
+    margin_bytes: int  # free space kept on top of the downloads
+    library_url: str
+
+
+class StepRead(BaseModel):
+    id: str
+    label: str
+    state: str  # pending | running | done | failed
+    detail: str | None
+    skipped: bool
+    completed: int
+    total: int
+    speed_bps: float | None
+    eta_s: float | None
+
+
+class OverallRead(BaseModel):
+    fraction: float
+    completed_bytes: int
+    total_bytes: int
+
+
+class SetupProgressRead(BaseModel):
+    state: SetupState
+    llm_model: str | None
+    steps: list[StepRead]
+    overall: OverallRead
+    error_code: str | None
+    error_message: str | None
+
+    @classmethod
+    def from_snapshot(cls, snap: dict) -> "SetupProgressRead":  # type: ignore[type-arg]
+        return cls(**snap, error_message=error_message(snap["error_code"]))
+
+
+class LlmStatusRead(BaseModel):
+    model: str | None
+    state: str  # not_selected | missing | partial | ready
+
+
+class WhisperStatusRead(BaseModel):
+    state: str
+    bytes: int
+    expected_bytes: int
+
+
+class RunSummaryRead(BaseModel):
+    state: SetupState
+    llm_model: str | None
+    fraction: float
+
+
+class SetupStatusRead(BaseModel):
+    ready: bool
+    problem: str | None
+    problem_message: str | None
+    ollama_reachable: bool
+    llm: LlmStatusRead
+    whisper: WhisperStatusRead
+    compat_ok: bool
+    run: RunSummaryRead
+
+
+class StartSetupRequest(BaseModel):
+    model: str = Field(min_length=1, max_length=200)
+
+
+class InstalledModelRead(BaseModel):
+    name: str
+    size_bytes: int
+    cloud: bool
+    active: bool
+    compat_ok: bool
+    title: str | None
+    note: str | None
+    license: str | None
+    recommended: bool
+
+
+class ModelsRead(BaseModel):
+    active_model: str | None
+    llm: list[InstalledModelRead]
+    whisper: WhisperInfoRead
+    system: SystemRead
+
+
+def whisper_info(model: WhisperModel, state: str, on_disk: int) -> WhisperInfoRead:
+    return WhisperInfoRead(
+        id=model.id, title=model.title, size_bytes=model.size_bytes, license=model.license,
+        note=model.note, state=state, bytes_on_disk=on_disk,
+    )  # fmt: skip

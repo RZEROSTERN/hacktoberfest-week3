@@ -52,9 +52,12 @@ def looks_degenerate(segments: list[TranscribedSegment]) -> bool:
 class WhisperCppTranscriber:
     """Runs the whisper.cpp `whisper-cli` binary. Language is always auto-detected."""
 
-    def __init__(self, cli: Path | None, model: Path | None, threads: int) -> None:
+    def __init__(
+        self, cli: Path | None, model: Path | Callable[[], Path | None] | None, threads: int
+    ) -> None:
         self._cli = cli
-        self._model = model
+        # A fixed path, or a function that finds the model on each run (so later downloads count).
+        self._model_source = model if callable(model) else (lambda: model)
         self._threads = threads
 
     def transcribe(
@@ -66,14 +69,13 @@ class WhisperCppTranscriber:
     ) -> TranscriptResult:
         if self._cli is None or not self._cli.is_file():
             raise TranscriptionError("engine_missing")
-        if self._model is None or not self._model.is_file():
+        model = self._model_source()
+        if model is None or not model.is_file():
             raise TranscriptionError("model_missing")
-        result = self._run(self._cli, self._model, wav, work_dir, on_progress, cancel, [])
+        result = self._run(self._cli, model, wav, work_dir, on_progress, cancel, [])
         if looks_degenerate(result.segments):
             # `-mc 0` stops conditioning on previous text, which fixes the fragment flood.
-            result = self._run(
-                self._cli, self._model, wav, work_dir, on_progress, cancel, ["-mc", "0"]
-            )
+            result = self._run(self._cli, model, wav, work_dir, on_progress, cancel, ["-mc", "0"])
         return result
 
     def _run(

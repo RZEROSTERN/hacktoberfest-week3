@@ -94,3 +94,35 @@ class Draft(SQLModel, table=True):
     warnings: list[str] = Field(default_factory=list, sa_column=Column(JSON))
     created_at: datetime = Field(default_factory=utcnow)
     updated_at: datetime = Field(default_factory=utcnow)
+
+
+class SetupState(StrEnum):
+    IDLE = "idle"
+    RUNNING = "running"
+    PAUSED = "paused"  # the user paused; resuming continues where it stopped
+    FAILED = "failed"  # a download or check failed; trying again continues where it stopped
+    COMPAT_FAILED = "compat_failed"  # the model downloaded but cannot do the app's task
+    INTERRUPTED = "interrupted"  # the app was closed mid-run; the user is asked before resuming
+    DONE = "done"
+
+
+TERMINAL_SETUP_STATES = (
+    SetupState.IDLE,
+    SetupState.PAUSED,
+    SetupState.FAILED,
+    SetupState.COMPAT_FAILED,
+    SetupState.INTERRUPTED,
+    SetupState.DONE,
+)
+
+
+class SetupRun(SQLModel, table=True):
+    """The last model setup (first launch or Settings), kept so it can resume after a restart."""
+
+    id: int = Field(default=1, primary_key=True)
+    state: SetupState = SetupState.IDLE
+    llm_model: str | None = None
+    steps: list[dict[str, Any]] = Field(default_factory=list, sa_column=Column(JSON))
+    overall_fraction: float = 0.0
+    error_code: str | None = None
+    updated_at: datetime = Field(default_factory=utcnow)
