@@ -1,0 +1,645 @@
+{
+ "model": "qwen3.5:9b",
+ "label": "qwen3.5-9b-32min-v2",
+ "audio_segments": 388,
+ "notes_chunks": 5,
+ "notes_s": 266.8,
+ "notes_check": {
+  "items": 57,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 0
+ },
+ "notes": {
+  "client": "Trevos",
+  "client_context": [
+   {
+    "text": "Kevin tiene actualmente una pizzería que se llama Trevos.",
+    "segment_ids": [
+     5,
+     68
+    ]
+   },
+   {
+    "text": "Actualmente maneja junto con dos socios.",
+    "segment_ids": [
+     5,
+     69
+    ]
+   },
+   {
+    "text": "Tiene dos locales que se encuentran aquí en Cancún.",
+    "segment_ids": [
+     5,
+     69
+    ]
+   },
+   {
+    "text": "Un local está ubicado en la supermanzana 316.",
+    "segment_ids": [
+     31
+    ]
+   },
+   {
+    "text": "El otro local está ubicado en Bonfi.",
+    "segment_ids": [
+     33
+    ]
+   },
+   {
+    "text": "Maneja junto con dos socios.",
+    "segment_ids": [
+     172
+    ]
+   },
+   {
+    "text": "Tienen dos locales que se encuentran aquí en Cancún.",
+    "segment_ids": [
+     172,
+     193
+    ]
+   },
+   {
+    "text": "Una está ubicada en la supermanzada 316.",
+    "segment_ids": [
+     131,
+     193
+    ]
+   },
+   {
+    "text": "La otra está ubicada en Bonfil.",
+    "segment_ids": [
+     132,
+     193
+    ]
+   },
+   {
+    "text": "Tienen dos locales que se encuentran aquí en Cacún.",
+    "segment_ids": [
+     205,
+     292
+    ]
+   },
+   {
+    "text": "Un local está ubicado en la supermanzada 316.",
+    "segment_ids": [
+     256
+    ]
+   },
+   {
+    "text": "El otro local está ubicado en Bonfil.",
+    "segment_ids": [
+     257
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "El problema que tenemos en la pizzería es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones.",
+    "segment_ids": [
+     8,
+     9,
+     10,
+     74,
+     75
+    ]
+   },
+   {
+    "text": "El problema que tenemos en la especialidad es que la manejamos mediante Facebook, y Facebook tiene algunas limitaciones.",
+    "segment_ids": [
+     176
+    ]
+   },
+   {
+    "text": "Nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     177
+    ]
+   },
+   {
+    "text": "El problema que tenemos en la pizzería es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     210,
+     211,
+     212,
+     298,
+     299,
+     300
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     10,
+     11,
+     75,
+     76
+    ]
+   },
+   {
+    "text": "Quieren tener un menú más elegante y bien para el usuario.",
+    "segment_ids": [
+     14,
+     79
+    ]
+   },
+   {
+    "text": "Quieren una sección donde puedan ver los distintos tipos de menús que manejan en la pizzería.",
+    "segment_ids": [
+     15,
+     80
+    ]
+   },
+   {
+    "text": "Quieren poder hacer reservaciones sin necesidad de mandar mensajes por Facebook.",
+    "segment_ids": [
+     16,
+     80,
+     82
+    ]
+   },
+   {
+    "text": "Quieren mostrar una galería en la cual les muestren cómo son las instalaciones y sus diversas instalaciones.",
+    "segment_ids": [
+     17,
+     84,
+     85,
+     86,
+     87
+    ]
+   },
+   {
+    "text": "Quieren mostrar cómo preparan las pizzas.",
+    "segment_ids": [
+     18,
+     88
+    ]
+   },
+   {
+    "text": "Quieren un sistema de facturación automático que venga al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     19,
+     89,
+     90,
+     91,
+     92
+    ]
+   },
+   {
+    "text": "Quieren tener un menú más elegante, que sea bien para el usuario.",
+    "segment_ids": [
+     179
+    ]
+   },
+   {
+    "text": "Tener una sección donde puedan ver los distintos tipos de menús que manejan en la pizzería.",
+    "segment_ids": [
+     180
+    ]
+   },
+   {
+    "text": "Poder hacer reservaciones.",
+    "segment_ids": [
+     180
+    ]
+   },
+   {
+    "text": "Indicar de mandar mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparan las pizzas.",
+    "segment_ids": [
+     181,
+     182
+    ]
+   },
+   {
+    "text": "Tener un sistema de facturación automático que venga al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     183
+    ]
+   },
+   {
+    "text": "Que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario.",
+    "segment_ids": [
+     359
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "Quieren tener un menú de facturación.",
+    "segment_ids": [
+     102,
+     187
+    ]
+   },
+   {
+    "text": "Quieren tener una galería de su pizzería, de sus locales.",
+    "segment_ids": [
+     104,
+     105,
+     187
+    ]
+   },
+   {
+    "text": "Quieren reservas.",
+    "segment_ids": [
+     106,
+     180
+    ]
+   },
+   {
+    "text": "Dentro del sistema se otorguen permisos especiales para el cliente o algún de sus socios, alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros.",
+    "segment_ids": [
+     110,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     118,
+     188
+    ]
+   },
+   {
+    "text": "Tener un menú elegante.",
+    "segment_ids": [
+     179
+    ]
+   },
+   {
+    "text": "Tener una sección donde puedan ver los distintos tipos de menús que manejan en la pizzería.",
+    "segment_ids": [
+     180
+    ]
+   },
+   {
+    "text": "Mostrar una galería en la cual les mostren cómo son las instalaciones, sus diversas instalaciones, cómo preparan las pizzas.",
+    "segment_ids": [
+     181,
+     182
+    ]
+   },
+   {
+    "text": "Tener un sistema de facturación automático que venga al momento de que hagan una reservación.",
+    "segment_ids": [
+     183
+    ]
+   },
+   {
+    "text": "Al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario.",
+    "segment_ids": [
+     215,
+     204,
+     303,
+     304
+    ]
+   },
+   {
+    "text": "Que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería.",
+    "segment_ids": [
+     216,
+     305
+    ]
+   },
+   {
+    "text": "Que puedan hacer reservaciones sin necesidad de andar mandando mensajes por Facebook.",
+    "segment_ids": [
+     217,
+     306,
+     307
+    ]
+   },
+   {
+    "text": "Mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas.",
+    "segment_ids": [
+     218,
+     308,
+     309,
+     310,
+     311,
+     312
+    ]
+   },
+   {
+    "text": "Un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     219,
+     313,
+     314,
+     315,
+     316
+    ]
+   },
+   {
+    "text": "Tener un menú más elegante.",
+    "segment_ids": [
+     359
+    ]
+   },
+   {
+    "text": "Tener reservaciones.",
+    "segment_ids": [
+     360
+    ]
+   },
+   {
+    "text": "Mostrar una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparan las pizzas.",
+    "segment_ids": [
+     361,
+     362
+    ]
+   },
+   {
+    "text": "Tener un sistema de facturación automático que viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     363
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No quieren permisos especiales para editar clientes o sistema de registros.",
+    "segment_ids": [
+     23,
+     24,
+     25,
+     26
+    ]
+   },
+   {
+    "text": "La mayoría de sus clientes son clientes frecuentes o gente que quiere probar cosas nuevas.",
+    "segment_ids": [
+     26
+    ]
+   },
+   {
+    "text": "No quieren editar los clientes ni el sistema de registros porque la mayoría de sus clientes son clientes frecuentes o es gente que nada más quiere probar cosas nuevas.",
+    "segment_ids": [
+     122,
+     123,
+     124,
+     125,
+     126,
+     127,
+     189,
+     190
+    ]
+   },
+   {
+    "text": "Esa sección de edición no les serviría por el momento.",
+    "segment_ids": [
+     127,
+     191
+    ]
+   },
+   {
+    "text": "No queremos permisos especiales para editar los clientes o su sistema de registros.",
+    "segment_ids": [
+     248,
+     249,
+     250,
+     251,
+     252,
+     253
+    ]
+   },
+   {
+    "text": "No quieren permisos especiales para editar los clientes o su sistema de registros, porque la mayoría de sus clientes son clientes frecuentes o es gente que nada más quiere probar cosas nuevas.",
+    "segment_ids": [
+     371,
+     372
+    ]
+   },
+   {
+    "text": "Esa sección (edición de clientes) no les serviría por el momento.",
+    "segment_ids": [
+     373
+    ]
+   }
+  ],
+  "budget_or_deadlines": [
+   {
+    "text": "Voy a enviártelo durante las siguientes semanas para que me des un visto bueno o comentarios.",
+    "segment_ids": [
+     49,
+     50,
+     51,
+     52
+    ]
+   },
+   {
+    "text": "Voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios y me digas que partes quieres modificar.",
+    "segment_ids": [
+     148,
+     149,
+     150,
+     151,
+     152,
+     153,
+     196,
+     197
+    ]
+   },
+   {
+    "text": "Voy a enviártelo durante las siguientes semanas.",
+    "segment_ids": [
+     272
+    ]
+   },
+   {
+    "text": "Para que me des un visto bueno o para que me des comentarios y me digas que partes quieres modificar.",
+    "segment_ids": [
+     273,
+     274
+    ]
+   }
+  ],
+  "risks": [],
+  "open_questions": []
+ },
+ "ollama_ps": [
+  {
+   "name": "qwen3.5:9b",
+   "size": 5642083368,
+   "size_vram": 5642083368,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 55.0,
+ "proposal_stats": [
+  {
+   "total_s": 54.869635542,
+   "load_s": 0.040717792,
+   "prompt_tokens": 3039,
+   "prompt_s": 13.119614,
+   "output_tokens": 832,
+   "output_s": 41.290017,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Trevos, una pizzería en Cancún con dos locales (Supermanzana 316 y Bonfil), busca migrar de Facebook a un sistema en línea para gestionar mejor su negocio.",
+  "problem_understanding": "El cliente actualiza la gestión mediante Facebook, lo cual tiene limitaciones. Quieren eliminar estas limitaciones implementando un sistema en línea que permita manejar el negocio de forma más eficiente.",
+  "scope": [
+   {
+    "text": "Quitar las limitaciones actuales al manejar el negocio mediante Facebook implementando un sistema en línea.",
+    "segment_ids": [
+     177
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Crear un menú elegante y bien estructurado para el usuario.",
+    "segment_ids": [
+     14,
+     79
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Incluir una sección donde puedan ver los distintos tipos de menús que manejan en la pizzería.",
+    "segment_ids": [
+     15,
+     80
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Implementar la capacidad de hacer reservaciones sin necesidad de mandar mensajes por Facebook.",
+    "segment_ids": [
+     16,
+     80,
+     82
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Mostrar una galería con las instalaciones y cómo se preparan las pizzas.",
+    "segment_ids": [
+     17,
+     84,
+     85,
+     86,
+     87
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Implementar un sistema de facturación automático que se active al momento de hacer una reservación.",
+    "segment_ids": [
+     19,
+     89,
+     90,
+     91,
+     92
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Sitio web con menú elegante y estructura adecuada para el usuario.",
+    "segment_ids": [],
+    "assumption": true
+   },
+   {
+    "text": "Sistema de reservaciones en línea integrado.",
+    "segment_ids": [],
+    "assumption": true
+   },
+   {
+    "text": "Galería de imágenes de las instalaciones y procesos de preparación.",
+    "segment_ids": [],
+    "assumption": true
+   },
+   {
+    "text": "Sistema de facturación automático vinculado a las reservaciones.",
+    "segment_ids": [],
+    "assumption": true
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "No se incluirán permisos especiales para editar clientes o modificar el sistema de registros, ya que no es necesario dado que la mayoría son clientes frecuentes.",
+    "segment_ids": [
+     23,
+     24,
+     25,
+     26
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "El cliente enviará los detalles durante las siguientes semanas para recibir un visto bueno o comentarios antes de iniciar.",
+  "open_questions": [
+   "¿Cuál es el plazo deseado para la entrega del proyecto?",
+   "¿Hay algún presupuesto específico que el cliente tenga en mente?"
+  ],
+  "investment": "El costo se calculará basado en las tarifas de Ana Pérez (650 MXN por hora o paquete de sitio web de hasta 5 secciones por 24,000 MXN) una vez definidos los detalles técnicos y el alcance final.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": true,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 4,
+  "total_items": 11
+ },
+ "trap_hits": [],
+ "wall_s": 321.8,
+ "notes_stats": [
+  {
+   "total_s": 71.12919375,
+   "load_s": 12.05466325,
+   "prompt_tokens": 2935,
+   "prompt_s": 14.247441,
+   "output_tokens": 791,
+   "output_s": 43.171439,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 80.17808075,
+   "load_s": 0.105210791,
+   "prompt_tokens": 3108,
+   "prompt_s": 20.012032,
+   "output_tokens": 1188,
+   "output_s": 55.563785,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 60.033614792,
+   "load_s": 0.047506375,
+   "prompt_tokens": 3411,
+   "prompt_s": 15.12376,
+   "output_tokens": 860,
+   "output_s": 43.909407,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 46.089405459,
+   "load_s": 0.033866417,
+   "prompt_tokens": 2708,
+   "prompt_s": 11.327008,
+   "output_tokens": 685,
+   "output_s": 33.587271,
+   "done_reason": "stop"
+  },
+  {
+   "total_s": 8.33537175,
+   "load_s": 0.037619791,
+   "prompt_tokens": 946,
+   "prompt_s": 4.424308,
+   "output_tokens": 64,
+   "output_s": 2.891036,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 6474,
+ "peak_system_growth_mb": 5532
+}

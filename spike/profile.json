@@ -1,0 +1,10 @@
+{
+  "name": "Ana Pérez (Studio Demo)",
+  "services": ["Sitios web y landing pages", "Sistemas de reservaciones en línea", "Mantenimiento web"],
+  "rates": {
+    "hourly": "650 MXN por hora",
+    "project": "Sitio web de hasta 5 secciones: 24,000 MXN"
+  },
+  "payment_terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días.",
+  "tone": "profesional y cercano"
+}

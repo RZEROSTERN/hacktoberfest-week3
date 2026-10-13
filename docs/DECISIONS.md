@@ -77,3 +77,79 @@ desktop step. Only what cannot be inferred from the code is written down.
 plan was for it to hold only machine settings. The brief (product flow, build order) is long
 and mostly useful to the person building, so it stays local rather than shipping in the
 public repo; `CLAUDE.md` carries the condensed rules. Revisit if the brief should be public.
+
+## 2026-10-13: Model spike
+
+Numbers and caveats are in [BENCHMARKS.md](BENCHMARKS.md).
+
+**Transcription engine: whisper.cpp (Metal), not faster-whisper.** About 6x faster on the
+M2 Pro (32 min of audio in 88 s against 666 s), because faster-whisper's CTranslate2 runs on
+the CPU on macOS. It also bundles as a native binary plus 6 dylibs (about 8 MB) instead of
+about 330 MB of Python packages, and faster-whisper 1.2.1 crashed with the latest PyAV (needed
+`av<17`). Gave up: faster-whisper decodes any audio format itself.
+
+**Whisper model: `large-v3-turbo` quantized q5_0 (547 MiB).** The two engines' `turbo` runs
+agree with each other more than either agrees with `small`, and the speed is far inside the
+target (RTF 0.055). `small` is faster but disagrees most with the others. Not yet checked
+against a human reference (none exists).
+
+**Audio decoding: macOS `afconvert`, not ffmpeg.** whisper.cpp reads only 16-bit WAV.
+`afconvert -f WAVE -d LEI16@16000 -c 1` ships with macOS and converted the 5-minute mp3 in
+0.6 s, so no ffmpeg needs bundling (the app is macOS arm64 only). To verify: m4a and the audio
+track of mp4 files; only mp3 was tested.
+
+**Whisper flags: language `auto`, defaults first, `-mc 0` as a fallback.** On the repeated
+32-minute file the default settings produced 1,487 fragments; `-mc 0` fixed that but spelled
+the place names worse on the real sample ("Bofi" against "Bonfil"). The transcription step
+should detect degenerate output (far too many very short segments) and re-run with `-mc 0`.
+
+**LLM default: `gemma4:e4b` (Apache 2.0, 6.6 GB).** It is the only model that met every
+target: 64 s for the 5-minute call and 160 s for the 32-minute call, 12 of 13 key facts, no
+invented features, 4.6 GB resident. `qwen3.5:9b` matched it on facts but took 322 s at 30
+minutes and added two small inventions; `qwen3.5:4b` and `mistral-nemo:12b` missed too many
+facts; `gemma4:12b` was too slow (239 s for 5 minutes) and too terse, and on a busy 16 GB Mac
+its cold load took 147 s and hung twice. First-launch download is about 7.2 GB in total.
+
+**Recommended list in the setup wizard: `gemma4:e4b` only, for now.** The brief says every
+model that meets the targets is recommended, and only one did. The others are documented as
+tested but not recommended. Open question for the owner: whether to also show `qwen3.5:9b`
+as an "alternative" for machines that can wait longer. Revisit when a larger sample exists.
+
+**Notes carry text and segment ids, not model-written quotes.** Asking the model to copy a
+verbatim quote doubled the output tokens and still failed: only 38 of 53 (`gemma4:e4b`) and
+60 of 73 (`qwen3.5:9b`) quotes matched the transcript word for word. Dropping the quote
+field cut output by about a third and e4b time by 38%, and the app now shows the cited
+transcript segments, which are correct by construction. Rule for the api: never trust a
+model-written quote; look it up from the segment ids.
+
+**Notes are extracted per 8-minute chunk and merged in code.** Merging only removes exact
+duplicate texts; no extra model call. On six repeats of the same call this leaves near
+duplicates (paraphrases), which a consolidation step could remove. Not needed for the
+targets, so it is deferred.
+
+**Ollama call settings: `format` = JSON schema, `think: false`, `temperature: 0`,
+`num_ctx: 8192`, `num_predict: 4000`.** The schema is also pasted into the prompt, as the
+Ollama structured-outputs docs recommend. `think: false` is the documented way to switch
+thinking off; `gemma4:12b` is the only model that was not tried with thinking on. Pydantic
+validation never needed the retry in these runs.
+
+**Open questions need a deterministic backstop.** In the 5-minute run `gemma4:e4b` asked
+neither about the budget nor the deadline. In the proposal step, when the notes contain no
+budget or deadline, the code should add those open questions itself instead of relying on the
+model.
+
+**Accuracy checks that run in code (kept for the proposal step).** Segment ids must exist,
+every scope item and deliverable needs a source or an assumption flag, every number in the
+investment section must appear in the freelancer's profile, and the summary must not contain a
+price (money patterns only; a plain digit check flags street numbers). The wrong
+"out of scope" item that `gemma4:e4b` produced in the 32-minute run shows model output also
+needs the source link to be reviewable.
+
+**Spike scripts live in `spike/` with their own uv project.** It pulls faster-whisper,
+onnxruntime and PyAV, which the api must not depend on. Prompts there (`notes_v1.md`,
+`notes_v2.md`, `proposal_v0.md`) are experiments; the api will get its own versioned copies
+under `api/prompts/`.
+
+**The key facts file is a draft written from a Whisper transcript.** A model cannot hear the
+audio, so a person who was on the call must confirm it. The fact counts in BENCHMARKS.md are
+provisional until then.

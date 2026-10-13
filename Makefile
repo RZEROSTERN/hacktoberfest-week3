@@ -49,6 +49,7 @@ test:
 
 lint:
 	cd api && uv run ruff check . && uv run ruff format --check .
+	cd api && uv run ruff check ../spike && uv run ruff format --check ../spike
 	cd web && npm run lint
 
 typecheck:
@@ -56,4 +57,4 @@ typecheck:
 	cd web && npm run typecheck
 
 format:
-	cd api && uv run ruff format .
+	cd api && uv run ruff format . ../spike

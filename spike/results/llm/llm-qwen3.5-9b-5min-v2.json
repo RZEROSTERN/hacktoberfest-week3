@@ -1,0 +1,346 @@
+{
+ "model": "qwen3.5:9b",
+ "label": "qwen3.5-9b-5min-v2",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 71.3,
+ "notes_check": {
+  "items": 20,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 0
+ },
+ "notes": {
+  "client": "",
+  "client_context": [
+   {
+    "text": "Kevin tiene actualmente una pizzería que se llama Trevos.",
+    "segment_ids": [
+     5
+    ]
+   },
+   {
+    "text": "Actualmente maneja junto con dos socios.",
+    "segment_ids": [
+     5
+    ]
+   },
+   {
+    "text": "Tienen dos locales que se encuentran aquí en Cacún.",
+    "segment_ids": [
+     5
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "El problema que tenemos en la pizzería es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     8,
+     9,
+     10
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     9,
+     10
+    ]
+   },
+   {
+    "text": "Al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario.",
+    "segment_ids": [
+     13,
+     14
+    ]
+   },
+   {
+    "text": "Tener una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería.",
+    "segment_ids": [
+     14,
+     15
+    ]
+   },
+   {
+    "text": "Poder hacer reservaciones sin estar mandando mensajes por Facebook.",
+    "segment_ids": [
+     15,
+     16
+    ]
+   },
+   {
+    "text": "Mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones.",
+    "segment_ids": [
+     16,
+     17
+    ]
+   },
+   {
+    "text": "Mostrar cómo preparamos las pizzas.",
+    "segment_ids": [
+     18
+    ]
+   },
+   {
+    "text": "Tener un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     19,
+     20,
+     21
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "Un menú más elegante.",
+    "segment_ids": [
+     14
+    ]
+   },
+   {
+    "text": "Una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería.",
+    "segment_ids": [
+     15
+    ]
+   },
+   {
+    "text": "Poder hacer reservaciones sin estar mandando mensajes por Facebook.",
+    "segment_ids": [
+     16
+    ]
+   },
+   {
+    "text": "Una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones.",
+    "segment_ids": [
+     17
+    ]
+   },
+   {
+    "text": "Mostrar cómo preparamos las pizzas.",
+    "segment_ids": [
+     18
+    ]
+   },
+   {
+    "text": "Un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     19,
+     20,
+     21
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No queremos permisos especiales para editar los clientes o el sistema de registros por el momento.",
+    "segment_ids": [
+     39,
+     40,
+     41,
+     42
+    ]
+   },
+   {
+    "text": "El sistema debe manejar dos locales ubicados en la Supermanzada 316 y la otra ubicada en Bofi.",
+    "segment_ids": [
+     43,
+     44,
+     45
+    ]
+   }
+  ],
+  "budget_or_deadlines": [
+   {
+    "text": "Voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios y me digas que partes quieres modificar.",
+    "segment_ids": [
+     50,
+     51,
+     52
+    ]
+   }
+  ],
+  "risks": [],
+  "open_questions": []
+ },
+ "ollama_ps": [
+  {
+   "name": "qwen3.5:9b",
+   "size": 5642083368,
+   "size_vram": 5642083368,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 54.8,
+ "proposal_stats": [
+  {
+   "total_s": 54.670902875,
+   "load_s": 0.140830125,
+   "prompt_tokens": 1550,
+   "prompt_s": 7.038132,
+   "output_tokens": 1021,
+   "output_s": 44.903921,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Desarrollo de un sistema en línea para la pizzería Trevos, con dos locales en Cacún (Supermanzada 316 y Bofi), para reemplazar las limitaciones de Facebook.",
+  "problem_understanding": "El cliente actualmente gestiona su negocio a través de Facebook, lo cual tiene limitaciones. Buscan implementar un sistema en línea que permita manejar mejor el negocio con un menú elegante, gestión de reservas sin mensajes, galería de instalaciones y videos de preparación de pizzas, además de un sistema de facturación automático al realizar una reserva.",
+  "scope": [
+   {
+    "text": "Implementar un sistema en línea que permita manejar mejor el negocio quitando las limitaciones de Facebook.",
+    "segment_ids": [
+     8,
+     9,
+     10
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Crear un menú más elegante y bien estructurado para el usuario.",
+    "segment_ids": [
+     13,
+     14
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Incluir una sección donde se puedan ver los distintos tipos de menús que manejan.",
+    "segment_ids": [
+     14,
+     15
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Habilitar la capacidad de hacer reservaciones sin necesidad de enviar mensajes por Facebook.",
+    "segment_ids": [
+     15,
+     16
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Desarrollar una galería que muestre las diversas instalaciones de la pizzería.",
+    "segment_ids": [
+     16,
+     17
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Incluir contenido que muestre cómo se preparan las pizzas.",
+    "segment_ids": [
+     18
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Implementar un sistema de facturación automático que se active al momento de hacer una reservación.",
+    "segment_ids": [
+     19,
+     20,
+     21
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Sitio web con menú elegante y estructura optimizada para el usuario.",
+    "segment_ids": [
+     13,
+     14
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Sección de menús variados.",
+    "segment_ids": [
+     14,
+     15
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Sistema de reservaciones en línea.",
+    "segment_ids": [
+     15,
+     16
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Galería de instalaciones.",
+    "segment_ids": [
+     16,
+     17
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Sección de preparación de pizzas (video o imágenes).",
+    "segment_ids": [
+     18
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Sistema de facturación automático integrado a las reservas.",
+    "segment_ids": [
+     19,
+     20,
+     21
+    ],
+    "assumption": false
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "Permisos especiales para editar clientes o el sistema de registros por el momento.",
+    "segment_ids": [
+     39,
+     40,
+     41,
+     42
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "No se ha proporcionado una fecha límite específica en la llamada; se requiere definir un cronograma basado en la revisión de documentos.",
+  "open_questions": [
+   "¿Cuál es el plazo deseado para tener el sistema operativo?",
+   "¿Se cuenta con los materiales (fotos, videos) listos para la galería y la sección de preparación de pizzas?",
+   "¿Existe un presupuesto específico o rango de inversión que el cliente tenga en mente?"
+  ],
+  "investment": "El proyecto puede cotizarse bajo la tarifa de sitio web de hasta 5 secciones (24,000 MXN) más las horas necesarias para funcionalidades específicas como el sistema de facturación y reservas, a una tasa de 650 MXN por hora.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": true,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 14
+ },
+ "trap_hits": [],
+ "wall_s": 126.2,
+ "notes_stats": [
+  {
+   "total_s": 70.943167375,
+   "load_s": 12.42847325,
+   "prompt_tokens": 2165,
+   "prompt_s": 9.860161,
+   "output_tokens": 951,
+   "output_s": 43.128077,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 6257,
+ "peak_system_growth_mb": 6162
+}

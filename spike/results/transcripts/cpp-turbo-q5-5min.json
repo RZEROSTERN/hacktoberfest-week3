@@ -1,0 +1,202 @@
+[
+ {
+  "start": 0.0,
+  "end": 3.38,
+  "text": "Buenas tardes, Ingeniero Moisés."
+ },
+ {
+  "start": 4.54,
+  "end": 11.74,
+  "text": "Nuestra siguiente aportación es una entrevista de lo que sería una simulación real a una entrevista"
+ },
+ {
+  "start": 11.74,
+  "end": 20.78,
+  "text": "que alguien que requiera un sistema para su negocio, para su empresa, para su organización, para cualquier cosa."
+ },
+ {
+  "start": 21.72,
+  "end": 27.94,
+  "text": "Y para ponerles un poco en contexto, en esta ocasión tenemos a mi compañero Kevin."
+ },
+ {
+  "start": 27.94,
+  "end": 28.92,
+  "text": "Buenas noches."
+ },
+ {
+  "start": 29.82,
+  "end": 39.58,
+  "text": "Que, bueno, él tiene actualmente una pizzeria que se llama Trevos"
+ },
+ {
+  "start": 39.58,
+  "end": 47.18,
+  "text": "y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Kakún."
+ },
+ {
+  "start": 48.58,
+  "end": 52.86,
+  "text": "Y voy a empezar nuestra entrevista preguntándole a Kevin."
+ },
+ {
+  "start": 54.34,
+  "end": 59.64,
+  "text": "Bueno, primero gracias por preferirnos."
+ },
+ {
+  "start": 59.64,
+  "end": 75.02,
+  "text": "La primera pregunta que le voy a hacer es, ¿cuál es el problema o por qué usted requiere un sistema que se implemente en su negocio?"
+ },
+ {
+  "start": 75.48,
+  "end": 82.96,
+  "text": "Bueno, el problema que tenemos en la pizzeria es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones."
+ },
+ {
+  "start": 83.38,
+  "end": 92.24,
+  "text": "Entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio."
+ },
+ {
+  "start": 94.24,
+  "end": 104.88,
+  "text": "Ok, entonces ustedes tienen restricciones en Facebook, pero ¿cuáles son esas restricciones que quieren implementar en una página de línea?"
+ },
+ {
+  "start": 105.76,
+  "end": 114.1,
+  "text": "Bueno, lo que queremos implementar es que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario,"
+ },
+ {
+  "start": 114.1,
+  "end": 120.44,
+  "text": "que tenga una página que tenga una página de línea, que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería,"
+ },
+ {
+  "start": 120.44,
+  "end": 134.52,
+  "text": "que puedan hacer reservaciones sin necesidad de andar mandando mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones,"
+ },
+ {
+  "start": 134.52,
+  "end": 145.9,
+  "text": "nuestras diversas instalaciones, cómo preparamos las pizzas, un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación."
+ },
+ {
+  "start": 147.86,
+  "end": 151.1,
+  "text": "Estas son las limitaciones que se hacen."
+ },
+ {
+  "start": 151.9,
+  "end": 152.48,
+  "text": "Ok, ok."
+ },
+ {
+  "start": 154.62,
+  "end": 159.36,
+  "text": "Sí, bueno, me queda más o menos claro el sistema que tú quieres diseñar."
+ },
+ {
+  "start": 163.68,
+  "end": 170.28,
+  "text": "Ok, entonces ya, bueno, más o menos me está quedando clara la idea del sistema que quieres desarrollar."
+ },
+ {
+  "start": 170.28,
+  "end": 179.48,
+  "text": "O sea, quieres tener un menú de facturación, quieres tener una galería de tu pizzería, de sus locales."
+ },
+ {
+  "start": 181.64,
+  "end": 192.84,
+  "text": "Bueno, también quieres reservas, ahorita me acabas de decir, pero ¿quieres que dentro de tu sistema se otorguen permisos especiales"
+ },
+ {
+  "start": 192.84,
+  "end": 207.4,
+  "text": "para tú o alguno de tus socios, alguna persona especial, para que puedan editar los clientes que tienen o su sistema de registros que tienen?"
+ },
+ {
+  "start": 209.44,
+  "end": 212.72,
+  "text": "¿Quieren algún permiso especial? ¿Quieren editarlo?"
+ },
+ {
+  "start": 213.44,
+  "end": 222.0,
+  "text": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas."
+ },
+ {
+  "start": 222.26,
+  "end": 225.68,
+  "text": "Entonces, esa sección no nos serviría por el momento."
+ },
+ {
+  "start": 228.28,
+  "end": 238.96,
+  "text": "¿Actualmente no está en su localización de sus pizzerías?"
+ },
+ {
+  "start": 240.12,
+  "end": 243.24,
+  "text": "Como dijiste al principio, tenemos dos aquí en Cancún."
+ },
+ {
+  "start": 243.62,
+  "end": 252.78,
+  "text": "Una está ubicada en la supermanzana 316 y la otra está ubicada en Bonfil."
+ },
+ {
+  "start": 257.28,
+  "end": 271.98,
+  "text": "Bueno, más o menos yo me estoy imaginando, con todo lo que me acabas de decir, yo me estoy imaginando un menú en esta parte"
+ },
+ {
+  "start": 271.98,
+  "end": 282.36,
+  "text": "y todos los elementos que acabas de decir y aquí abajo ponerle los contactos, las galerías."
+ },
+ {
+  "start": 283.14,
+  "end": 292.06,
+  "text": "Este nada más es el primer prototipo y voy a enviártelo durante las siguientes semanas"
+ },
+ {
+  "start": 292.06,
+  "end": 299.56,
+  "text": "para que me des un visto bueno o para que me des comentarios y me digas qué partes quieres modificar."
+ },
+ {
+  "start": 301.74,
+  "end": 304.16,
+  "text": "Para que a lo mejor nada más es de diseño."
+ },
+ {
+  "start": 307.48,
+  "end": 310.06,
+  "text": "Pero yo creo que eso sería todo."
+ },
+ {
+  "start": 311.46,
+  "end": 313.4,
+  "text": "Sí, me parece perfecto."
+ },
+ {
+  "start": 313.6,
+  "end": 315.46,
+  "text": "Solo la misa contiene."
+ },
+ {
+  "start": 317.06,
+  "end": 320.72,
+  "text": "Muchas gracias por la entrevista y voy a estar en contacto con usted."
+ },
+ {
+  "start": 321.16,
+  "end": 321.64,
+  "text": "Muchas gracias."
+ }
+]

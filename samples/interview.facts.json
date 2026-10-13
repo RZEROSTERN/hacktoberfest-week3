@@ -1,0 +1,37 @@
+{
+  "audio": "interview.mp3",
+  "language": "es",
+  "status": "DRAFT written by Claude from the whisper.cpp large-v3-turbo transcript. Not yet checked against the audio by a person.",
+  "notes": "The first ~50 s are a presenter introducing the role-play (not part of the client call). The client is Kevin; the interviewer plays the freelancer.",
+  "key_facts": [
+    {"id": "F01", "category": "client", "fact": "The client is Kevin, who owns a pizzeria.", "approx_start_s": 28},
+    {"id": "F02", "category": "client", "fact": "He runs the business with two partners and has two locations in Cancún.", "approx_start_s": 40},
+    {"id": "F03", "category": "client", "fact": "The two locations are at supermanzana 316 and in Bonfil.", "approx_start_s": 243},
+    {"id": "F04", "category": "problem", "fact": "The pizzeria is currently managed through Facebook, which has limitations.", "approx_start_s": 75},
+    {"id": "F05", "category": "goal", "fact": "They want to remove those limitations with an online system to run the business better.", "approx_start_s": 83},
+    {"id": "F06", "category": "requirement", "fact": "A more elegant, user-friendly menu when someone enters the site.", "approx_start_s": 106},
+    {"id": "F07", "category": "requirement", "fact": "A section showing the different menus the pizzeria offers.", "approx_start_s": 114},
+    {"id": "F08", "category": "requirement", "fact": "Online reservations, so customers do not have to message them on Facebook.", "approx_start_s": 120},
+    {"id": "F09", "category": "requirement", "fact": "A gallery showing the facilities (locations) and how the pizzas are prepared.", "approx_start_s": 128},
+    {"id": "F10", "category": "requirement", "fact": "An automatic invoicing system that runs when a customer makes a reservation.", "approx_start_s": 140},
+    {"id": "F11", "category": "constraint", "fact": "Special permissions for partners or staff to edit customer records are NOT needed for now (out of scope).", "approx_start_s": 213},
+    {"id": "F12", "category": "requirement", "fact": "Contact information on the page (proposed by the interviewer, client agreed).", "approx_start_s": 272},
+    {"id": "F13", "category": "timeline", "fact": "The freelancer will send a first prototype over the next weeks for the client's approval and comments on what to change.", "approx_start_s": 283}
+  ],
+  "expected_open_questions": [
+    {"id": "Q1", "fact": "The budget was never mentioned, so it must appear as an open question or as 'not discussed'."},
+    {"id": "Q2", "fact": "No delivery or launch date was given (only 'the next weeks' for the first prototype), so it must appear as an open question or as 'not discussed'."}
+  ],
+  "must_not_invent": [
+    "Any budget, price or payment amount attributed to the client.",
+    "Any delivery or launch date presented as agreed.",
+    "Features nobody mentioned, for example WhatsApp or social integration, online ordering or delivery, online payments, loyalty programs, inventory, SEO, a mobile app, multiple languages, analytics, domain or hosting choices, a named technology stack, or Mexican electronic invoicing (CFDI) specifics.",
+    "Names of people or businesses other than Kevin, his pizzeria and the two locations."
+  ],
+  "uncertain_transcription": [
+    "Pizzeria name: both engines heard 'Trevos'. Please confirm the exact spelling.",
+    "First mention of the city came out as 'Kakún' or 'Cacún' (it is Cancún later in the call).",
+    "Around 313 s the turbo model wrote 'Solo la misa contiene', which looks like a mishearing.",
+    "Locations (F03): only the default whisper.cpp run wrote 'supermanzana 316' and 'Bonfil'. The -mc 0 run and faster-whisper wrote 'Supermanzada' and 'Bofi'/'Bofil'. Please confirm the real names."
+  ]
+}
