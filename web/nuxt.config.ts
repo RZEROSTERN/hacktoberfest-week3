@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   // SPA only: the desktop shell loads the files produced by `nuxt generate`.
   ssr: false,
   modules: ['@nuxt/eslint'],
+  css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
   typescript: { strict: true },
   runtimeConfig: {

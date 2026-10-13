@@ -8,12 +8,16 @@ export SCOPEWISE_OLLAMA_URL ?= http://127.0.0.1:11434
 export SCOPEWISE_DATA_DIR ?= $(CURDIR)/.dev/data
 export SCOPEWISE_MODELS_DIR ?= $(CURDIR)/.dev/models
 export SCOPEWISE_CORS_ORIGINS ?= ["http://localhost:3000","http://127.0.0.1:3000"]
+export SCOPEWISE_WHISPER_CLI ?= $(CURDIR)/.dev/whisper.cpp/build/bin/whisper-cli
+export SCOPEWISE_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-large-v3-turbo-q5_0.bin
+export SCOPEWISE_TEST_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-base-q5_1.bin
 export NUXT_PUBLIC_API_BASE ?= http://127.0.0.1:$(SCOPEWISE_PORT)
 
-.PHONY: help setup dev dev-api dev-web ollama-check test lint typecheck format
+.PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test lint typecheck format
 
 help:
 	@echo "make setup        install api + web dependencies and create .env"
+	@echo "make whisper-dev build whisper.cpp and download the dev Whisper models into .dev/"
 	@echo "make dev          start api and web together (needs Ollama running natively)"
 	@echo "make dev-api      start only the api"
 	@echo "make dev-web      start only the web app"
@@ -27,6 +31,15 @@ setup:
 	@test -f .env || cp .env.example .env
 	cd api && uv sync
 	cd web && npm install
+
+whisper-dev:
+	cd spike && uv sync
+	test -d .dev/whisper.cpp || git clone --depth 1 https://github.com/ggml-org/whisper.cpp.git .dev/whisper.cpp
+	spike/.venv/bin/cmake -S .dev/whisper.cpp -B .dev/whisper.cpp/build
+	spike/.venv/bin/cmake --build .dev/whisper.cpp/build -j --config Release
+	mkdir -p .dev/models/whisper.cpp
+	sh .dev/whisper.cpp/models/download-ggml-model.sh large-v3-turbo-q5_0 .dev/models/whisper.cpp
+	sh .dev/whisper.cpp/models/download-ggml-model.sh base-q5_1 .dev/models/whisper.cpp
 
 dev: ollama-check
 	$(MAKE) -j2 dev-api dev-web
