@@ -9,13 +9,12 @@ export SCOPEWISE_DATA_DIR ?= $(CURDIR)/.dev/data
 export SCOPEWISE_MODELS_DIR ?= $(CURDIR)/.dev/models
 export SCOPEWISE_CORS_ORIGINS ?= ["http://localhost:3000","http://127.0.0.1:3000"]
 export SCOPEWISE_WHISPER_CLI ?= $(CURDIR)/.dev/whisper.cpp/build/bin/whisper-cli
-export SCOPEWISE_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-large-v3-turbo-q5_0.bin
 export SCOPEWISE_TEST_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-base-q5_1.bin
 # Development seed for the local settings table; the app never hard-codes a model tag.
 export SCOPEWISE_LLM_MODEL ?= gemma4:e4b
 export NUXT_PUBLIC_API_BASE ?= http://127.0.0.1:$(SCOPEWISE_PORT)
 
-.PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test test-llm lint typecheck format
+.PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test test-llm test-setup lint typecheck format
 
 help:
 	@echo "make setup        install api + web dependencies and create .env"
@@ -26,6 +25,7 @@ help:
 	@echo "make ollama-check check that Ollama answers and list its local models"
 	@echo "make test         run api and web tests"
 	@echo "make test-llm    run the real-model test on the sample call (loads the language model)"
+	@echo "make test-setup  run the real download/interruption/compatibility tests (pulls a ~270 MB model)"
 	@echo "make lint         ruff + eslint"
 	@echo "make typecheck    mypy + nuxt typecheck"
 	@echo "make format       ruff format"
@@ -65,6 +65,9 @@ test:
 
 test-llm:
 	cd api && SCOPEWISE_RUN_LLM_TESTS=1 uv run pytest tests/test_integration_llm.py -s -q
+
+test-setup:
+	cd api && SCOPEWISE_RUN_SETUP_TESTS=1 uv run pytest tests/test_integration_setup.py -s -q
 
 lint:
 	cd api && uv run ruff check . && uv run ruff format --check .

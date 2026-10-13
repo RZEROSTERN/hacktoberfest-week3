@@ -41,9 +41,11 @@ class OllamaChat:
         base_url: str,
         get_model: Callable[[], str | None],
         transport: httpx.BaseTransport | None = None,
+        num_predict: int = NUM_PREDICT,
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._get_model = get_model
+        self._num_predict = num_predict
         self._transport = transport  # tests inject a fake HTTP transport
         self._timeout = httpx.Timeout(connect=5, read=300, write=30, pool=5)
 
@@ -61,7 +63,7 @@ class OllamaChat:
             "think": False,
             "format": schema,
             "keep_alive": KEEP_ALIVE,
-            "options": {"temperature": 0, "num_ctx": NUM_CTX, "num_predict": NUM_PREDICT},
+            "options": {"temperature": 0, "num_ctx": NUM_CTX, "num_predict": self._num_predict},
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},

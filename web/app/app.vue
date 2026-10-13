@@ -14,6 +14,9 @@
         <NuxtLink to="/profile">
           Profile
         </NuxtLink>
+        <NuxtLink to="/settings">
+          Settings
+        </NuxtLink>
       </nav>
     </header>
     <NuxtRouteAnnouncer />

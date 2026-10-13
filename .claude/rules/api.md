@@ -22,3 +22,5 @@ paths:
 - Prices are written by code from the profile; the model never sees the rates. Money in model text is a hard error.
 - Edits go through `apply_edit`: no prices outside the investment section, real sources only, unsourced
   items stay assumptions. Any response header the web app must read needs listing in CORS `expose_headers`.
+- Model management uses only Ollama's documented endpoints. Model names are validated, cloud models are
+  refused (name and `remote_host`), and a model is only used after it passed the compatibility check.

@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "updated": "2026-10-13",
+  "source": "docs/BENCHMARKS.md",
+  "whisper": {
+    "id": "large-v3-turbo-q5_0",
+    "title": "Whisper large-v3-turbo (quantized)",
+    "file": "ggml-large-v3-turbo-q5_0.bin",
+    "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-large-v3-turbo-q5_0.bin",
+    "size_bytes": 574041195,
+    "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2",
+    "license": "MIT",
+    "note": "Turns the recording into text in about 99 languages and detects the language by itself. Uses about 1 GB of memory while it works."
+  },
+  "llm": [
+    {
+      "model": "gemma4:e4b",
+      "title": "Gemma 4 E4B",
+      "recommended": true,
+      "size_bytes": 6583656505,
+      "size_exact": true,
+      "ram_gb": 8,
+      "license": "Apache 2.0",
+      "note": "The best tested: it found 12 of 13 key facts in our sample call and drafted a 30-minute call in under 3 minutes on a 16 GB Mac."
+    },
+    {
+      "model": "qwen3.5:9b",
+      "title": "Qwen 3.5 9B",
+      "recommended": false,
+      "size_bytes": 6600000000,
+      "size_exact": false,
+      "ram_gb": 16,
+      "license": "Apache 2.0",
+      "note": "Found as many facts, but about twice as slow on a 30-minute call (5 minutes) and added two small details nobody said."
+    },
+    {
+      "model": "qwen3.5:4b",
+      "title": "Qwen 3.5 4B",
+      "recommended": false,
+      "size_bytes": 3300000000,
+      "size_exact": false,
+      "ram_gb": 8,
+      "license": "Apache 2.0",
+      "note": "Small and fast, but it missed about a third of the facts and invented an out-of-scope item."
+    },
+    {
+      "model": "mistral-nemo:12b",
+      "title": "Mistral Nemo 12B",
+      "recommended": false,
+      "size_bytes": 7100000000,
+      "size_exact": false,
+      "ram_gb": 16,
+      "license": "Apache 2.0",
+      "note": "Reasonably fast, but its notes were thin: about 6 of 10 facts."
+    },
+    {
+      "model": "gemma4:12b",
+      "title": "Gemma 4 12B",
+      "recommended": false,
+      "size_bytes": 8000000000,
+      "size_exact": false,
+      "ram_gb": 24,
+      "license": "Apache 2.0",
+      "note": "Too slow and too terse on a 16 GB Mac (about a third of the facts). Needs a computer with 24 GB of memory or more."
+    }
+  ]
+}

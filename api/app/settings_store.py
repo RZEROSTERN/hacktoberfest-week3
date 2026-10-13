@@ -20,6 +20,19 @@ def set_setting(engine: Engine, key: str, value: str) -> None:
         session.commit()
 
 
+def delete_setting(engine: Engine, key: str) -> None:
+    with Session(engine) as session:
+        row = session.get(AppSetting, key)
+        if row is not None:
+            session.delete(row)
+            session.commit()
+
+
+def compat_key(model: str) -> str:
+    """Setting that records that a model passed the compatibility check."""
+    return f"compat_ok:{model}"
+
+
 def seed_setting(engine: Engine, key: str, value: str | None) -> None:
     """Store `value` only if nothing is stored yet (used to seed the model from the environment)."""
     if value and get_setting(engine, key) is None:
