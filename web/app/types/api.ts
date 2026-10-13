@@ -102,3 +102,95 @@ export interface SectionEdit {
   lines?: string[]
   items?: ItemEdit[]
 }
+
+export type SetupState = 'idle' | 'running' | 'paused' | 'failed' | 'compat_failed' | 'interrupted' | 'done'
+
+export interface SetupStep {
+  id: 'engine' | 'llm' | 'whisper' | 'verify' | 'compat' | 'ready'
+  label: string
+  state: 'pending' | 'running' | 'done' | 'failed'
+  detail: string | null
+  /** Nothing to do: it is already on this computer. */
+  skipped: boolean
+  completed: number
+  total: number
+  speed_bps: number | null
+  eta_s: number | null
+}
+
+export interface SetupProgress {
+  state: SetupState
+  llm_model: string | null
+  steps: SetupStep[]
+  overall: { fraction: number, completed_bytes: number, total_bytes: number }
+  error_code: string | null
+  error_message: string | null
+}
+
+export interface SetupStatus {
+  ready: boolean
+  problem: string | null
+  problem_message: string | null
+  ollama_reachable: boolean
+  llm: { model: string | null, state: 'not_selected' | 'missing' | 'partial' | 'ready' }
+  whisper: { state: 'missing' | 'partial' | 'ready', bytes: number, expected_bytes: number }
+  compat_ok: boolean
+  run: { state: SetupState, llm_model: string | null, fraction: number }
+}
+
+export interface SystemInfo {
+  total_ram_bytes: number
+  free_disk_bytes: number
+}
+
+export interface WhisperInfo {
+  id: string
+  title: string
+  size_bytes: number
+  license: string
+  note: string
+  state: 'missing' | 'partial' | 'ready'
+  bytes_on_disk: number
+}
+
+export interface LlmChoice {
+  model: string
+  title: string
+  recommended: boolean
+  size_bytes: number
+  size_exact: boolean
+  ram_gb: number
+  license: string
+  note: string
+  not_recommended_for_this_computer: boolean
+  installed: boolean
+}
+
+export interface Recommended {
+  version: number
+  updated: string
+  system: SystemInfo
+  whisper: WhisperInfo
+  llm: LlmChoice[]
+  margin_bytes: number
+  library_url: string
+}
+
+export interface InstalledModel {
+  name: string
+  size_bytes: number
+  cloud: boolean
+  active: boolean
+  compat_ok: boolean
+  title: string | null
+  note: string | null
+  license: string | null
+  recommended: boolean
+}
+
+export interface ModelsInfo {
+  active_model: string | null
+  llm: InstalledModel[]
+  whisper: WhisperInfo
+  system: SystemInfo
+}
