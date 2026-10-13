@@ -12,3 +12,5 @@ paths:
 - Long jobs (downloads, transcription, generation) always show progress and can be cancelled.
 - Source links on every scope item and deliverable. Assumptions are visually flagged.
 - UI text in English; proposal content in the call's language.
+- Never compute or format prices in the UI: proposal text, rates and terms come from the api as written.
+- After UI changes, look at the real screens (`web/ui-check/`): typecheck and unit tests do not show layout.
