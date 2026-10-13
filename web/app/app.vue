@@ -1,6 +1,16 @@
 <template>
-  <div>
+  <div class="shell">
+    <header>
+      <NuxtLink
+        to="/"
+        class="brand"
+      >
+        Scopewise
+      </NuxtLink>
+    </header>
     <NuxtRouteAnnouncer />
-    <NuxtPage />
+    <main>
+      <NuxtPage />
+    </main>
   </div>
 </template>

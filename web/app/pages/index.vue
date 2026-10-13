@@ -1,29 +1,66 @@
 <script setup lang="ts">
-const { apiFetch } = useApi()
+import type { Call } from '~/types/api'
 
-const status = ref<'checking' | 'ok' | 'down'>('checking')
+const api = useCalls()
+const calls = ref<Call[]>([])
+const loading = ref(true)
+const loadError = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    await apiFetch('/health')
-    status.value = 'ok'
+    calls.value = await api.list()
   } catch {
-    status.value = 'down'
+    loadError.value = 'Could not reach the local engine. Is the app still running?'
+  } finally {
+    loading.value = false
   }
 })
 </script>
 
 <template>
-  <main>
-    <h1>Scopewise</h1>
-    <p v-if="status === 'checking'">
-      Checking the local engine…
+  <section>
+    <h1>Your calls</h1>
+    <p class="muted">
+      Turn a recorded client call into a draft proposal. Everything stays on this computer.
     </p>
-    <p v-else-if="status === 'ok'">
-      Local engine is running.
+    <NuxtLink
+      to="/new"
+      class="button"
+    >
+      New proposal
+    </NuxtLink>
+
+    <p
+      v-if="loadError"
+      class="error"
+    >
+      {{ loadError }}
     </p>
-    <p v-else>
-      The local engine is not reachable.
+    <p
+      v-else-if="loading"
+      class="muted"
+    >
+      Loading…
     </p>
-  </main>
+    <p
+      v-else-if="calls.length === 0"
+      class="muted"
+    >
+      No calls yet. Upload your first recording to get started.
+    </p>
+    <ul
+      v-else
+      class="calls"
+    >
+      <li
+        v-for="call in calls"
+        :key="call.id"
+      >
+        <NuxtLink :to="`/calls/${call.id}`">
+          {{ call.title }}
+        </NuxtLink>
+        <span class="muted">{{ statusLabel(call) }}</span>
+      </li>
+    </ul>
+  </section>
 </template>
