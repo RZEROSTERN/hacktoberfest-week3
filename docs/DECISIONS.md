@@ -211,3 +211,83 @@ missing.
 **Web.** The upload uses XMLHttpRequest because `fetch` cannot report upload progress, and it
 can be cancelled. Transcript lines have ids `segment-<id>` so source links can jump to them
 later. The UI has not been looked at in a browser: no browser tool was available.
+
+## 2026-10-13: Notes and proposal generation
+
+**The code writes the money, the model writes the words.** The investment section is built from
+the profile's rates (copied as written, in any currency) and the terms are the profile's payment
+terms. The model never receives the rates, so a price cannot come from it; a test checks that
+neither the prompt nor the request contains them. The client's budget, if the call has one, is
+shown in the investment section as a labelled note with its source, never as the price. Any
+amount of money in the model's narrative text is a hard error.
+
+**Validation, retry and repair.** Every answer is parsed with Pydantic and checked. On any
+problem the request is sent once more with the problems listed. After that: unknown or missing
+sources are repaired in code (invalid ids removed; an item left with none is dropped from the
+notes, or kept in the proposal flagged as an assumption), while a price in the text or an empty
+summary fails the draft with a clear error (`draft_invalid`) and nothing is stored. A schema
+failure twice gives `invalid_model_output`. Counts of repairs are kept as warnings.
+
+**Sources are segment ids, checked per chunk.** Each notes item cites the ids of the segments it
+comes from, and a chunk may only cite its own segments. The quote and timestamp shown when the
+user clicks a source are looked up from the stored transcript when the draft is read.
+
+**Notes groups.** client, client context, problem, goals, requirements, constraints, budget,
+deadlines, next steps, risks, open questions. Promised next steps ("I'll send a prototype in
+two weeks") are kept apart from deadlines: with one list, the code thought a delivery date had
+been discussed and skipped the question. The list of groups is derived from the model so the
+merge, check and repair code cannot miss a new one (an earlier version did, and it was only
+noticed by reading a real run).
+
+**Fixed backstops in code.** If the call states no budget, "what budget does the client have in
+mind?" is added to the open questions; same for the delivery date. With no deadline and no next
+step the timeline section says the call did not cover one, whatever the model wrote. The notes'
+own open questions are not copied into the proposal (the model carries over the useful ones in
+the proposal language; copying them produced duplicates in two languages).
+
+**Fixed wording is localized for six languages** (en, es, pt, fr, de, it): section titles, the
+price sentence, the budget label, the timeline fallback and the two questions. Other
+languages fall back to English for those fixed strings only; the model's own text is always in
+the requested language. Pricing is always placed after the scope, whatever order the profile asks
+for.
+
+**Profile and settings storage.** A single-row `profile` table (name, services, hourly rate,
+project rates, payment terms, preferred sections, tone), with `GET/PUT /profile`. The screen
+comes in the next step. A key/value `appsetting` table holds the language model in use
+(`llm_model`). `SCOPEWISE_LLM_MODEL` only seeds it when it is empty; the code reads the tag from
+the table on every request and contains no model tag. The Makefile seeds `gemma4:e4b` for
+development.
+
+**Drafting shares the single worker with transcription**, so Whisper and the language model never
+run together on a 16 GB Mac. One draft per call; regenerating replaces it. Jobs found running at
+start are marked interrupted.
+
+**Ollama is called through `/api/chat` with streaming**, so a cancel stops generation as soon as
+the next token arrives (not while a cold model is still loading, which can take up to a couple of
+minutes). Settings: JSON schema as `format`, `think: false` (retried without it for models that
+reject it), temperature 0, `num_ctx` 8192, and `keep_alive` 1 minute so the model frees its
+memory soon after a draft.
+
+**Prompts** are `api/prompts/notes_v3.md` and `proposal_v1.md`, mention no model, and are found
+next to the `app` package (override: `SCOPEWISE_PROMPTS_DIR`), so the packaged binary must bundle
+the folder beside `app`. Lessons from three revisions on the sample call: asking for
+self-contained third-person statements fixed a misread "out of scope" item, and writing the
+proposal items "in the proposal's voice" stopped them reading like quotes. An English example
+inside the prompt pulled the notes into English even for a Spanish call, so examples must not be
+written in a specific language.
+
+**Result on the sample call with `gemma4:e4b` (the only model used in this step).** 40 to 92 s
+for notes plus proposal depending on whether the model was cold (target: under 3 minutes); 12 of
+13 key facts; no invented feature; correct out-of-scope items; no price outside the profile; no
+repairs needed. Still imperfect: the contact-information requirement is missed, one open
+question can restate something the interviewer asked, and spelling mistakes in the transcript
+("Cacún", "Bofi") flow into the proposal. One sample and a few runs; the result is not stable
+between prompt revisions.
+
+**Tests.** The model is scripted in unit tests (retry, repair, hard failure, cancel, chunking,
+languages, sections, privacy of logs, no model tag in code). `make test-llm` runs the real model
+on the sample transcript and is opt-in because it loads about 4.6 GB into memory; plain
+`make test` never does.
+
+**No screen yet.** This step is API only. The profile screen and the generate button with
+progress and cancel come next, then the editor with source links.

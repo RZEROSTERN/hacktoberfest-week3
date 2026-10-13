@@ -19,3 +19,4 @@ paths:
 - Notes items hold text + segment ids only. Never trust a model-written quote: look it up from
   the cited segments. Ollama calls use `format` = JSON schema, `think: false`, temperature 0.
 - When the notes have no budget or deadline, the code adds those open questions itself.
+- Prices are written by code from the profile; the model never sees the rates. Money in model text is a hard error.
