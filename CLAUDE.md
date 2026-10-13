@@ -1,0 +1,53 @@
+# Scopewise
+
+Local-first desktop app (working title) that turns a recorded client discovery call into a
+draft proposal for freelancers. Whisper transcribes, an open-weight LLM (via Ollama) extracts
+notes and drafts the proposal, everything runs on the user's machine.
+
+- `api/` FastAPI (Python 3.12, uv, SQLModel/SQLite), `prompts/` for versioned prompts
+- `web/` Nuxt 4 SPA (`ssr: false`), `desktop/` Electron shell (not built yet)
+- `docs/` DECISIONS.md and BENCHMARKS.md, `samples/` consented call recordings
+
+## Commands (from repo root)
+- Install: `make setup` (uv sync, npm install, creates `.env`)
+- Run everything: `make dev` (api on 8765, web on 3000); `make dev-api`, `make dev-web`
+- Check Ollama: `make ollama-check`
+- Test / lint / typecheck: `make test`, `make lint`, `make typecheck` (`make format` fixes ruff)
+- Desktop build commands: added in the desktop step
+
+## Git: GitFlow, no stacked PRs
+- `master` is production. `develop` is integration. Never commit to either directly.
+- One `feature/<name>` per build step, created from the latest `develop`.
+  PR base is always `develop` (`release/*` and `hotfix/*` target `master`).
+- Never branch from another feature branch. Never open a PR against anything else.
+- Sequence: `git checkout develop && git pull`, branch, small commits, checks pass, push,
+  `gh pr create --base develop`, `gh pr merge --merge --delete-branch`, then the next step.
+- PR body: what changed, why, how tested, whether DECISIONS.md was updated.
+
+## Workflow
+- Lint + typecheck + tests must pass before each commit. Conventional Commits.
+- Log every technical decision (and why) in `docs/DECISIONS.md` when made or changed.
+- Check the official docs for Ollama, Whisper, Nuxt, Electron, electron-builder and
+  PyInstaller instead of guessing flags or APIs. If something isn't documented, say so.
+- Ask before installing anything globally or touching files outside the repo.
+
+## Non-negotiables
+- Never use a branch named "main". Production is `master`.
+- No closed-model APIs or cloud inference. The only network access is model downloads the
+  user approved. No analytics, telemetry or logging of transcript/proposal content.
+- The user never needs a terminal or a separate install.
+- The model in use always comes from local settings, never a hardcoded tag.
+- Accuracy: never invent requirements, budgets, deadlines, names or commitments. Inferred
+  items are labeled assumptions. Every scope item and deliverable links to its transcript
+  excerpt and timestamp. Missing information goes to open questions.
+- Prices come only from the freelancer's profile. A client-mentioned budget is a note.
+  The summary never includes prices; pricing comes after scope.
+
+## Gotchas
+- In development Ollama runs natively on macOS (Apple GPU), not in Docker. The packaged app
+  uses only its bundled Ollama, never a system one.
+- Ollama pull progress is reported per layer: sum bytes across layers and never move the bar
+  backwards.
+- Docker holds port 8000 on the dev Mac; use `127.0.0.1` and the 8765 default, not `localhost`.
+- `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
+- Machine-specific values (RAM, pulled models, Whisper path) live in `CLAUDE.local.md`.
