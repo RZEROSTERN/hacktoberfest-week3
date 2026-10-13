@@ -54,6 +54,7 @@ notes and drafts the proposal, everything runs on the user's machine.
 - `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
 - Prompt examples must not be in a specific language: an English one made Spanish calls come back in English.
 - Hard-killing the api leaves `whisper-cli` running: stop the process tree.
+- PDF export uses ReportLab's built-in font: Western European text only (others are refused, use Markdown).
 - whisper.cpp reads only 16-bit WAV: convert with `afconvert -f WAVE -d LEI16@16000 -c 1`. On long
   audio, if the output is a flood of tiny segments, re-run with `-mc 0` (see docs/BENCHMARKS.md).
 - Machine-specific values (RAM, pulled models, Whisper path) live in `CLAUDE.local.md`.
