@@ -20,3 +20,5 @@ paths:
   the cited segments. Ollama calls use `format` = JSON schema, `think: false`, temperature 0.
 - When the notes have no budget or deadline, the code adds those open questions itself.
 - Prices are written by code from the profile; the model never sees the rates. Money in model text is a hard error.
+- Edits go through `apply_edit`: no prices outside the investment section, real sources only, unsourced
+  items stay assumptions. Any response header the web app must read needs listing in CORS `expose_headers`.

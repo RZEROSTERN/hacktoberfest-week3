@@ -71,6 +71,7 @@ def create_app(
         allow_origins=settings.cors_origins,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["Content-Disposition"],  # so the web app can read the export file name
     )
     app.include_router(router)
     app.include_router(draft_router)

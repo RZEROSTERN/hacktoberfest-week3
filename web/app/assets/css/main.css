@@ -304,3 +304,34 @@ h2 {
   font-size: 1.25rem;
   margin: 32px 0 8px;
 }
+
+.editor textarea.wide {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.plain {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 8px;
+}
+
+.editable-item {
+  margin: 8px 0;
+}
+
+.row.small {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.row label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}

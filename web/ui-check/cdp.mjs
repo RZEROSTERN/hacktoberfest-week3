@@ -40,6 +40,7 @@ export class Page {
     this.id = 0
     this.pending = new Map()
     this.logs = []
+    this.dialogs = [] // messages of confirm()/alert() dialogs, which are accepted automatically
     ws.onmessage = (event) => {
       const msg = JSON.parse(event.data)
       if (msg.id && this.pending.has(msg.id)) {
@@ -48,6 +49,9 @@ export class Page {
         msg.error ? rej(new Error(JSON.stringify(msg.error))) : res(msg.result)
       } else if (msg.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(msg.params.type)) {
         this.logs.push(`${msg.params.type}: ${msg.params.args.map(a => a.value ?? a.description).join(' ')}`)
+      } else if (msg.method === 'Page.javascriptDialogOpening') {
+        this.dialogs.push(msg.params.message)
+        void this.send('Page.handleJavaScriptDialog', { accept: true })
       } else if (msg.method === 'Runtime.exceptionThrown') {
         this.logs.push(`exception: ${msg.params.exceptionDetails.exception?.description ?? msg.params.exceptionDetails.text}`)
       }
@@ -79,6 +83,12 @@ export class Page {
     await this.send('Page.navigate', { url })
     await this.waitFor(readyExpr, 20000, `page ${url}`)
     await sleep(300)
+  }
+
+  // Save downloads into `dir` instead of asking.
+  allowDownloads(dir) {
+    mkdirSync(dir, { recursive: true })
+    return this.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dir })
   }
 
   async resize(width, height = 900) {

@@ -88,3 +88,17 @@ export interface Draft {
   notes: DraftNotes | null
   proposal: { language: string, sections: ProposalSection[] } | null
 }
+
+/** What the editor sends back: only the parts of each section that can be edited. */
+export interface ItemEdit {
+  text: string
+  assumption: boolean
+  segment_ids: number[]
+}
+
+export interface SectionEdit {
+  id: string
+  text?: string
+  lines?: string[]
+  items?: ItemEdit[]
+}

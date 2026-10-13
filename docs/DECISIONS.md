@@ -328,3 +328,52 @@ only, which is why the api's allowed origins include `localhost`.
 **Known limits of the draft view.** A real run on the sample put the interviewer's slip "menú de
 facturación" into scope and deliverables, and one open question repeated an interviewer question.
 Both are sourced, so the user can see where they came from and remove them in the editor.
+
+## 2026-10-13: Editor and export
+
+**What can be edited, and the rules that still apply.** The narrative sections (summary, problem,
+timeline, terms) are text boxes; scope, deliverables and out of scope are lists of items; open
+questions and the investment rates are lists of lines. The api (`PUT /calls/{id}/draft/proposal`)
+enforces the accuracy rules on every save, so they hold whatever the client sends:
+- Prices are refused everywhere except the investment section and the terms. The summary message
+  says so explicitly. The freelancer may write their own rates in the investment section: the
+  price then comes from the freelancer, never from the model or the client.
+- Source ids must exist in the transcript.
+- An item with no source is always an assumption, whoever wrote it. The user cannot clear that
+  flag, so an item the user adds is flagged too; a sourced item can be flagged by hand.
+- A refused save changes nothing (all or nothing).
+The editor keeps each item's source chips, so the quote is one click away while editing.
+
+**Unsaved changes.** Save is disabled until something changes, leaving the page with unsaved
+changes asks first, and "Draft again" warns that it replaces the current draft including edits.
+Downloads always use the saved version and say so.
+
+**The export is client-facing.** No timestamps or quotes. Items the call did not support carry
+"(to be confirmed)" in the proposal's language, so an assumption is never presented as something
+the client said. The client's budget note is included under the rates with its label; the
+freelancer can delete it in the editor first. Empty sections are left out, sections follow the
+profile's order (pricing after scope), and the title is "Proposal — <client>" with the
+freelancer's name underneath. The file name is ASCII (`propuesta-trevos.pdf`).
+
+**PDF with ReportLab (BSD), Markdown by hand.** The PDF is built in the api so dev and packaged
+builds share one path and no browser or system library is needed (WeasyPrint needs Pango and
+Cairo; fpdf2 is LGPL). ReportLab is pure Python plus Pillow and charset-normalizer, and uses the
+built-in Helvetica. Consequence: text outside Western European languages (for example Polish
+"ł" or Chinese) would print as boxes, so the PDF export refuses it with a plain message and the
+user is pointed to Markdown. All six languages with translated fixed wording (en, es, pt, fr,
+de, it) are covered. Page size is A4 for now (a Letter option could come later; Mexico and the US
+use Letter). `pypdf` (BSD) is a test-only dependency used to read the PDFs back. For the
+desktop step: bundle ReportLab and Pillow, and list ReportLab (BSD), Pillow (HPND) and
+charset-normalizer (MIT) in the third-party notices.
+
+**Downloads go through `fetch`, not a link.** A link to a refused export (for example the PDF
+with unsupported characters) would open raw JSON in a tab; fetching it shows the api's message
+in the page. This needs `Access-Control-Expose-Headers: Content-Disposition` so the browser can
+read the file name: a first version silently saved files as `proposal.md` because the header was
+hidden; a real download in the browser check showed it, and a test now covers it.
+
+**Verified in the browser** (`web/ui-check/edit-flow.mjs`, 21 checks): editing, removing and adding
+items, a price refused with a message, saving and reloading, the unsaved-changes guard, real
+Markdown and PDF downloads with the right names, a refused PDF shown as a message, source links
+inside the editor, and no horizontal scroll at phone width. The PDF was also rendered with macOS
+Quick Look and looked at.

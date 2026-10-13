@@ -6,9 +6,9 @@ come from the model.
 """
 
 import re
-from typing import Any
+from typing import Annotated, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app import i18n
 from app.models import Profile
@@ -202,3 +202,105 @@ def to_draft_item(item: NoteItem) -> DraftItem:
 def notes_for_model(notes: Notes) -> dict[str, Any]:
     """The notes as the drafting prompt sees them: text and sources only."""
     return notes.model_dump()
+
+
+# -- Editing -------------------------------------------------------------------------------------
+
+
+class EditError(Exception):
+    """An edit that breaks a rule; the message is shown to the user as is."""
+
+
+class ItemEdit(BaseModel):
+    text: str = Field(max_length=1000)
+    assumption: bool = False
+    segment_ids: list[int] = Field(default_factory=list, max_length=50)
+
+
+class SectionEdit(BaseModel):
+    """Only the parts that are present are changed. `id` is one of the nine section ids."""
+
+    id: str
+    text: str | None = Field(default=None, max_length=10000)
+    lines: list[Annotated[str, Field(max_length=1000)]] | None = Field(default=None, max_length=100)
+    items: list[ItemEdit] | None = Field(default=None, max_length=100)
+
+
+class ProposalEdit(BaseModel):
+    sections: list[SectionEdit] = Field(max_length=20)
+
+
+def _no_money(where: str, text: str) -> None:
+    if contains_money(text):
+        raise EditError(
+            "The summary never includes prices."
+            if where == "summary"
+            else f"Prices belong in the investment section only, not in {where}."
+        )
+
+
+def _edited_items(
+    values: list[ItemEdit], valid_ids: set[int], where: str, *, flag_unsourced: bool
+) -> list[DraftItem]:
+    items = []
+    for value in values:
+        text = " ".join(value.text.split())
+        if not text:
+            continue
+        if where != "investment":
+            _no_money(where, text)
+        unknown = [i for i in value.segment_ids if i not in valid_ids]
+        if unknown:
+            raise EditError(
+                f"An item in {where} cites segments that are not in the transcript: {unknown}."
+            )
+        ids = sorted(set(value.segment_ids))
+        # An item with no source in the call is an assumption, whoever wrote it.
+        items.append(
+            DraftItem(
+                text=text,
+                segment_ids=ids,
+                assumption=flag_unsourced and (value.assumption or not ids),
+            )
+        )
+    return items
+
+
+def apply_edit(current: ProposalDraft, edit: ProposalEdit, valid_ids: set[int]) -> ProposalDraft:
+    """Apply the user's edits, keeping the accuracy rules: no prices outside the investment section,
+    real sources only, and unsourced items stay flagged as assumptions."""
+    data = current.model_copy(deep=True)
+    for section in edit.sections:
+        match section.id:
+            case "summary" | "problem" | "timeline":
+                if section.text is not None:
+                    _no_money(section.id, section.text)
+                    setattr(data, section.id, section.text.strip())
+            case "terms":
+                if section.text is not None:
+                    data.terms = section.text.strip()
+            case "scope" | "deliverables" | "out_of_scope":
+                if section.items is not None:
+                    setattr(
+                        data,
+                        section.id,
+                        _edited_items(section.items, valid_ids, section.id, flag_unsourced=True),
+                    )
+            case "open_questions":
+                if section.lines is not None:
+                    lines = [" ".join(line.split()) for line in section.lines if line.strip()]
+                    for line in lines:
+                        _no_money(section.id, line)
+                    data.open_questions = lines
+            case "investment":
+                if section.text is not None:
+                    data.investment.note = section.text.strip()
+                if section.lines is not None:
+                    data.investment.rates = [line.strip() for line in section.lines if line.strip()]
+                if section.items is not None:
+                    data.investment.client_budget = _edited_items(
+                        section.items, valid_ids, "investment", flag_unsourced=False
+                    )
+            case _:
+                raise EditError(f"Unknown section: {section.id}")
+    return data

@@ -1,10 +1,19 @@
 <script setup lang="ts">
+import type { ProposalSection } from '~/types/api'
+
 const route = useRoute()
 const id = String(route.params.id)
 const api = useCalls()
 const profileApi = useProfile()
 const { call, transcript, loadError, cancel, retry } = useCallStatus(id)
-const { draft, error: draftError, start: startDraft, cancel: cancelDraft } = useDraftStatus(id)
+const {
+  draft,
+  error: draftError,
+  start: startDraft,
+  cancel: cancelDraft,
+  saveEdits,
+  download,
+} = useDraftStatus(id)
 
 const language = ref('') // '' = the language of the call
 const profileKnown = ref(false)
@@ -12,6 +21,10 @@ const hasProfile = ref(false)
 const transcriptOpen = ref(false)
 const highlightId = ref<number | null>(null)
 const cancelling = ref(false)
+const editing = ref(false)
+const editSections = ref<ProposalSection[]>([])
+const saving = ref(false)
+const justSaved = ref(false)
 
 onMounted(async () => {
   try {
@@ -42,9 +55,37 @@ async function remove() {
 }
 
 async function draftAgain() {
-  if (draft.value?.status === 'done' && !window.confirm('Write a new draft? It replaces the current one.')) return
+  if (draft.value?.status === 'done' && !window.confirm('Write a new draft? It replaces the current one, including any changes you made.')) return
   await startDraft(language.value || null)
 }
+
+const dirty = computed(() => editing.value && !!draft.value?.proposal && isDirty(draft.value.proposal.sections, editSections.value))
+
+function startEditing() {
+  if (!draft.value?.proposal) return
+  editSections.value = cloneSections(draft.value.proposal.sections)
+  justSaved.value = false
+  editing.value = true
+}
+
+function discardEditing() {
+  if (dirty.value && !window.confirm('Discard your changes?')) return
+  editing.value = false
+}
+
+async function saveChanges() {
+  saving.value = true
+  try {
+    if (await saveEdits(toPayload(editSections.value))) {
+      editing.value = false
+      justSaved.value = true
+    }
+  } finally {
+    saving.value = false
+  }
+}
+
+onBeforeRouteLeave(() => !dirty.value || window.confirm('You have unsaved changes. Leave without saving?'))
 
 /** Open the transcript, scroll to the cited segment and highlight it for a moment. */
 async function showInTranscript(segmentId: number) {
@@ -186,7 +227,7 @@ async function showInTranscript(segmentId: number) {
               The draft was cancelled.
             </p>
             <div
-              v-if="canStart"
+              v-if="canStart && !editing"
               class="row"
             >
               <label>
@@ -214,7 +255,7 @@ async function showInTranscript(segmentId: number) {
           </template>
 
           <p
-            v-if="draftError"
+            v-if="draftError && !editing"
             class="error"
             role="alert"
           >
@@ -231,10 +272,73 @@ async function showInTranscript(segmentId: number) {
             <p class="muted">
               Click a time next to an item to see what was said in the call.
             </p>
+
+            <div
+              v-if="!editing"
+              class="row"
+            >
+              <button
+                class="button"
+                @click="startEditing"
+              >
+                Edit proposal
+              </button>
+              <button
+                class="button secondary"
+                @click="download('md')"
+              >
+                Download Markdown
+              </button>
+              <button
+                class="button secondary"
+                @click="download('pdf')"
+              >
+                Download PDF
+              </button>
+              <span
+                v-if="justSaved"
+                role="status"
+                class="muted"
+              >Changes saved.</span>
+            </div>
             <ProposalView
+              v-if="!editing"
               :sections="draft.proposal.sections"
               @show="showInTranscript"
             />
+            <template v-else>
+              <ProposalEditor
+                v-model="editSections"
+                @show="showInTranscript"
+              />
+              <p
+                v-if="draftError"
+                class="error"
+                role="alert"
+              >
+                {{ draftError }}
+              </p>
+              <div class="row">
+                <button
+                  class="button"
+                  :disabled="saving || !dirty"
+                  @click="saveChanges"
+                >
+                  {{ saving ? 'Saving…' : 'Save changes' }}
+                </button>
+                <button
+                  class="button secondary"
+                  :disabled="saving"
+                  @click="discardEditing"
+                >
+                  Discard changes
+                </button>
+                <span
+                  v-if="dirty"
+                  class="muted"
+                >You have unsaved changes. Downloads use the saved version.</span>
+              </div>
+            </template>
             <details v-if="draft.notes">
               <summary>What the draft is based on</summary>
               <NotesView

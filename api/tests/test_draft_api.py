@@ -1,10 +1,9 @@
 import logging
 import threading
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import pytest
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
@@ -15,40 +14,7 @@ from app.models import Call, CallStatus, Draft, DraftStatus
 from app.settings_store import LLM_MODEL, get_setting, set_setting
 from tests.fake_llm import PROFILE, ScriptedLLM, draft_json, item, llm_error, note, notes_json
 from tests.fakes import FakeDecoder, FakeTranscriber, wait_until
-from tests.helpers import TRANSCRIPT, add_done_call
-
-FINISHED = {"done", "failed", "cancelled"}
-
-
-def app_of(client: TestClient) -> FastAPI:
-    return cast(FastAPI, client.app)
-
-
-def draft_status(client: TestClient, call_id: str) -> str:
-    return str(client.get(f"/calls/{call_id}/draft").json()["status"])
-
-
-def generate(client: TestClient, call_id: str = "call1", **body: Any) -> dict[str, Any]:
-    """Start a draft and wait for the job to finish."""
-    response = client.post(f"/calls/{call_id}/draft", json=body or None)
-    assert response.status_code == 202, response.text
-    wait_until(lambda: draft_status(client, call_id) in FINISHED)
-    result: dict[str, Any] = client.get(f"/calls/{call_id}/draft").json()
-    return result
-
-
-@pytest.fixture
-def ready(client: TestClient) -> TestClient:
-    """A finished call and a saved profile."""
-    add_done_call(app_of(client))
-    assert client.put("/profile", json=PROFILE).status_code == 200
-    return client
-
-
-def section(draft: dict[str, Any], section_id: str) -> dict[str, Any]:
-    found: dict[str, Any] = next(s for s in draft["proposal"]["sections"] if s["id"] == section_id)
-    return found
-
+from tests.helpers import TRANSCRIPT, add_done_call, app_of, draft_status, generate, section
 
 # -- profile ------------------------------------------------------------------------------------
 
