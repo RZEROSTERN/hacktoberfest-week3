@@ -6,7 +6,8 @@ notes and drafts the proposal, everything runs on the user's machine.
 
 - `api/` FastAPI (Python 3.12, uv, SQLModel/SQLite), `prompts/` for versioned prompts
 - `web/` Nuxt 4 SPA (`ssr: false`), `desktop/` Electron shell (not built yet)
-- `docs/` DECISIONS.md and BENCHMARKS.md, `samples/` consented call recordings
+- `docs/` DECISIONS.md and BENCHMARKS.md, `samples/` consented call recordings with key facts,
+  `spike/` model benchmark scripts (not shipped; see docs/BENCHMARKS.md)
 
 ## Commands (from repo root)
 - Install: `make setup` (uv sync, npm install, creates `.env`)
@@ -50,4 +51,6 @@ notes and drafts the proposal, everything runs on the user's machine.
   backwards.
 - Docker holds port 8000 on the dev Mac; use `127.0.0.1` and the 8765 default, not `localhost`.
 - `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
+- whisper.cpp reads only 16-bit WAV: convert with `afconvert -f WAVE -d LEI16@16000 -c 1`. On long
+  audio, if the output is a flood of tiny segments, re-run with `-mc 0` (see docs/BENCHMARKS.md).
 - Machine-specific values (RAM, pulled models, Whisper path) live in `CLAUDE.local.md`.

@@ -16,3 +16,6 @@ paths:
 - Never log transcript, notes or proposal content.
 - Nothing may assume a fixed port, working directory, repo-relative path, model tag or the
   default Ollama URL: the api also runs as a packaged binary.
+- Notes items hold text + segment ids only. Never trust a model-written quote: look it up from
+  the cited segments. Ollama calls use `format` = JSON schema, `think: false`, temperature 0.
+- When the notes have no budget or deadline, the code adds those open questions itself.
