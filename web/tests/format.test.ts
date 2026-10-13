@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { formatDuration, formatTimestamp, isActive, statusLabel, uploadErrorMessage } from '../app/utils/format'
+import {
+  apiErrorMessage,
+  draftStatusLabel,
+  formatDuration,
+  formatTimestamp,
+  isActive,
+  isDraftActive,
+  languageLabel,
+  statusLabel,
+  uploadErrorMessage,
+} from '../app/utils/format'
 
 describe('formatTimestamp', () => {
   it('formats minutes and seconds', () => {
@@ -47,5 +57,34 @@ describe('uploadErrorMessage', () => {
 
   it('falls back to the status code', () => {
     expect(uploadErrorMessage(500, 'oops')).toBe('The upload failed (error 500).')
+  })
+})
+
+describe('draft progress labels', () => {
+  it('says which part of the call is being read', () => {
+    expect(draftStatusLabel({ status: 'extracting', stage_detail: '2/5' })).toBe('Reading the call (part 2 of 5)')
+    expect(draftStatusLabel({ status: 'extracting', stage_detail: '1/1' })).toBe('Reading the call')
+    expect(draftStatusLabel({ status: 'extracting', stage_detail: null })).toBe('Reading the call')
+  })
+
+  it('labels the other states', () => {
+    expect(draftStatusLabel({ status: 'drafting', stage_detail: null })).toBe('Writing the proposal')
+    expect(draftStatusLabel({ status: 'queued', stage_detail: null })).toBe('Waiting to start')
+    expect(['queued', 'extracting', 'drafting'].every(s => isDraftActive(s as never))).toBe(true)
+    expect(['done', 'failed', 'cancelled'].some(s => isDraftActive(s as never))).toBe(false)
+  })
+})
+
+describe('languageLabel and apiErrorMessage', () => {
+  it('names known languages and passes others through', () => {
+    expect(languageLabel('es')).toBe('Spanish')
+    expect(languageLabel('ja')).toBe('ja')
+    expect(languageLabel(null)).toBe('')
+  })
+
+  it('reads the api detail or falls back', () => {
+    expect(apiErrorMessage({ data: { detail: 'Set up your profile first.' } }, 'x')).toBe('Set up your profile first.')
+    expect(apiErrorMessage(new Error('boom'), 'fallback')).toBe('fallback')
+    expect(apiErrorMessage(null, 'fallback')).toBe('fallback')
   })
 })

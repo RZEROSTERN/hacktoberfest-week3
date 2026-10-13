@@ -144,3 +144,163 @@ h1 {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
+
+nav {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.shell > header {
+  display: flex;
+  gap: 24px;
+  align-items: baseline;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.form label .muted {
+  font-weight: 400;
+}
+
+input[type='text'],
+textarea,
+select {
+  font: inherit;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+}
+
+fieldset.sections {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.sections ol {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.sections li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.sections label {
+  flex-direction: row;
+  font-weight: 400;
+  gap: 8px;
+}
+
+.icon {
+  font: inherit;
+  width: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.proposal section {
+  margin: 24px 0;
+}
+
+.proposal h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.proposal ul {
+  padding-left: 20px;
+}
+
+.prewrap {
+  white-space: pre-line;
+}
+
+.draft-item {
+  margin: 6px 0;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--notice-bg);
+  font-size: 0.8rem;
+}
+
+.chip {
+  font: inherit;
+  font-size: 0.8rem;
+  margin-left: 6px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.chip[aria-expanded='true'] {
+  background: var(--accent);
+  color: #fff;
+}
+
+.quote {
+  margin: 6px 0 6px 12px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--notice-bg);
+  border-radius: 0 6px 6px 0;
+}
+
+.link {
+  font: inherit;
+  background: none;
+  border: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+}
+
+.transcript li.highlight {
+  background: var(--notice-bg);
+  border-radius: 6px;
+}
+
+details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin: 32px 0 8px;
+}
