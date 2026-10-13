@@ -156,6 +156,15 @@ first prompt (v0) was discarded: its single run overlapped with model downloads.
 - Keyword scan for features nobody mentioned (WhatsApp, payments, SEO, delivery, and so
   on): no hits in any run. Everything else was checked by reading.
 
+## Full pipeline check (step 5)
+
+The real pipeline (`make test-llm`: notes per 8-minute chunk, then the proposal, with the
+accuracy checks in code) ran on the sample call's transcript with `gemma4:e4b`, the default model.
+Notes and proposal took 40 to 92 s over six runs while the prompts were revised (cold model loads
+account for the slow ones), inside the 3-minute target. The last run captured 12 of 13 key facts
+(92%; it missed the contact-information item), invented no feature, put no price outside the
+profile's rates, and needed no repairs. The two Qwen and Mistral models were not re-run.
+
 ## Caveats
 
 - **One sample, one run per configuration.** The call has 13 key facts, so one fact is

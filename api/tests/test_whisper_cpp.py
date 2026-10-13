@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 from app.audio import TranscriptionError
+from app.errors import Cancelled
 from app.transcribe import (
-    Cancelled,
     TranscribedSegment,
     WhisperCppTranscriber,
     looks_degenerate,

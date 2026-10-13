@@ -14,6 +14,7 @@ notes and drafts the proposal, everything runs on the user's machine.
 - Run everything: `make dev` (api on 8765, web on 3000); `make dev-api`, `make dev-web`
 - Check Ollama: `make ollama-check`
 - Test / lint / typecheck: `make test`, `make lint`, `make typecheck` (`make format` fixes ruff)
+- Real language-model test on the sample call (loads ~4.6 GB, opt-in): `make test-llm`
 - Desktop build commands: added in the desktop step
 
 ## Git: GitFlow, no stacked PRs
@@ -51,6 +52,7 @@ notes and drafts the proposal, everything runs on the user's machine.
   backwards.
 - Docker holds port 8000 on the dev Mac; use `127.0.0.1` and the 8765 default, not `localhost`.
 - `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
+- Prompt examples must not be in a specific language: an English example made Spanish calls come back in English.
 - Hard-killing the api leaves `whisper-cli` running: stop the process tree. Tests use the small `base` Whisper model.
 - whisper.cpp reads only 16-bit WAV: convert with `afconvert -f WAVE -d LEI16@16000 -c 1`. On long
   audio, if the output is a flood of tiny segments, re-run with `-mc 0` (see docs/BENCHMARKS.md).

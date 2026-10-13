@@ -8,12 +8,9 @@ from pathlib import Path
 from typing import Protocol
 
 from app.audio import TranscriptionError
+from app.errors import Cancelled
 
 PROGRESS_RE = re.compile(r"progress =\s*(\d+)%")
-
-
-class Cancelled(Exception):
-    """Raised by a transcriber when the user cancelled the job."""
 
 
 @dataclass(frozen=True)

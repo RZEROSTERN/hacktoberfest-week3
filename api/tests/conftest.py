@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.config import Settings
 from app.main import create_app
+from tests.fake_llm import ScriptedLLM
 from tests.fakes import FakeDecoder, FakeTranscriber
 
 
@@ -25,5 +26,10 @@ def transcriber() -> FakeTranscriber:
 
 
 @pytest.fixture
-def client(settings: Settings, transcriber: FakeTranscriber) -> TestClient:
-    return TestClient(create_app(settings, transcriber=transcriber, decoder=FakeDecoder()))
+def llm() -> ScriptedLLM:
+    return ScriptedLLM([])
+
+
+@pytest.fixture
+def client(settings: Settings, transcriber: FakeTranscriber, llm: ScriptedLLM) -> TestClient:
+    return TestClient(create_app(settings, transcriber=transcriber, decoder=FakeDecoder(), llm=llm))

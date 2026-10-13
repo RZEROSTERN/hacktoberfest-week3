@@ -5,7 +5,8 @@ from collections.abc import Callable
 from pathlib import Path
 
 from app.audio import TranscriptionError
-from app.transcribe import Cancelled, TranscribedSegment, TranscriptResult
+from app.errors import Cancelled
+from app.transcribe import TranscribedSegment, TranscriptResult
 
 SEGMENTS = [
     TranscribedSegment(0.0, 3.5, "Hola, gracias por recibirme."),
