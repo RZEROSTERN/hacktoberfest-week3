@@ -18,13 +18,16 @@ function remove<T>(list: T[], index: number) {
       :key="section.id"
       :data-section="section.id"
     >
-      <h3>{{ section.title }}</h3>
+      <h3 dir="auto">
+        {{ section.title }}
+      </h3>
 
       <textarea
         v-if="isTextOnly(section.id)"
         v-model="section.text"
         rows="4"
         class="wide"
+        dir="auto"
         :aria-label="section.title"
       />
 
@@ -44,7 +47,7 @@ function remove<T>(list: T[], index: number) {
           class="button secondary"
           @click="section.items.push(newItem())"
         >
-          Add item
+          {{ $t('editor.addItem') }}
         </button>
       </template>
 
@@ -59,12 +62,13 @@ function remove<T>(list: T[], index: number) {
               v-model="section.lines[index]"
               type="text"
               class="grow"
-              aria-label="Question"
+              dir="auto"
+              :aria-label="$t('editor.question')"
             >
             <button
               type="button"
               class="icon"
-              aria-label="Remove question"
+              :aria-label="$t('editor.removeQuestion')"
               @click="remove(section.lines, index)"
             >
               ✕
@@ -76,7 +80,7 @@ function remove<T>(list: T[], index: number) {
           class="button secondary"
           @click="section.lines.push('')"
         >
-          Add question
+          {{ $t('editor.addQuestion') }}
         </button>
       </template>
 
@@ -86,10 +90,11 @@ function remove<T>(list: T[], index: number) {
           v-model="section.text"
           rows="2"
           class="wide"
-          aria-label="Price note"
+          dir="auto"
+          :aria-label="$t('editor.priceNote')"
         />
         <p class="muted">
-          Rates (written as you want them to appear)
+          {{ $t('editor.rates') }}
         </p>
         <ul class="plain">
           <li
@@ -101,12 +106,13 @@ function remove<T>(list: T[], index: number) {
               v-model="section.lines[index]"
               type="text"
               class="grow"
-              aria-label="Rate"
+              dir="auto"
+              :aria-label="$t('editor.rate')"
             >
             <button
               type="button"
               class="icon"
-              aria-label="Remove rate"
+              :aria-label="$t('editor.removeRate')"
               @click="remove(section.lines, index)"
             >
               ✕
@@ -118,10 +124,13 @@ function remove<T>(list: T[], index: number) {
           class="button secondary"
           @click="section.lines.push('')"
         >
-          Add rate
+          {{ $t('editor.addRate') }}
         </button>
         <template v-if="section.items.length">
-          <p class="muted">
+          <p
+            class="muted"
+            dir="auto"
+          >
             {{ section.items_label }}
           </p>
           <ul class="plain">

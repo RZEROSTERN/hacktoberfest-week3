@@ -1,15 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import {
-  apiErrorMessage,
+  canExportPdf,
   draftStatusLabel,
-  formatDuration,
   formatTimestamp,
   isActive,
   isDraftActive,
-  languageLabel,
+  PDF_LANGUAGES,
+  PROPOSAL_LANGUAGES,
   statusLabel,
-  uploadErrorMessage,
 } from '../app/utils/format'
+import { translator } from './support/translator'
+
+const t = translator('en')
 
 describe('formatTimestamp', () => {
   it('formats minutes and seconds', () => {
@@ -27,17 +29,10 @@ describe('formatTimestamp', () => {
   })
 })
 
-describe('formatDuration', () => {
-  it('writes minutes and seconds', () => {
-    expect(formatDuration(323.9)).toBe('5 min 24 s')
-    expect(formatDuration(40)).toBe('40 s')
-    expect(formatDuration(null)).toBe('')
-  })
-})
-
 describe('statusLabel and isActive', () => {
   it('shows the percentage while transcribing', () => {
-    expect(statusLabel({ status: 'transcribing', progress: 0.426 })).toBe('Transcribing… 43%')
+    expect(statusLabel({ status: 'transcribing', progress: 0.426 }, t)).toBe('Transcribing… 43%')
+    expect(statusLabel({ status: 'done', progress: 1 }, t)).toBe('Transcript ready')
   })
 
   it('knows which states are still running', () => {
@@ -46,45 +41,31 @@ describe('statusLabel and isActive', () => {
   })
 })
 
-describe('uploadErrorMessage', () => {
-  it('uses the api detail when there is one', () => {
-    expect(uploadErrorMessage(415, '{"detail":"Unsupported file type."}')).toBe('Unsupported file type.')
-  })
-
-  it('explains a network failure', () => {
-    expect(uploadErrorMessage(0, '')).toContain('local engine')
-  })
-
-  it('falls back to the status code', () => {
-    expect(uploadErrorMessage(500, 'oops')).toBe('The upload failed (error 500).')
-  })
-})
-
 describe('draft progress labels', () => {
   it('says which part of the call is being read', () => {
-    expect(draftStatusLabel({ status: 'extracting', stage_detail: '2/5' })).toBe('Reading the call (part 2 of 5)')
-    expect(draftStatusLabel({ status: 'extracting', stage_detail: '1/1' })).toBe('Reading the call')
-    expect(draftStatusLabel({ status: 'extracting', stage_detail: null })).toBe('Reading the call')
+    expect(draftStatusLabel({ status: 'extracting', stage_detail: '2/5' }, t)).toBe('Reading the call (part 2 of 5)')
+    expect(draftStatusLabel({ status: 'extracting', stage_detail: '1/1' }, t)).toBe('Reading the call')
+    expect(draftStatusLabel({ status: 'extracting', stage_detail: null }, t)).toBe('Reading the call')
   })
 
   it('labels the other states', () => {
-    expect(draftStatusLabel({ status: 'drafting', stage_detail: null })).toBe('Writing the proposal')
-    expect(draftStatusLabel({ status: 'queued', stage_detail: null })).toBe('Waiting to start')
+    expect(draftStatusLabel({ status: 'drafting', stage_detail: null }, t)).toBe('Writing the proposal')
+    expect(draftStatusLabel({ status: 'queued', stage_detail: null }, t)).toBe('Waiting to start')
     expect(['queued', 'extracting', 'drafting'].every(s => isDraftActive(s as never))).toBe(true)
     expect(['done', 'failed', 'cancelled'].some(s => isDraftActive(s as never))).toBe(false)
   })
 })
 
-describe('languageLabel and apiErrorMessage', () => {
-  it('names known languages and passes others through', () => {
-    expect(languageLabel('es')).toBe('Spanish')
-    expect(languageLabel('ja')).toBe('ja')
-    expect(languageLabel(null)).toBe('')
+describe('proposal languages', () => {
+  it('offers all eleven languages, and the PDF only for the ones its font can draw', () => {
+    expect([...PROPOSAL_LANGUAGES].sort()).toEqual(['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'pt', 'ru', 'zh'])
+    expect([...PDF_LANGUAGES].sort()).toEqual(['de', 'en', 'es', 'fr', 'it', 'pt'])
+    for (const code of PDF_LANGUAGES) expect(PROPOSAL_LANGUAGES).toContain(code)
   })
 
-  it('reads the api detail or falls back', () => {
-    expect(apiErrorMessage({ data: { detail: 'Set up your profile first.' } }, 'x')).toBe('Set up your profile first.')
-    expect(apiErrorMessage(new Error('boom'), 'fallback')).toBe('fallback')
-    expect(apiErrorMessage(null, 'fallback')).toBe('fallback')
+  it('allows the PDF for Western European languages and when the language is not known', () => {
+    expect(canExportPdf('es')).toBe(true)
+    expect(canExportPdf(null)).toBe(true)
+    for (const code of ['ja', 'zh', 'ru', 'hi', 'ar']) expect(canExportPdf(code), code).toBe(false)
   })
 })

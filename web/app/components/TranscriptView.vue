@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <p v-if="segments.length === 0">
-    No speech was detected in this recording.
+    {{ $t('transcript.empty') }}
   </p>
   <ol
     v-else
@@ -23,7 +23,7 @@ defineProps<{
       :class="{ highlight: segment.id === highlightId }"
     >
       <time class="stamp">{{ formatTimestamp(segment.start) }}</time>
-      <span>{{ segment.text }}</span>
+      <span dir="auto">{{ segment.text }}</span>
     </li>
   </ol>
 </template>

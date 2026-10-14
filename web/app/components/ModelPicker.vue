@@ -1,25 +1,34 @@
 <script setup lang="ts">
 import type { LlmChoice, Recommended } from '~/types/api'
-import { formatBytes, formatMemory } from '~/utils/bytes'
 import { CUSTOM, ramWarning, type ModelSelection } from '~/utils/setup'
 
 const selection = defineModel<ModelSelection>({ required: true })
 
 const props = defineProps<{ data: Recommended }>()
+const format = useFormat()
 
 const best = computed(() => props.data.llm.filter(c => c.recommended))
 const others = computed(() => props.data.llm.filter(c => !c.recommended))
 
 function warning(choice: LlmChoice) {
-  return ramWarning(choice, props.data.system.total_ram_bytes)
+  const values = ramWarning(choice, props.data.system.total_ram_bytes)
+  return values ? format.t('picker.ramWarning', { need: format.gigabytes(values.need), have: format.gigabytes(values.have) }) : null
+}
+
+function facts(choice: LlmChoice) {
+  return format.t('picker.facts', {
+    size: format.bytes(choice.size_bytes),
+    memory: format.gigabytes(choice.ram_gb),
+    license: choice.license,
+  })
 }
 </script>
 
 <template>
   <fieldset class="picker">
-    <legend>Language model</legend>
+    <legend>{{ $t('picker.legend') }}</legend>
     <p class="muted">
-      The language model reads your call notes and writes the draft. It runs on this computer.
+      {{ $t('picker.intro') }}
     </p>
 
     <label
@@ -36,20 +45,18 @@ function warning(choice: LlmChoice) {
       <span>
         <span class="title-row">
           <strong>{{ choice.title }}</strong>
-          <span class="badge good">Recommended</span>
+          <span class="badge good">{{ $t('picker.recommended') }}</span>
           <span
             v-if="choice.not_recommended_for_this_computer"
             class="badge warn"
-          >Not recommended for this computer</span>
+          >{{ $t('picker.notRecommended') }}</span>
           <span
             v-if="choice.installed"
             class="badge"
-          >Already on this computer</span>
+          >{{ $t('picker.installed') }}</span>
         </span>
-        <span class="muted facts">
-          {{ formatBytes(choice.size_bytes) }} download · about {{ choice.ram_gb }} GB of memory · {{ choice.license }}
-        </span>
-        <span class="muted">{{ choice.note }}</span>
+        <span class="muted facts">{{ facts(choice) }}</span>
+        <span class="muted">{{ format.modelNote(choice.model, choice.note) }}</span>
         <span
           v-if="warning(choice)"
           class="warn-text"
@@ -58,7 +65,7 @@ function warning(choice: LlmChoice) {
     </label>
 
     <details>
-      <summary>Other models we tested</summary>
+      <summary>{{ $t('picker.others') }}</summary>
       <label
         v-for="choice in others"
         :key="choice.model"
@@ -76,16 +83,14 @@ function warning(choice: LlmChoice) {
             <span
               v-if="choice.not_recommended_for_this_computer"
               class="badge warn"
-            >Not recommended for this computer</span>
+            >{{ $t('picker.notRecommended') }}</span>
             <span
               v-if="choice.installed"
               class="badge"
-            >Already on this computer</span>
+            >{{ $t('picker.installed') }}</span>
           </span>
-          <span class="muted facts">
-            {{ formatBytes(choice.size_bytes) }} download · about {{ choice.ram_gb }} GB of memory · {{ choice.license }}
-          </span>
-          <span class="muted">{{ choice.note }}</span>
+          <span class="muted facts">{{ facts(choice) }}</span>
+          <span class="muted">{{ format.modelNote(choice.model, choice.note) }}</span>
           <span
             v-if="warning(choice)"
             class="warn-text"
@@ -95,7 +100,7 @@ function warning(choice: LlmChoice) {
     </details>
 
     <details :open="selection.choice === CUSTOM">
-      <summary>Advanced: use another model from Ollama</summary>
+      <summary>{{ $t('picker.advanced') }}</summary>
       <label class="choice">
         <input
           v-model="selection.choice"
@@ -104,30 +109,34 @@ function warning(choice: LlmChoice) {
           :value="CUSTOM"
         >
         <span>
-          <strong>Use this model name</strong>
+          <strong>{{ $t('picker.useName') }}</strong>
           <input
             v-model="selection.custom"
             type="text"
             class="wide"
-            placeholder="name:tag, for example llama3.2:3b"
-            aria-label="Ollama model name and tag"
+            dir="ltr"
+            :placeholder="$t('picker.placeholder')"
+            :aria-label="$t('picker.nameLabel')"
             @focus="selection.choice = CUSTOM"
           >
-          <span class="muted">
-            Any model name and tag from the
-            <a
-              :href="data.library_url"
-              target="_blank"
-              rel="noopener"
-            >Ollama library</a>.
-            Models we have not tested may give lower quality. It is tried on a short sample call before you can use it.
-            Cloud models are not allowed: your calls never leave this computer.
-          </span>
+          <i18n-t
+            keypath="picker.advancedNote"
+            tag="span"
+            class="muted"
+          >
+            <template #library>
+              <a
+                :href="data.library_url"
+                target="_blank"
+                rel="noopener"
+              >{{ $t('picker.library') }}</a>
+            </template>
+          </i18n-t>
         </span>
       </label>
     </details>
     <p class="muted">
-      This computer has {{ formatMemory(data.system.total_ram_bytes) }} of memory.
+      {{ $t('picker.memory', { memory: format.memory(data.system.total_ram_bytes) }) }}
     </p>
   </fieldset>
 </template>

@@ -7,9 +7,12 @@ const sections = parseNotices(raw)
 
 <template>
   <section class="notices page-narrow">
-    <h1>Third-party notices</h1>
+    <h1>{{ $t('notices.title') }}</h1>
     <p class="muted">
-      PostCall is made of open-source parts that run on your computer. Here is what is inside and under which license.
+      {{ $t('notices.intro') }}
+    </p>
+    <p class="muted">
+      {{ $t('notices.english') }}
     </p>
     <section
       v-for="section in sections"

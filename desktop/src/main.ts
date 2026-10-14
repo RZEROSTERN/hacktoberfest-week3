@@ -3,9 +3,11 @@ import path from 'node:path'
 import { app, BrowserWindow, dialog, Menu, protocol, session, shell } from 'electron'
 import { apiEnv, apiUrl, APP_ORIGIN, ollamaEnv, ollamaUrl, type Ports } from './env'
 import { dataDirs, resolveLayout, type DataDirs, type Layout } from './layout'
+import { resolveLocale, say, type Locale } from './locale'
 import { reapOrphans } from './pidfile'
 import { twoFreePorts } from './ports'
 import { serve } from './protocol'
+import { startPage } from './startPage'
 import { isAllowedExternal, isAllowedRequest, isAppUrl } from './security'
 import { Service, Supervisor } from './supervisor'
 
@@ -27,17 +29,9 @@ let mainWindow: BrowserWindow | null = null
 let quitting = false
 let reportedFatal = false
 
-const START_PAGE = `<!doctype html><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
-<title>PostCall</title>
-<style>
-  :root { color-scheme: light dark; }
-  body { font: 16px -apple-system, system-ui, sans-serif; display: grid; place-items: center; height: 100vh; margin: 0; }
-  main { text-align: center; max-width: 28rem; padding: 1rem; }
-  h1 { font-size: 1.4rem; margin: 0 0 .5rem; }
-  p { margin: 0; opacity: .7; }
-</style>
-<main><h1>Starting PostCall…</h1><p>Getting the local engines ready. This takes a few seconds.</p></main>`
+// The language of the system, for what is shown before the web app (which has its own picker) is loaded.
+// `app.getLocale()` is only valid once the app is ready; before that it is English.
+const systemLocale = (): Locale => (app.isReady() ? resolveLocale(app.getLocale()) : 'en')
 
 function showFatal(title: string, detail: string, logs: string): void {
   if (reportedFatal) return
@@ -47,8 +41,8 @@ function showFatal(title: string, detail: string, logs: string): void {
       type: 'error',
       title: 'PostCall',
       message: title,
-      detail: `${detail}\n\nClose and reopen PostCall. If it keeps happening, restart your computer.`,
-      buttons: ['Quit', 'Show logs'],
+      detail: `${detail}\n\n${say(systemLocale(), 'dialog.advice')}`,
+      buttons: [say(systemLocale(), 'dialog.quit'), say(systemLocale(), 'dialog.showLogs')],
       defaultId: 0,
     })
     .then(({ response }) => {
@@ -139,13 +133,17 @@ async function start(): Promise<void> {
   buildMenu()
   lockDownSession(apiUrl(ports))
   mainWindow = createWindow(apiUrl(ports))
-  void mainWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(START_PAGE)}`)
+  void mainWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(startPage(systemLocale()))}`)
 
   const missing = [layout.ollamaBinary, layout.apiBinary, layout.whisperBinary, layout.webRoot].filter(
     file => !fs.existsSync(file),
   )
   if (missing.length > 0) {
-    showFatal('PostCall is incomplete', `These parts are missing: ${missing.join(', ')}`, dirs.logs)
+    showFatal(
+      say(systemLocale(), 'dialog.incomplete'),
+      say(systemLocale(), 'dialog.missingParts', { files: missing.join(', ') }),
+      dirs.logs,
+    )
     return
   }
 
@@ -153,7 +151,7 @@ async function start(): Promise<void> {
 
   const onFatal = (service: string, reason: string): void => {
     if (quitting) return
-    showFatal(`PostCall stopped working (${service})`, reason, dirs.logs)
+    showFatal(say(systemLocale(), 'dialog.stopped', { service }), reason, dirs.logs)
   }
   const ollama = new Service(
     {
@@ -185,7 +183,11 @@ async function start(): Promise<void> {
     await supervisor.startAll([ollama, api]) // Ollama first: the api checks it on start
   } catch (error) {
     await supervisor.stopAll()
-    showFatal('PostCall could not start', error instanceof Error ? error.message : String(error), dirs.logs)
+    showFatal(
+      say(systemLocale(), 'dialog.couldNotStart'),
+      error instanceof Error ? error.message : String(error),
+      dirs.logs,
+    )
     return
   }
   if (mainWindow) void mainWindow.loadURL(`${APP_ORIGIN}/`)
@@ -209,7 +211,10 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) process.on(signal, () => ap
 
 if (app.requestSingleInstanceLock()) {
   start().catch((error: unknown) => {
-    dialog.showErrorBox('PostCall could not start', error instanceof Error ? error.message : String(error))
+    dialog.showErrorBox(
+      say(systemLocale(), 'dialog.couldNotStart'),
+      error instanceof Error ? error.message : String(error),
+    )
     app.exit(1)
   })
 } else {

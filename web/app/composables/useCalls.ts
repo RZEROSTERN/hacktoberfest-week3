@@ -1,9 +1,17 @@
 import type { Call, Transcript } from '~/types/api'
-import { uploadErrorMessage } from '~/utils/format'
+import { parseErrorBody, UploadError } from '~/utils/apiError'
 
 export interface Upload {
   promise: Promise<Call>
   abort: () => void
+}
+
+function answerOf(xhr: XMLHttpRequest) {
+  try {
+    return parseErrorBody(JSON.parse(xhr.responseText), xhr.status)
+  } catch {
+    return parseErrorBody(null, xhr.status)
+  }
 }
 
 export function useCalls() {
@@ -19,10 +27,10 @@ export function useCalls() {
       }
       xhr.onload = () => {
         if (xhr.status === 202) resolve(JSON.parse(xhr.responseText) as Call)
-        else reject(new Error(uploadErrorMessage(xhr.status, xhr.responseText)))
+        else reject(new UploadError(answerOf(xhr)))
       }
-      xhr.onerror = () => reject(new Error(uploadErrorMessage(0, '')))
-      xhr.onabort = () => reject(new Error('Upload cancelled.'))
+      xhr.onerror = () => reject(new UploadError(parseErrorBody(null, 0), 'unreachable'))
+      xhr.onabort = () => reject(new UploadError(parseErrorBody(null, 0), 'cancelled'))
       const form = new FormData()
       form.append('file', file)
       form.append('keep_audio', String(keepAudio))

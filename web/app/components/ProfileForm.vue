@@ -20,7 +20,7 @@ defineEmits<{ submit: [] }>()
     <div class="page-grid">
       <div class="form">
         <label>
-          Name or business name
+          {{ $t('profile.name') }}
           <input
             v-model="form.name"
             type="text"
@@ -30,7 +30,7 @@ defineEmits<{ submit: [] }>()
         </label>
 
         <label>
-          Services you offer <span class="muted">(one per line)</span>
+          {{ $t('profile.services') }} <span class="muted">{{ $t('profile.servicesHint') }}</span>
           <textarea
             v-model="form.servicesText"
             rows="3"
@@ -38,7 +38,7 @@ defineEmits<{ submit: [] }>()
         </label>
 
         <label>
-          Hourly rate <span class="muted">(any currency, written as you want it to appear, e.g. 650 MXN per hour)</span>
+          {{ $t('profile.hourlyRate') }} <span class="muted">{{ $t('profile.hourlyRateHint') }}</span>
           <input
             v-model="form.hourlyRate"
             type="text"
@@ -46,21 +46,21 @@ defineEmits<{ submit: [] }>()
         </label>
 
         <label>
-          Project rates <span class="muted">(one per line, e.g. Website up to 5 sections: 24,000 MXN)</span>
+          {{ $t('profile.projectRates') }} <span class="muted">{{ $t('profile.projectRatesHint') }}</span>
           <textarea
             v-model="form.projectRatesText"
             rows="3"
           />
         </label>
         <p class="muted">
-          Prices in your proposals come only from these rates. A budget the client mentions is shown as a note, never used as the price.
+          {{ $t('profile.ratesNote') }}
         </p>
 
       </div>
 
       <div class="form">
         <label>
-          Default payment terms
+          {{ $t('profile.paymentTerms') }}
           <textarea
             v-model="form.paymentTerms"
             rows="2"
@@ -68,7 +68,7 @@ defineEmits<{ submit: [] }>()
         </label>
 
         <label>
-          Tone <span class="muted">(e.g. professional and friendly)</span>
+          {{ $t('profile.tone') }} <span class="muted">{{ $t('profile.toneHint') }}</span>
           <input
             v-model="form.tone"
             type="text"
@@ -90,7 +90,7 @@ defineEmits<{ submit: [] }>()
       v-if="saved"
       role="status"
     >
-      Profile saved.
+      {{ $t('profile.saved') }}
     </p>
 
     <div class="row">
@@ -99,7 +99,7 @@ defineEmits<{ submit: [] }>()
         type="submit"
         :disabled="saving || !form.name.trim()"
       >
-        {{ saving ? 'Saving…' : 'Save profile' }}
+        {{ saving ? $t('common.saving') : $t('profile.save') }}
       </button>
     </div>
   </form>

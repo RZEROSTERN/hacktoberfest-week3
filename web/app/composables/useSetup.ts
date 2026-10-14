@@ -1,5 +1,4 @@
 import type { ModelsInfo, Recommended, SetupProgress, SetupState, SetupStatus } from '~/types/api'
-import { apiErrorMessage } from '~/utils/format'
 
 export const TERMINAL_STATES: SetupState[] = ['idle', 'paused', 'failed', 'compat_failed', 'interrupted', 'done']
 
@@ -73,5 +72,5 @@ export function useSetup() {
     return stop
   }
 
-  return { status, recommended, progress, models, start, pause, resume, activate, removeModel, removeWhisper, follow, apiErrorMessage }
+  return { status, recommended, progress, models, start, pause, resume, activate, removeModel, removeWhisper, follow }
 }

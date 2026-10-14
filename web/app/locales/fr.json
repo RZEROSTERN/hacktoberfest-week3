@@ -1,0 +1,362 @@
+{
+  "language": {
+    "label": "Langue"
+  },
+  "nav": {
+    "main": "Principal",
+    "calls": "Appels",
+    "profile": "Profil",
+    "settings": "Réglages",
+    "notices": "Composants tiers"
+  },
+  "common": {
+    "loading": "Chargement…",
+    "tryAgain": "Réessayer",
+    "notNow": "Pas maintenant",
+    "pause": "Mettre en pause",
+    "pausing": "Mise en pause…",
+    "resume": "Reprendre",
+    "cancel": "Annuler",
+    "cancelling": "Annulation…",
+    "delete": "Supprimer",
+    "saving": "Enregistrement…"
+  },
+  "errors": {
+    "engineUnreachable": "Impossible de joindre le moteur local. L’application est-elle toujours ouverte ?",
+    "generic": "Une erreur s’est produite.",
+    "upload": "Le téléversement a échoué.",
+    "uploadCancelled": "Téléversement annulé.",
+    "draftStart": "Le brouillon n’a pas pu être lancé.",
+    "draftCancel": "Impossible d’annuler le brouillon.",
+    "draftSave": "Les modifications n’ont pas pu être enregistrées.",
+    "export": "La proposition n’a pas pu être exportée.",
+    "profileSave": "Le profil n’a pas pu être enregistré.",
+    "modelSelect": "Ce modèle n’a pas pu être sélectionné.",
+    "modelDelete": "Le modèle n’a pas pu être supprimé.",
+    "whisperDelete": "Le modèle vocal n’a pas pu être supprimé.",
+    "downloadStart": "Le téléchargement n’a pas pu démarrer.",
+    "downloadResume": "Le téléchargement n’a pas pu reprendre."
+  },
+  "download": {
+    "progress": "{done} sur {total}",
+    "waiting": "en attente de données…"
+  },
+  "eta": {
+    "lessThanMinute": "il reste moins d’une minute",
+    "about": "il reste environ {time}"
+  },
+  "status": {
+    "queued": "En attente de démarrage",
+    "converting": "Préparation de l’audio",
+    "transcribing": "Transcription… {percent} %",
+    "done": "Transcription prête",
+    "failed": "Échec",
+    "cancelled": "Annulée"
+  },
+  "draftStatus": {
+    "queued": "En attente de démarrage",
+    "extracting": "Lecture de l’appel",
+    "extractingParts": "Lecture de l’appel (partie {part} sur {total})",
+    "drafting": "Rédaction de la proposition",
+    "done": "Brouillon prêt",
+    "failed": "Échec",
+    "cancelled": "Annulé"
+  },
+  "consent": {
+    "title": "Consentement à l’enregistrement.",
+    "body": "Ne téléversez un appel que si tous les participants ont accepté d’être enregistrés."
+  },
+  "profileNotice": {
+    "title": "Commencez par configurer votre profil.",
+    "link": "Configurer mon profil"
+  },
+  "home": {
+    "title": "Vos appels",
+    "intro": "Transformez un appel client enregistré en brouillon de proposition. Tout reste sur cet ordinateur.",
+    "profileNotice": "Vos services, tarifs et conditions de paiement figurent dans chaque proposition.",
+    "newProposal": "Nouvelle proposition",
+    "noCalls": "Aucun appel pour l’instant. Téléversez votre premier enregistrement pour commencer."
+  },
+  "upload": {
+    "title": "Nouvelle proposition",
+    "intro": "Téléversez l’enregistrement de votre appel de découverte (mp3, m4a, wav ou mp4). Il est transcrit sur cet ordinateur.",
+    "fileLabel": "Enregistrement de l’appel",
+    "keepAudio": "Conserver le fichier audio après la transcription",
+    "keepAudioNote": "Par défaut, l’enregistrement est supprimé de cet ordinateur dès que la transcription est prête.",
+    "uploading": "Téléversement… {percent} %",
+    "start": "Lancer la transcription",
+    "cancel": "Annuler le téléversement"
+  },
+  "call": {
+    "language": "Langue : {language}",
+    "cancelledNote": "Transcription annulée. L’enregistrement a été supprimé de cet ordinateur.",
+    "uploadAgain": "Téléverser à nouveau",
+    "audioKept": "Le fichier audio est conservé sur cet ordinateur.",
+    "audioDeleted": "Le fichier audio a été supprimé après la transcription.",
+    "proposalDraft": "Brouillon de proposition",
+    "profileNotice": "Le brouillon utilise vos services, tarifs et conditions de paiement.",
+    "draftCancelled": "Le brouillon a été annulé.",
+    "writeIn": "Rédiger en",
+    "callLanguage": "La langue de l’appel",
+    "callLanguageNamed": "La langue de l’appel ({language})",
+    "draft": "Rédiger la proposition",
+    "draftAgain": "Rédiger à nouveau",
+    "warnings": "Certains éléments n’avaient pas de source dans l’appel et sont marqués « Hypothèse ». Vérifiez-les avant l’envoi.",
+    "sourceHint": "Cliquez sur une heure à côté d’un élément pour voir ce qui a été dit pendant l’appel.",
+    "edit": "Modifier la proposition",
+    "downloadMd": "Télécharger en Markdown",
+    "downloadPdf": "Télécharger en PDF",
+    "pdfUnsupported": "L’export PDF ne prend en charge que les langues d’Europe occidentale. Téléchargez plutôt cette proposition en Markdown.",
+    "saved": "Modifications enregistrées.",
+    "saveChanges": "Enregistrer les modifications",
+    "discard": "Abandonner les modifications",
+    "unsaved": "Vous avez des modifications non enregistrées. Les téléchargements utilisent la version enregistrée.",
+    "basedOn": "Sur quoi repose le brouillon",
+    "transcript": "Transcription",
+    "delete": "Supprimer l’appel",
+    "confirmDelete": "Supprimer cet appel et sa transcription de cet ordinateur ?",
+    "confirmRedraft": "Rédiger un nouveau brouillon ? Il remplace le brouillon actuel, y compris vos modifications.",
+    "confirmDiscard": "Abandonner vos modifications ?",
+    "confirmLeave": "Vous avez des modifications non enregistrées. Quitter sans enregistrer ?"
+  },
+  "profile": {
+    "title": "Votre profil",
+    "intro": "Sert à rédiger vos propositions : vos services, tarifs, conditions de paiement, ton et sections préférées. Il reste sur cet ordinateur.",
+    "name": "Nom ou nom de l’entreprise",
+    "services": "Services proposés",
+    "servicesHint": "(un par ligne)",
+    "hourlyRate": "Taux horaire",
+    "hourlyRateHint": "(toute devise, écrit comme vous voulez qu’il apparaisse, p. ex. 650 MXN par heure)",
+    "projectRates": "Tarifs par projet",
+    "projectRatesHint": "(un par ligne, p. ex. Site web jusqu’à 5 sections : 24 000 MXN)",
+    "ratesNote": "Les prix de vos propositions proviennent uniquement de ces tarifs. Un budget mentionné par le client apparaît comme une note et n’est jamais utilisé comme prix.",
+    "paymentTerms": "Conditions de paiement par défaut",
+    "tone": "Ton",
+    "toneHint": "(p. ex. professionnel et chaleureux)",
+    "save": "Enregistrer le profil",
+    "saved": "Profil enregistré."
+  },
+  "sections": {
+    "legend": "Sections de la proposition",
+    "help": "Choisissez les sections de vos propositions et leur ordre. La section Investissement vient toujours après le périmètre.",
+    "moveUp": "Monter {section}",
+    "moveDown": "Descendre {section}",
+    "summary": "Résumé",
+    "problem": "Compréhension du problème",
+    "scope": "Périmètre",
+    "deliverables": "Livrables",
+    "out_of_scope": "Hors périmètre",
+    "timeline": "Calendrier",
+    "open_questions": "Questions ouvertes",
+    "investment": "Investissement",
+    "terms": "Conditions"
+  },
+  "notes": {
+    "client": "Client :",
+    "openQuestions": "Questions restées ouvertes à l’issue de l’appel",
+    "groups": {
+      "client_context": "À propos du client",
+      "problem": "Problème",
+      "goals": "Objectifs",
+      "requirements": "Exigences",
+      "constraints": "Contraintes",
+      "budget": "Budget mentionné",
+      "deadlines": "Échéances mentionnées",
+      "next_steps": "Prochaines étapes",
+      "risks": "Risques"
+    }
+  },
+  "notices": {
+    "title": "Mentions sur les composants tiers",
+    "intro": "PostCall est composé d’éléments open source qui fonctionnent sur votre ordinateur. Voici ce qu’il contient et sous quelle licence.",
+    "english": "Les textes des licences ci-dessous sont en anglais, tels que leurs auteurs les ont publiés."
+  },
+  "proposal": {
+    "empty": "Rien n’a été identifié pour cette section."
+  },
+  "editor": {
+    "addItem": "Ajouter un élément",
+    "addQuestion": "Ajouter une question",
+    "addRate": "Ajouter un tarif",
+    "assumption": "Hypothèse",
+    "assumptionNoSource": "Hypothèse (sans source dans l’appel)",
+    "itemText": "Texte de l’élément",
+    "priceNote": "Note sur le prix",
+    "question": "Question",
+    "rate": "Tarif",
+    "rates": "Tarifs (écrits comme vous voulez qu’ils apparaissent)",
+    "removeItem": "Supprimer l’élément",
+    "removeQuestion": "Supprimer la question",
+    "removeRate": "Supprimer le tarif"
+  },
+  "source": {
+    "at": "Source dans l’appel à {time}",
+    "show": "Afficher dans la transcription"
+  },
+  "draft": {
+    "assumptionTitle": "Cela n’a pas été dit pendant l’appel. Vérifiez-le avant l’envoi."
+  },
+  "transcript": {
+    "empty": "Aucune parole n’a été détectée dans cet enregistrement."
+  },
+  "picker": {
+    "legend": "Modèle de langage",
+    "intro": "Le modèle de langage lit les notes de votre appel et rédige le brouillon. Il fonctionne sur cet ordinateur.",
+    "recommended": "Recommandé",
+    "notRecommended": "Non recommandé pour cet ordinateur",
+    "installed": "Déjà sur cet ordinateur",
+    "facts": "{size} à télécharger · environ {memory} de mémoire · {license}",
+    "ramWarning": "Nécessite environ {need} de mémoire ; cet ordinateur en a {have}.",
+    "others": "Autres modèles testés",
+    "advanced": "Avancé : utiliser un autre modèle d’Ollama",
+    "useName": "Utiliser ce nom de modèle",
+    "placeholder": "nom:tag, par exemple llama3.2:3b",
+    "nameLabel": "Nom et tag du modèle Ollama",
+    "advancedNote": "N’importe quel nom de modèle et tag de la {library}. Les modèles que nous n’avons pas testés peuvent donner une qualité moindre. Le modèle est d’abord essayé sur un court appel d’exemple avant que vous puissiez l’utiliser. Les modèles cloud ne sont pas autorisés : vos appels ne quittent jamais cet ordinateur.",
+    "library": "bibliothèque Ollama",
+    "memory": "Cet ordinateur dispose de {memory} de mémoire."
+  },
+  "setup": {
+    "request": {
+      "title": "Bienvenue dans PostCall",
+      "intro": "PostCall fonctionne entièrement hors ligne et garde vos appels clients confidentiels. Pour cela, les modèles d’IA dont il a besoin sont téléchargés une seule fois sur cet ordinateur. Ensuite, rien de ce qui concerne vos appels ne le quitte jamais.",
+      "speech": "Modèle vocal (également téléchargé)",
+      "total": "Téléchargement total :",
+      "plusModel": "plus la taille de votre modèle (indiquée au début du téléchargement)",
+      "diskNeeded": "Espace disque libre nécessaire :",
+      "diskRoom": "les téléchargements plus {margin} de marge",
+      "diskAvailable": "Disponible :",
+      "noRoom": "L’espace disque libre est insuffisant. Libérez de l’espace ou choisissez un modèle plus petit.",
+      "wifi": "Nous vous recommandons de vous connecter en Wi-Fi : le téléchargement est volumineux. Vous pouvez le mettre en pause et le reprendre plus tard.",
+      "download": "Télécharger maintenant",
+      "starting": "Démarrage…"
+    },
+    "progress": {
+      "title": "Configuration de PostCall",
+      "overall": "{percent} % de la configuration",
+      "interrupted": "Le téléchargement a été interrompu à la fermeture de PostCall. Voulez-vous le poursuivre ? Il reprend là où il s’était arrêté.",
+      "paused": "En pause. Aucun téléchargement en cours.",
+      "ready": "Tout est prêt. Vos appels restent sur cet ordinateur.",
+      "start": "Commencer à utiliser PostCall",
+      "choose": "Choisir un autre modèle",
+      "useRecommended": "Utiliser le modèle recommandé ({model})"
+    },
+    "steps": {
+      "engine": "Préparation du moteur d’IA local",
+      "llm": "Téléchargement du modèle de langage",
+      "whisper": "Téléchargement du modèle vocal",
+      "verify": "Vérification des téléchargements",
+      "compat": "Vérification du bon fonctionnement du modèle",
+      "ready": "Prêt"
+    },
+    "engine": {
+      "title": "PostCall ne peut pas démarrer son moteur d’IA",
+      "advice": "Fermez puis rouvrez PostCall. Si le problème persiste, redémarrez votre ordinateur."
+    },
+    "later": {
+      "title": "PostCall a besoin de ses modèles",
+      "body": "Rien ne fonctionne dans PostCall tant que les modèles d’IA ne sont pas sur cet ordinateur. Cela vous sera redemandé à la prochaine ouverture.",
+      "button": "Télécharger les modèles"
+    }
+  },
+  "settings": {
+    "title": "Réglages",
+    "models": "Modèles de langage sur cet ordinateur",
+    "none": "Aucun pour l’instant.",
+    "inUse": "En cours d’utilisation",
+    "notChecked": "Pas encore vérifié",
+    "cloud": "Modèle cloud : non autorisé",
+    "use": "Utiliser ce modèle",
+    "checkAndUse": "Vérifier et utiliser",
+    "downloadAnother": "Télécharger un autre modèle",
+    "downloadAndCheck": "Télécharger et vérifier",
+    "speech": "Modèle vocal",
+    "speechReady": "Sur cet ordinateur",
+    "speechPartial": "Partiellement téléchargé",
+    "speechMissing": "Non téléchargé",
+    "computer": "Cet ordinateur",
+    "computerFacts": "{memory} de mémoire · {disk} d’espace disque libre",
+    "confirmDeleteModel": "Supprimer {name} de cet ordinateur ? Cela libère de l’espace disque ; vous pourrez le télécharger de nouveau plus tard.",
+    "confirmDeleteSpeech": "Supprimer le modèle vocal ? La transcription ne fonctionnera plus tant qu’il ne sera pas téléchargé de nouveau."
+  },
+  "models": {
+    "gemma4_e4b": {
+      "note": "Le mieux testé : il a trouvé 12 des 13 faits clés de notre appel d’exemple et a produit le brouillon d’un appel de 30 minutes en moins de 3 minutes sur un Mac de 16 Go."
+    },
+    "qwen3_5_9b": {
+      "note": "A trouvé autant de faits, mais environ deux fois plus lent sur un appel de 30 minutes (5 minutes), et a ajouté deux petits détails que personne n’avait mentionnés."
+    },
+    "qwen3_5_4b": {
+      "note": "Petit et rapide, mais il a manqué environ un tiers des faits et a inventé un élément hors périmètre."
+    },
+    "mistral_nemo_12b": {
+      "note": "Assez rapide, mais ses notes étaient maigres : environ 6 faits sur 10."
+    },
+    "gemma4_12b": {
+      "note": "Trop lent et trop laconique sur un Mac de 16 Go (environ un tiers des faits). Nécessite un ordinateur avec 24 Go de mémoire ou plus."
+    },
+    "whisper": {
+      "note": "Transforme l’enregistrement en texte dans environ 99 langues et détecte la langue tout seul. Utilise environ 1 Go de mémoire pendant son fonctionnement."
+    }
+  },
+  "apiErrors": {
+    "engine_missing": "Le moteur de transcription n’est pas disponible.",
+    "model_missing": "Le modèle vocal n’a pas encore été téléchargé.",
+    "decoder_missing": "Le convertisseur audio de macOS est introuvable : les fichiers audio ne peuvent pas être lus.",
+    "decode_failed": "Le fichier audio n’a pas pu être lu. Essayez de l’exporter à nouveau en mp3, m4a ou wav.",
+    "transcribe_failed": "Une erreur s’est produite pendant la transcription. Vous pouvez réessayer.",
+    "interrupted": "L’application a été fermée pendant la transcription. Vous pouvez réessayer.",
+    "audio_missing": "Le fichier audio n’est plus disponible. Veuillez le téléverser à nouveau.",
+    "llm_model_not_set": "Aucun modèle de langage n’est encore sélectionné.",
+    "llm_model_missing": "Le modèle de langage sélectionné n’est pas installé.",
+    "llm_unreachable": "Le moteur du modèle de langage n’est pas en cours d’exécution.",
+    "llm_timeout": "Le modèle de langage a mis trop de temps à répondre. Réessayez.",
+    "llm_failed": "Le modèle de langage a renvoyé une erreur. Réessayez.",
+    "invalid_model_output": "La réponse du modèle n’a pas pu être interprétée, même après une nouvelle tentative.",
+    "draft_invalid": "Le brouillon a enfreint une règle (il contenait des prix), même après une nouvelle tentative.",
+    "not_enough_information": "L’appel ne contenait pas assez d’informations pour rédiger une proposition.",
+    "profile_missing": "Commencez par configurer votre profil.",
+    "empty_transcript": "La transcription est vide : il n’y a rien à partir de quoi rédiger.",
+    "generation_failed": "Une erreur s’est produite pendant la rédaction. Vous pouvez réessayer.",
+    "ollama_unreachable": "Le moteur d’IA local n’est pas en cours d’exécution.",
+    "ollama_failed": "Le moteur d’IA local a renvoyé une erreur. Réessayez.",
+    "model_not_found": "Aucun modèle de ce nom n’existe dans la bibliothèque Ollama. Vérifiez le nom et le tag.",
+    "invalid_model_name": "Ce nom de modèle n’est pas valide. Utilisez nom:tag, par exemple gemma4:e4b.",
+    "cloud_model": "Les modèles cloud envoient vos appels à un serveur. PostCall n’utilise que des modèles qui fonctionnent sur cet ordinateur.",
+    "network_error": "Le téléchargement s’est arrêté, car la connexion réseau a été perdue. Réessayez : il reprend là où il s’était arrêté.",
+    "checksum_mismatch": "Le fichier téléchargé était endommagé et a donc été supprimé. Réessayez.",
+    "download_failed": "Le serveur de téléchargement n’a pas envoyé le fichier attendu. Réessayez plus tard.",
+    "pull_failed": "Le modèle n’a pas pu être téléchargé. Réessayez.",
+    "not_enough_disk": "L’espace disque libre est insuffisant pour ce téléchargement.",
+    "model_not_installed": "Ce modèle n’est pas sur cet ordinateur.",
+    "setup_failed": "Une erreur s’est produite pendant la configuration. Réessayez.",
+    "setup_busy": "Un téléchargement est déjà en cours.",
+    "nothing_to_resume": "Aucun téléchargement interrompu à reprendre.",
+    "compat_needed": "Ce modèle n’a pas encore été vérifié sur cet ordinateur.",
+    "model_in_use": "Ce modèle est en cours d’utilisation. Passez d’abord à un autre modèle.",
+    "compat_no_chat": "Ce modèle n’a pas pu être utilisé pour des tâches de rédaction. Il est peut-être conçu pour autre chose, comme la recherche.",
+    "compat_invalid_output": "Ce modèle n’a pas renvoyé les notes structurées dont l’application a besoin, même après une nouvelle tentative.",
+    "compat_not_enough": "Ce modèle a fonctionné, mais il n’a rien trouvé d’utile dans un court appel de test. Il est probablement trop petit.",
+    "compat_timeout": "Ce modèle a mis trop de temps sur un court test. Il est peut-être trop gros pour cet ordinateur.",
+    "compat_model_missing": "Le modèle a disparu avant de pouvoir être testé. Réessayez.",
+    "profile_not_set_up": "Le profil n’a pas encore été configuré.",
+    "call_not_found": "Appel introuvable.",
+    "transcribe_first": "Transcrivez l’appel avant de rédiger une proposition.",
+    "draft_in_progress": "Un brouillon est déjà en cours de rédaction pour cet appel.",
+    "no_draft": "Il n’y a pas encore de brouillon pour cet appel.",
+    "draft_not_running": "Seul un brouillon en cours peut être annulé.",
+    "draft_not_ready": "Le brouillon n’est pas encore prêt.",
+    "unsupported_file_type": "Type de fichier non pris en charge. Utilisez mp3, m4a, wav ou mp4.",
+    "file_empty": "Le fichier est vide.",
+    "transcript_not_ready": "La transcription n’est pas encore prête.",
+    "call_not_running": "Seule une transcription en cours peut être annulée.",
+    "cannot_retry": "Seule une transcription ayant échoué et dont l’audio est toujours sur le disque peut être relancée.",
+    "cancel_transcription_first": "Annulez la transcription avant de la supprimer.",
+    "cancel_draft_first": "Annulez le brouillon avant de supprimer l’appel.",
+    "pdf_unsupported_characters": "L’export PDF ne peut pas dessiner certains caractères de cette proposition (il prend en charge les langues d’Europe occidentale). Exportez-la plutôt en Markdown.",
+    "edit_summary_prices": "Le résumé n’inclut jamais de prix.",
+    "edit_prices_outside_investment": "Les prix doivent figurer uniquement dans la section Investissement, pas dans {where}.",
+    "edit_unknown_segments": "Un élément de {where} cite des passages qui ne figurent pas dans la transcription : {segments}.",
+    "edit_unknown_section": "Section inconnue : {section}"
+  }
+}

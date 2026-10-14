@@ -7,17 +7,18 @@
       >
         PostCall
       </NuxtLink>
-      <nav aria-label="Main">
+      <nav :aria-label="$t('nav.main')">
         <NuxtLink to="/">
-          Calls
+          {{ $t('nav.calls') }}
         </NuxtLink>
         <NuxtLink to="/profile">
-          Profile
+          {{ $t('nav.profile') }}
         </NuxtLink>
         <NuxtLink to="/settings">
-          Settings
+          {{ $t('nav.settings') }}
         </NuxtLink>
       </nav>
+      <LanguageSwitcher />
     </header>
     <NuxtRouteAnnouncer />
     <main>
@@ -25,7 +26,7 @@
     </main>
     <footer>
       <NuxtLink to="/notices">
-        Third-party notices
+        {{ $t('nav.notices') }}
       </NuxtLink>
     </footer>
   </div>

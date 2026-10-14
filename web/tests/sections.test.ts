@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { choicesFromProfile, choicesToProfile, keepPricingAfterScope, moveChoice, SECTIONS } from '../app/utils/sections'
+import { choicesFromProfile, choicesToProfile, keepPricingAfterScope, moveChoice, SECTION_IDS } from '../app/utils/sections'
 
 const ids = (choices: { id: string }[]) => choices.map(c => c.id)
 
 describe('choicesFromProfile', () => {
   it('shows every section, in the default order, when nothing is saved', () => {
     const choices = choicesFromProfile([])
-    expect(ids(choices)).toEqual(SECTIONS.map(s => s.id))
+    expect(ids(choices)).toEqual([...SECTION_IDS])
     expect(choices.every(c => c.enabled)).toBe(true)
   })
 
@@ -14,7 +14,7 @@ describe('choicesFromProfile', () => {
     const choices = choicesFromProfile(['scope', 'summary', 'terms'])
     expect(ids(choices).slice(0, 3)).toEqual(['scope', 'summary', 'terms'])
     expect(choices.filter(c => c.enabled).map(c => c.id)).toEqual(['scope', 'summary', 'terms'])
-    expect(choices).toHaveLength(SECTIONS.length)
+    expect(choices).toHaveLength(SECTION_IDS.length)
   })
 
   it('ignores unknown and repeated ids', () => {

@@ -3,64 +3,69 @@ import type { Call } from '~/types/api'
 
 const api = useCalls()
 const profileApi = useProfile()
+const format = useFormat()
 const hasProfile = ref(true) // assume yes until we know, to avoid a flash of the notice
 const calls = ref<Call[]>([])
 const loading = ref(true)
-const loadError = ref<string | null>(null)
+const unreachable = ref(false)
 
 onMounted(async () => {
   try {
     calls.value = await api.list()
     hasProfile.value = (await profileApi.load()) !== null
   } catch {
-    loadError.value = 'Could not reach the local engine. Is the app still running?'
+    unreachable.value = true
   } finally {
     loading.value = false
   }
 })
+
+function facts(call: Call) {
+  return [format.language(call.language), format.duration(call.duration_s)].filter(Boolean).join(' · ')
+}
 </script>
 
 <template>
   <section>
-    <h1>Your calls</h1>
+    <h1>{{ $t('home.title') }}</h1>
     <p class="muted">
-      Turn a recorded client call into a draft proposal. Everything stays on this computer.
+      {{ $t('home.intro') }}
     </p>
     <aside
       v-if="!hasProfile"
       class="notice"
       role="note"
     >
-      <strong>Set up your profile first.</strong>
-      Your services, rates and payment terms go into every proposal.
+      <strong>{{ $t('profileNotice.title') }}</strong>
+      {{ $t('home.profileNotice') }}
       <NuxtLink to="/profile">
-        Set up my profile
+        {{ $t('profileNotice.link') }}
       </NuxtLink>
     </aside>
     <NuxtLink
       to="/new"
       class="button"
     >
-      New proposal
+      {{ $t('home.newProposal') }}
     </NuxtLink>
 
     <p
-      v-if="loadError"
+      v-if="unreachable"
       class="error"
     >
-      {{ loadError }}
+      {{ $t('errors.engineUnreachable') }}
     </p>
     <p
       v-else-if="loading"
       class="muted"
     >
-      Loading…
+      {{ $t('common.loading') }}
     </p>
     <p
       v-else-if="calls.length === 0"
       class="muted"
     >
-      No calls yet. Upload your first recording to get started.
+      {{ $t('home.noCalls') }}
     </p>
     <ul
       v-else
@@ -70,14 +75,17 @@ onMounted(async () => {
         v-for="call in calls"
         :key="call.id"
       >
-        <NuxtLink :to="`/calls/${call.id}`">
+        <NuxtLink
+          :to="`/calls/${call.id}`"
+          dir="auto"
+        >
           {{ call.title }}
         </NuxtLink>
-        <span class="muted">{{ statusLabel(call) }}</span>
+        <span class="muted">{{ format.callStatus(call) }}</span>
         <span
           v-if="call.language || call.duration_s"
           class="muted facts"
-        >{{ [languageLabel(call.language), formatDuration(call.duration_s)].filter(Boolean).join(' · ') }}</span>
+        >{{ facts(call) }}</span>
       </li>
     </ul>
   </section>

@@ -18,13 +18,14 @@ defineEmits<{ remove: [], show: [segmentId: number] }>()
         v-model="item.text"
         type="text"
         class="grow"
-        aria-label="Item text"
+        dir="auto"
+        :aria-label="$t('editor.itemText')"
       >
       <button
         type="button"
         class="icon"
-        aria-label="Remove item"
-        title="Remove item"
+        :aria-label="$t('editor.removeItem')"
+        :title="$t('editor.removeItem')"
         @click="$emit('remove')"
       >
         ✕
@@ -37,7 +38,7 @@ defineEmits<{ remove: [], show: [segmentId: number] }>()
           type="checkbox"
           :disabled="item.sources.length === 0"
         >
-        Assumption{{ item.sources.length === 0 ? ' (no source in the call)' : '' }}
+        {{ item.sources.length === 0 ? $t('editor.assumptionNoSource') : $t('editor.assumption') }}
       </label>
       <SourceChips
         :sources="item.sources"

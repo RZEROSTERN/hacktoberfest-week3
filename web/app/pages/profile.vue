@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { apiErrorMessage } from '~/utils/format'
 import { emptyProfileForm, formFromProfile, profileFromForm } from '~/utils/profileForm'
 
 const profileApi = useProfile()
+const errors = useErrors()
 
 const form = ref(emptyProfileForm())
 const loading = ref(true)
-const loadError = ref<string | null>(null)
+const unreachable = ref(false)
 const saving = ref(false)
 const saved = ref(false)
 const error = ref<string | null>(null)
@@ -16,7 +16,7 @@ onMounted(async () => {
     const profile = await profileApi.load()
     if (profile) form.value = formFromProfile(profile)
   } catch {
-    loadError.value = 'Could not reach the local engine. Is the app still running?'
+    unreachable.value = true
   } finally {
     loading.value = false
   }
@@ -34,7 +34,7 @@ async function save() {
     await nextTick()
     saved.value = true
   } catch (e) {
-    error.value = apiErrorMessage(e, 'The profile could not be saved.')
+    error.value = errors.message(e, 'errors.profileSave')
   } finally {
     saving.value = false
   }
@@ -43,22 +43,22 @@ async function save() {
 
 <template>
   <section>
-    <h1>Your profile</h1>
+    <h1>{{ $t('profile.title') }}</h1>
     <p class="muted">
-      Used to write your proposals: your services, rates, payment terms, tone and the sections you prefer. It stays on this computer.
+      {{ $t('profile.intro') }}
     </p>
     <p
-      v-if="loadError"
+      v-if="unreachable"
       class="error"
       role="alert"
     >
-      {{ loadError }}
+      {{ $t('errors.engineUnreachable') }}
     </p>
     <p
       v-else-if="loading"
       class="muted"
     >
-      Loading…
+      {{ $t('common.loading') }}
     </p>
     <ProfileForm
       v-else

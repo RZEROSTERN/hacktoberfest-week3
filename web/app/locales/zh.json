@@ -1,0 +1,362 @@
+{
+  "language": {
+    "label": "语言"
+  },
+  "nav": {
+    "main": "主导航",
+    "calls": "通话",
+    "profile": "个人资料",
+    "settings": "设置",
+    "notices": "第三方声明"
+  },
+  "common": {
+    "loading": "加载中…",
+    "tryAgain": "重试",
+    "notNow": "暂不",
+    "pause": "暂停",
+    "pausing": "正在暂停…",
+    "resume": "继续",
+    "cancel": "取消",
+    "cancelling": "正在取消…",
+    "delete": "删除",
+    "saving": "正在保存…"
+  },
+  "errors": {
+    "engineUnreachable": "无法连接本地引擎。应用是否仍在运行？",
+    "generic": "出了点问题。",
+    "upload": "上传失败。",
+    "uploadCancelled": "已取消上传。",
+    "draftStart": "无法开始撰写草稿。",
+    "draftCancel": "无法取消草稿。",
+    "draftSave": "无法保存更改。",
+    "export": "无法导出提案。",
+    "profileSave": "无法保存个人资料。",
+    "modelSelect": "无法选用该模型。",
+    "modelDelete": "无法删除该模型。",
+    "whisperDelete": "无法删除语音模型。",
+    "downloadStart": "无法开始下载。",
+    "downloadResume": "无法继续下载。"
+  },
+  "download": {
+    "progress": "{done}，共 {total}",
+    "waiting": "等待数据…"
+  },
+  "eta": {
+    "lessThanMinute": "剩余不到一分钟",
+    "about": "约剩余 {time}"
+  },
+  "status": {
+    "queued": "等待开始",
+    "converting": "正在处理音频",
+    "transcribing": "正在转写… {percent}%",
+    "done": "转写稿已就绪",
+    "failed": "失败",
+    "cancelled": "已取消"
+  },
+  "draftStatus": {
+    "queued": "等待开始",
+    "extracting": "正在梳理通话内容",
+    "extractingParts": "正在梳理通话内容（第 {part} 部分，共 {total} 部分）",
+    "drafting": "正在撰写提案",
+    "done": "草稿已就绪",
+    "failed": "失败",
+    "cancelled": "已取消"
+  },
+  "consent": {
+    "title": "录音须经同意。",
+    "body": "仅当所有参与者都同意录音时，才可上传通话。"
+  },
+  "profileNotice": {
+    "title": "请先设置个人资料。",
+    "link": "设置个人资料"
+  },
+  "home": {
+    "title": "我的通话",
+    "intro": "将客户通话录音转为提案草稿。所有内容都保留在这台电脑上。",
+    "profileNotice": "服务内容、费率和付款条款会写入每一份提案。",
+    "newProposal": "新建提案",
+    "noCalls": "还没有通话。上传第一段录音即可开始。"
+  },
+  "upload": {
+    "title": "新建提案",
+    "intro": "上传需求沟通通话的录音（mp3、m4a、wav 或 mp4）。转写在这台电脑上完成。",
+    "fileLabel": "通话录音",
+    "keepAudio": "转写后保留音频文件",
+    "keepAudioNote": "默认情况下，转写稿生成后，录音会立即从这台电脑上删除。",
+    "uploading": "正在上传… {percent}%",
+    "start": "开始转写",
+    "cancel": "取消上传"
+  },
+  "call": {
+    "language": "语言：{language}",
+    "cancelledNote": "已取消转写。录音已从这台电脑上删除。",
+    "uploadAgain": "重新上传",
+    "audioKept": "音频文件保留在这台电脑上。",
+    "audioDeleted": "音频文件已在转写后删除。",
+    "proposalDraft": "提案草稿",
+    "profileNotice": "草稿会参考个人资料中的服务、费率和付款条款。",
+    "draftCancelled": "草稿已取消。",
+    "writeIn": "撰写语言",
+    "callLanguage": "通话所用语言",
+    "callLanguageNamed": "通话所用语言（{language}）",
+    "draft": "生成提案草稿",
+    "draftAgain": "重新生成草稿",
+    "warnings": "部分内容在通话中找不到出处，已标为“假设”。发送前请核对。",
+    "sourceHint": "点击条目旁的时间，可查看通话中的原话。",
+    "edit": "编辑提案",
+    "downloadMd": "下载 Markdown",
+    "downloadPdf": "下载 PDF",
+    "pdfUnsupported": "PDF 导出仅支持西欧语言。请改为下载 Markdown 版本。",
+    "saved": "更改已保存。",
+    "saveChanges": "保存更改",
+    "discard": "放弃更改",
+    "unsaved": "有未保存的更改。下载的是已保存的版本。",
+    "basedOn": "草稿的依据",
+    "transcript": "转写稿",
+    "delete": "删除通话",
+    "confirmDelete": "要从这台电脑上删除此通话及其转写稿吗？",
+    "confirmRedraft": "要重新撰写草稿吗？新草稿将替换当前草稿，包括已做的所有更改。",
+    "confirmDiscard": "要放弃更改吗？",
+    "confirmLeave": "有未保存的更改。不保存就离开吗？"
+  },
+  "profile": {
+    "title": "个人资料",
+    "intro": "用于撰写提案：服务内容、费率、付款条款、语气以及偏好的章节。内容只保存在这台电脑上。",
+    "name": "姓名或企业名称",
+    "services": "提供的服务",
+    "servicesHint": "（每行一项）",
+    "hourlyRate": "小时费率",
+    "hourlyRateHint": "（任意币种，按希望在提案中显示的写法填写，例如每小时 650 MXN）",
+    "projectRates": "项目费率",
+    "projectRatesHint": "（每行一项，例如：网站最多 5 个板块：24,000 MXN）",
+    "ratesNote": "提案中的价格只来自这里的费率。客户提到的预算只作为备注显示，不会当作报价。",
+    "paymentTerms": "默认付款条款",
+    "tone": "语气",
+    "toneHint": "（例如：专业而友好）",
+    "save": "保存个人资料",
+    "saved": "个人资料已保存。"
+  },
+  "sections": {
+    "legend": "提案章节",
+    "help": "选择提案要包含的章节及其顺序。“费用”章节始终排在“工作范围”之后。",
+    "moveUp": "将“{section}”上移",
+    "moveDown": "将“{section}”下移",
+    "summary": "摘要",
+    "problem": "对问题的理解",
+    "scope": "工作范围",
+    "deliverables": "交付成果",
+    "out_of_scope": "范围之外",
+    "timeline": "时间安排",
+    "open_questions": "待确认的问题",
+    "investment": "费用",
+    "terms": "条款"
+  },
+  "notes": {
+    "client": "客户：",
+    "openQuestions": "通话中尚未明确的问题",
+    "groups": {
+      "client_context": "客户背景",
+      "problem": "问题",
+      "goals": "目标",
+      "requirements": "需求",
+      "constraints": "限制条件",
+      "budget": "提及的预算",
+      "deadlines": "提及的期限",
+      "next_steps": "后续步骤",
+      "risks": "风险"
+    }
+  },
+  "notices": {
+    "title": "第三方声明",
+    "intro": "PostCall 由多个在本机运行的开源组件构成。下面列出各组件及其所用的许可证。",
+    "english": "下方的许可证文本为英文原文，与作者发布的一致。"
+  },
+  "proposal": {
+    "empty": "此章节没有识别到相关内容。"
+  },
+  "editor": {
+    "addItem": "添加条目",
+    "addQuestion": "添加问题",
+    "addRate": "添加费率",
+    "assumption": "假设",
+    "assumptionNoSource": "假设（通话中无出处）",
+    "itemText": "条目内容",
+    "priceNote": "价格备注",
+    "question": "问题",
+    "rate": "费率",
+    "rates": "费率（按希望在提案中显示的写法填写）",
+    "removeItem": "删除条目",
+    "removeQuestion": "删除问题",
+    "removeRate": "删除费率"
+  },
+  "source": {
+    "at": "通话中 {time} 处的出处",
+    "show": "在转写稿中查看"
+  },
+  "draft": {
+    "assumptionTitle": "通话中没有提到这一点。发送前请核对。"
+  },
+  "transcript": {
+    "empty": "这段录音中没有检测到语音。"
+  },
+  "picker": {
+    "legend": "语言模型",
+    "intro": "语言模型负责阅读通话笔记并撰写草稿，在这台电脑上运行。",
+    "recommended": "推荐",
+    "notRecommended": "不推荐用于这台电脑",
+    "installed": "已在这台电脑上",
+    "facts": "下载 {size} · 约需 {memory} 内存 · {license}",
+    "ramWarning": "需要约 {need} 内存，这台电脑只有 {have}。",
+    "others": "我们测试过的其他模型",
+    "advanced": "高级：使用 Ollama 中的其他模型",
+    "useName": "使用此模型名称",
+    "placeholder": "名称:标签，例如 llama3.2:3b",
+    "nameLabel": "Ollama 模型名称和标签",
+    "advancedNote": "可填写 {library} 中的任意模型名称和标签。我们未测试过的模型，质量可能较低。使用前会先用一段简短的示例通话进行检测。不允许使用云端模型：通话内容绝不会离开这台电脑。",
+    "library": "Ollama 模型库",
+    "memory": "这台电脑有 {memory} 内存。"
+  },
+  "setup": {
+    "request": {
+      "title": "欢迎使用 PostCall",
+      "intro": "PostCall 完全离线运行，并为客户通话保密。为此，所需的 AI 模型会一次性下载到这台电脑上。之后，通话的任何内容都不会离开本机。",
+      "speech": "语音模型（同时下载）",
+      "total": "下载总量：",
+      "plusModel": "另加所选语言模型的大小（开始下载时显示）",
+      "diskNeeded": "所需可用磁盘空间：",
+      "diskRoom": "下载内容加 {margin} 的余量",
+      "diskAvailable": "当前可用：",
+      "noRoom": "可用磁盘空间不足。请释放一些空间，或选择较小的模型。",
+      "wifi": "建议连接 Wi-Fi：下载量较大。下载可以暂停，稍后再继续。",
+      "download": "立即下载",
+      "starting": "正在启动…"
+    },
+    "progress": {
+      "title": "正在设置 PostCall",
+      "overall": "设置进度 {percent}%",
+      "interrupted": "PostCall 关闭时，下载被中断。要继续吗？将从中断处接着下载。",
+      "paused": "已暂停，当前没有下载。",
+      "ready": "一切就绪。通话内容只保留在这台电脑上。",
+      "start": "开始使用 PostCall",
+      "choose": "选择其他模型",
+      "useRecommended": "使用推荐模型（{model}）"
+    },
+    "steps": {
+      "engine": "准备本地 AI 引擎",
+      "llm": "下载语言模型",
+      "whisper": "下载语音模型",
+      "verify": "校验下载内容",
+      "compat": "检查模型能否正常工作",
+      "ready": "就绪"
+    },
+    "engine": {
+      "title": "PostCall 无法启动 AI 引擎",
+      "advice": "请关闭并重新打开 PostCall。如果问题仍然出现，请重启电脑。"
+    },
+    "later": {
+      "title": "PostCall 需要先下载模型",
+      "body": "AI 模型下载到这台电脑之前，PostCall 的功能都无法使用。下次打开时会再次提示。",
+      "button": "下载模型"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "models": "这台电脑上的语言模型",
+    "none": "暂无。",
+    "inUse": "使用中",
+    "notChecked": "尚未检测",
+    "cloud": "云端模型：不允许",
+    "use": "使用此模型",
+    "checkAndUse": "检测并使用",
+    "downloadAnother": "下载其他模型",
+    "downloadAndCheck": "下载并检测",
+    "speech": "语音模型",
+    "speechReady": "已在这台电脑上",
+    "speechPartial": "部分已下载",
+    "speechMissing": "未下载",
+    "computer": "这台电脑",
+    "computerFacts": "{memory} 内存 · 可用磁盘空间 {disk}",
+    "confirmDeleteModel": "要从这台电脑上删除 {name} 吗？这样可以释放磁盘空间，之后也可以重新下载。",
+    "confirmDeleteSpeech": "要删除语音模型吗？重新下载之前，转写功能将无法使用。"
+  },
+  "models": {
+    "gemma4_e4b": {
+      "note": "测试表现最佳：在我们的示例通话中找出了 13 条关键事实中的 12 条，并在 16 GB 内存的 Mac 上不到 3 分钟就完成了一段 30 分钟通话的草稿。"
+    },
+    "qwen3_5_9b": {
+      "note": "找出的事实数量相同，但处理 30 分钟通话的速度约慢一倍（5 分钟），还添加了两处无人提过的小细节。"
+    },
+    "qwen3_5_4b": {
+      "note": "体积小、速度快，但漏掉了约三分之一的事实，并虚构了一个范围之外的条目。"
+    },
+    "mistral_nemo_12b": {
+      "note": "速度尚可，但笔记内容单薄：10 条事实中约找出 6 条。"
+    },
+    "gemma4_12b": {
+      "note": "在 16 GB 内存的 Mac 上太慢，输出也过于简略（约找出三分之一的事实）。需要 24 GB 或更多内存的电脑。"
+    },
+    "whisper": {
+      "note": "可将录音转为约 99 种语言的文字，并自动检测语言。运行时占用约 1 GB 内存。"
+    }
+  },
+  "apiErrors": {
+    "engine_missing": "转写引擎不可用。",
+    "model_missing": "语音模型尚未下载。",
+    "decoder_missing": "缺少 macOS 音频转换器，无法读取音频文件。",
+    "decode_failed": "无法读取该音频文件。请尝试重新导出为 mp3、m4a 或 wav。",
+    "transcribe_failed": "转写时出了问题，可以重试。",
+    "interrupted": "转写过程中应用被关闭了，可以重试。",
+    "audio_missing": "音频文件已不存在，请重新上传。",
+    "llm_model_not_set": "尚未选择语言模型。",
+    "llm_model_missing": "所选语言模型尚未安装。",
+    "llm_unreachable": "语言模型引擎未在运行。",
+    "llm_timeout": "语言模型响应时间过长，请重试。",
+    "llm_failed": "语言模型返回了错误，请重试。",
+    "invalid_model_output": "即使重试后，仍无法理解模型的回答。",
+    "draft_invalid": "即使重试后，草稿仍违反了规则（包含了价格）。",
+    "not_enough_information": "通话中的信息不足，无法撰写提案。",
+    "profile_missing": "请先设置个人资料。",
+    "empty_transcript": "转写稿为空，没有可用于撰写草稿的内容。",
+    "generation_failed": "撰写草稿时出了问题，可以重试。",
+    "ollama_unreachable": "本地 AI 引擎未在运行。",
+    "ollama_failed": "本地 AI 引擎返回了错误，请重试。",
+    "model_not_found": "Ollama 模型库中没有这个名称的模型。请检查名称和标签。",
+    "invalid_model_name": "这不是有效的模型名称。请使用名称:标签的格式，例如 gemma4:e4b。",
+    "cloud_model": "云端模型会把通话内容发送到服务器。PostCall 只使用在这台电脑上运行的模型。",
+    "network_error": "网络连接中断，下载已停止。请重试，下载会从中断处继续。",
+    "checksum_mismatch": "下载的文件已损坏，已被删除。请重试。",
+    "download_failed": "下载服务器没有返回预期的文件。请稍后再试。",
+    "pull_failed": "无法下载该模型，请重试。",
+    "not_enough_disk": "可用磁盘空间不足，无法进行此次下载。",
+    "model_not_installed": "这台电脑上没有该模型。",
+    "setup_failed": "设置过程中出了问题，请重试。",
+    "setup_busy": "已有下载正在进行。",
+    "nothing_to_resume": "没有可继续的中断下载。",
+    "compat_needed": "这台电脑尚未检测过该模型。",
+    "model_in_use": "这是正在使用的模型。请先切换到其他模型。",
+    "compat_no_chat": "该模型无法用于写作类任务，可能是为搜索等其他用途设计的。",
+    "compat_invalid_output": "即使重试后，该模型仍未返回应用所需的结构化笔记。",
+    "compat_not_enough": "该模型可以运行，但在一段简短的测试通话中没有找出任何有用信息，可能是模型太小。",
+    "compat_timeout": "该模型在简短测试中耗时过长，可能对这台电脑来说太大。",
+    "compat_model_missing": "测试开始前模型已不存在，请重试。",
+    "profile_not_set_up": "尚未设置个人资料。",
+    "call_not_found": "未找到该通话。",
+    "transcribe_first": "请先转写通话，再撰写提案草稿。",
+    "draft_in_progress": "这段通话的草稿正在撰写中。",
+    "no_draft": "这段通话还没有草稿。",
+    "draft_not_running": "只能取消正在撰写的草稿。",
+    "draft_not_ready": "草稿尚未就绪。",
+    "unsupported_file_type": "不支持的文件类型。请使用 mp3、m4a、wav 或 mp4。",
+    "file_empty": "文件是空的。",
+    "transcript_not_ready": "转写稿尚未就绪。",
+    "call_not_running": "只能取消正在进行的转写。",
+    "cannot_retry": "只有失败且音频仍保留在磁盘上的转写才能重试。",
+    "cancel_transcription_first": "请先取消转写，再删除。",
+    "cancel_draft_first": "请先取消草稿，再删除通话。",
+    "pdf_unsupported_characters": "PDF 导出无法显示这份提案中的部分字符（仅支持西欧语言）。请改为导出 Markdown。",
+    "edit_summary_prices": "摘要中不能包含价格。",
+    "edit_prices_outside_investment": "价格只能出现在“费用”章节，不能出现在{where}中。",
+    "edit_unknown_segments": "{where}中有条目引用了转写稿里不存在的片段：{segments}。",
+    "edit_unknown_section": "未知章节：{section}"
+  }
+}

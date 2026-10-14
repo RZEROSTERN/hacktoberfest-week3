@@ -14,16 +14,19 @@ const isEmpty = (s: ProposalSection) => !s.text.trim() && s.lines.length === 0 &
       :key="section.id"
       :data-section="section.id"
     >
-      <h3>{{ section.title }}</h3>
+      <h3 dir="auto">
+        {{ section.title }}
+      </h3>
       <p
         v-if="isEmpty(section)"
         class="muted"
       >
-        Nothing was identified for this section.
+        {{ $t('proposal.empty') }}
       </p>
       <p
         v-if="section.text"
         class="prewrap"
+        dir="auto"
       >
         {{ section.text }}
       </p>
@@ -31,6 +34,7 @@ const isEmpty = (s: ProposalSection) => !s.text.trim() && s.lines.length === 0 &
         <li
           v-for="line in section.lines"
           :key="line"
+          dir="auto"
         >
           {{ line }}
         </li>
@@ -39,6 +43,7 @@ const isEmpty = (s: ProposalSection) => !s.text.trim() && s.lines.length === 0 &
         <p
           v-if="section.items_label"
           class="muted"
+          dir="auto"
         >
           {{ section.items_label }}
         </p>
