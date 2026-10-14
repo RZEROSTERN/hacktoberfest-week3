@@ -102,6 +102,15 @@ fail at start with a SUID sandbox helper error. The proper fix is an AppArmor pr
 (shipped by the `.deb` through `appArmorProfile`); the workarounds `--no-sandbox` and a system-wide sysctl weaken
 security and are not acceptable here. For AppImage users, document the symptom and point them to the `.deb`.
 
+### 3.3b RHEL family (AlmaLinux, Rocky, RHEL)
+
+Checked on 2026-10-14 in the `almalinux:9` (9.8) and `almalinux:10` (10.2) images (**verified**): glibc is 2.34 on 9 and
+2.39 on 10. The packages are built on Ubuntu 22.04 (glibc 2.35). On 10, `libXScrnSaver` (required by electron-builder's
+default RPM dependency list) is not in BaseOS, AppStream, CRB or extras, so `dnf` would refuse the package; the Xorg
+server (and so `Xvfb`) is not there either. On 9 every dependency exists, but a program built against glibc 2.35 may not
+start. Neither has been fixed. What to run on such a machine, and a Windows test run, are in
+[OTHER-SYSTEMS.md](OTHER-SYSTEMS.md).
+
 ### 3.4 Sketch of the configuration (option names verified in the installed electron-builder 26.15.3)
 
 ```yaml

@@ -227,7 +227,7 @@ PostCall is released today for macOS only. These are the versions being worked o
 - **Windows.** Planned. It needs the process control, the audio conversion and the code signing worked out first, and a Windows computer without a graphics card may miss the speed targets in [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 - **Mac App Store.** Possible but the riskiest of these, because of Apple's sandbox and its rules on large downloads.
 
-The plan for each, what was checked in the documentation and what still has to be tested, is in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+The plan for each, what was checked in the documentation and what still has to be tested, is in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). If you have an Ubuntu or Mint, AlmaLinux (or another RHEL clone) or Windows machine and want to help, [docs/OTHER-SYSTEMS.md](docs/OTHER-SYSTEMS.md) says what to run and what to send back.
 
 ## Known limits
 
