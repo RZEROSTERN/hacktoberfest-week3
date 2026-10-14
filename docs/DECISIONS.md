@@ -567,3 +567,13 @@ macOS 14 to 26.1 (this Mac loads the newer MLX libraries, so `mlx_metal_v3` has 
 and Electron's Save dialog for exports (the check saved downloads without it).
 **gemma4:e4b was hard-linked** from the system Ollama's folder into the app's own for that run, to avoid
 a 9.6 GB download; the download path itself was exercised with the tiny model and the speech model.
+
+**App name and data folder (found while writing the README).** The first build had no `productName`, so
+Electron named the app `scopewise-desktop`: the menu said "Quit scopewise-desktop" and data would have gone
+to `~/Library/Application Support/scopewise-desktop`. `package.json` now sets `productName: "Scopewise"`, so
+an installed app keeps everything in `~/Library/Application Support/Scopewise` (data, models, logs). Running
+the shell from the repository uses `Scopewise (development)` instead, so a development shell never shares
+models, data or the single-instance lock with an installed copy. Checked on the rebuilt `.dmg`'s app (launched
+once, then the folder it created was removed again). Lesson: a test launch ignores a changed `HOME`, so
+tests must always pass `--user-data-dir`.
+

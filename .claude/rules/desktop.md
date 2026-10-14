@@ -33,3 +33,5 @@ paths:
   `securitypolicyviolation`, not with `eval()`.
 - To signal the app, kill the real Electron binary, not `node_modules/.bin/electron` (a Node wrapper).
 - The build is ad-hoc signed (`identity: "-"`, no hardened runtime): Apple Silicon refuses unsigned code.
+- Always start the app with `--user-data-dir=<scratch folder>` when testing: it ignores a changed `HOME` and
+  otherwise writes into `~/Library/Application Support/Scopewise`, the real data folder of an installed app.
