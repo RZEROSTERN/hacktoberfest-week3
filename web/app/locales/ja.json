@@ -1,0 +1,362 @@
+{
+  "language": {
+    "label": "言語"
+  },
+  "nav": {
+    "main": "メイン",
+    "calls": "通話",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "notices": "サードパーティの表示"
+  },
+  "common": {
+    "loading": "読み込み中…",
+    "tryAgain": "もう一度試す",
+    "notNow": "今はしない",
+    "pause": "一時停止",
+    "pausing": "一時停止しています…",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "cancelling": "キャンセルしています…",
+    "delete": "削除",
+    "saving": "保存中…"
+  },
+  "errors": {
+    "engineUnreachable": "ローカルエンジンに接続できませんでした。アプリはまだ起動していますか？",
+    "generic": "問題が発生しました。",
+    "upload": "アップロードに失敗しました。",
+    "uploadCancelled": "アップロードをキャンセルしました。",
+    "draftStart": "下書きを開始できませんでした。",
+    "draftCancel": "下書きをキャンセルできませんでした。",
+    "draftSave": "変更を保存できませんでした。",
+    "export": "提案書をエクスポートできませんでした。",
+    "profileSave": "プロフィールを保存できませんでした。",
+    "modelSelect": "そのモデルを選択できませんでした。",
+    "modelDelete": "モデルを削除できませんでした。",
+    "whisperDelete": "音声認識モデルを削除できませんでした。",
+    "downloadStart": "ダウンロードを開始できませんでした。",
+    "downloadResume": "ダウンロードを再開できませんでした。"
+  },
+  "download": {
+    "progress": "{done} / {total}",
+    "waiting": "データを待っています…"
+  },
+  "eta": {
+    "lessThanMinute": "残り1分未満",
+    "about": "残り約{time}"
+  },
+  "status": {
+    "queued": "開始を待っています",
+    "converting": "音声を準備しています",
+    "transcribing": "文字起こし中… {percent}%",
+    "done": "文字起こしが完了しました",
+    "failed": "失敗しました",
+    "cancelled": "キャンセルしました"
+  },
+  "draftStatus": {
+    "queued": "開始を待っています",
+    "extracting": "通話を読み取っています",
+    "extractingParts": "通話を読み取っています（{part} / {total}）",
+    "drafting": "提案書を作成しています",
+    "done": "下書きが完成しました",
+    "failed": "失敗しました",
+    "cancelled": "キャンセルしました"
+  },
+  "consent": {
+    "title": "録音への同意。",
+    "body": "参加者全員が録音に同意している通話のみアップロードしてください。"
+  },
+  "profileNotice": {
+    "title": "まずプロフィールを設定してください。",
+    "link": "プロフィールを設定する"
+  },
+  "home": {
+    "title": "あなたの通話",
+    "intro": "録音したクライアントとの通話を、提案書の下書きにします。すべてこのコンピューターの中で完結します。",
+    "profileNotice": "サービス内容、料金、支払条件は、すべての提案書に反映されます。",
+    "newProposal": "新しい提案書",
+    "noCalls": "まだ通話がありません。最初の録音をアップロードして始めましょう。"
+  },
+  "upload": {
+    "title": "新しい提案書",
+    "intro": "ヒアリング通話の録音（mp3、m4a、wav、mp4）をアップロードしてください。文字起こしはこのコンピューターで行われます。",
+    "fileLabel": "通話の録音",
+    "keepAudio": "文字起こしの後も音声ファイルを残す",
+    "keepAudioNote": "通常、文字起こしが完了すると録音はこのコンピューターから削除されます。",
+    "uploading": "アップロード中… {percent}%",
+    "start": "文字起こしを開始",
+    "cancel": "アップロードをキャンセル"
+  },
+  "call": {
+    "language": "言語：{language}",
+    "cancelledNote": "文字起こしをキャンセルしました。録音はこのコンピューターから削除されました。",
+    "uploadAgain": "もう一度アップロード",
+    "audioKept": "音声ファイルはこのコンピューターに保存されています。",
+    "audioDeleted": "音声ファイルは文字起こしの後に削除されました。",
+    "proposalDraft": "提案書の下書き",
+    "profileNotice": "下書きには、あなたのサービス内容、料金、支払条件が使われます。",
+    "draftCancelled": "下書きをキャンセルしました。",
+    "writeIn": "作成する言語",
+    "callLanguage": "通話と同じ言語",
+    "callLanguageNamed": "通話と同じ言語（{language}）",
+    "draft": "下書きを作成",
+    "draftAgain": "下書きを作り直す",
+    "warnings": "通話内に根拠がなかった項目には「仮定」と表示しています。送信前に確認してください。",
+    "sourceHint": "項目の横にある時刻をクリックすると、通話での発言を確認できます。",
+    "edit": "提案書を編集",
+    "downloadMd": "Markdown をダウンロード",
+    "downloadPdf": "PDF をダウンロード",
+    "pdfUnsupported": "PDF エクスポートは西ヨーロッパの言語にのみ対応しています。この提案書は Markdown でダウンロードしてください。",
+    "saved": "変更を保存しました。",
+    "saveChanges": "変更を保存",
+    "discard": "変更を破棄",
+    "unsaved": "保存されていない変更があります。ダウンロードされるのは保存済みの内容です。",
+    "basedOn": "下書きの根拠",
+    "transcript": "文字起こし",
+    "delete": "通話を削除",
+    "confirmDelete": "この通話と文字起こしをこのコンピューターから削除しますか？",
+    "confirmRedraft": "新しい下書きを作成しますか？あなたが加えた変更を含め、現在の下書きは置き換えられます。",
+    "confirmDiscard": "変更を破棄しますか？",
+    "confirmLeave": "保存されていない変更があります。保存せずに移動しますか？"
+  },
+  "profile": {
+    "title": "あなたのプロフィール",
+    "intro": "提案書の作成に使われます。サービス内容、料金、支払条件、文体、希望するセクションを登録します。情報はこのコンピューターの中だけに保存されます。",
+    "name": "氏名または屋号",
+    "services": "提供するサービス",
+    "servicesHint": "（1行に1つ）",
+    "hourlyRate": "時間単価",
+    "hourlyRateHint": "（通貨は自由です。提案書に表示したい形で入力してください。例：1時間あたり 650 MXN）",
+    "projectRates": "プロジェクト単価",
+    "projectRatesHint": "（1行に1つ。例：5セクションまでのウェブサイト：24,000 MXN）",
+    "ratesNote": "提案書の金額は、ここに登録した料金だけから作られます。クライアントが口にした予算はメモとして表示され、金額として使われることはありません。",
+    "paymentTerms": "標準の支払条件",
+    "tone": "文体",
+    "toneHint": "（例：丁寧で親しみやすい）",
+    "save": "プロフィールを保存",
+    "saved": "プロフィールを保存しました。"
+  },
+  "sections": {
+    "legend": "提案書のセクション",
+    "help": "提案書に含めるセクションと、その順序を選んでください。費用は常に対象範囲の後に置かれます。",
+    "moveUp": "{section}を上へ移動",
+    "moveDown": "{section}を下へ移動",
+    "summary": "概要",
+    "problem": "課題の理解",
+    "scope": "対象範囲",
+    "deliverables": "成果物",
+    "out_of_scope": "対象外",
+    "timeline": "スケジュール",
+    "open_questions": "未確認事項",
+    "investment": "費用",
+    "terms": "条件"
+  },
+  "notes": {
+    "client": "クライアント：",
+    "openQuestions": "通話で未確認のまま残った事項",
+    "groups": {
+      "client_context": "クライアントについて",
+      "problem": "課題",
+      "goals": "目標",
+      "requirements": "要件",
+      "constraints": "制約",
+      "budget": "言及された予算",
+      "deadlines": "言及された期限",
+      "next_steps": "次のステップ",
+      "risks": "リスク"
+    }
+  },
+  "notices": {
+    "title": "サードパーティの表示",
+    "intro": "PostCall は、お使いのコンピューター上で動作するオープンソースの部品でできています。ここでは、どんな部品が使われ、どのライセンスで提供されているかをご紹介します。",
+    "english": "以下のライセンス文は、作者が公開したとおり英語で表示しています。"
+  },
+  "proposal": {
+    "empty": "このセクションに該当する内容は見つかりませんでした。"
+  },
+  "editor": {
+    "addItem": "項目を追加",
+    "addQuestion": "質問を追加",
+    "addRate": "料金を追加",
+    "assumption": "仮定",
+    "assumptionNoSource": "仮定（通話内に根拠なし）",
+    "itemText": "項目の内容",
+    "priceNote": "金額のメモ",
+    "question": "質問",
+    "rate": "料金",
+    "rates": "料金（提案書に表示したい形で入力）",
+    "removeItem": "項目を削除",
+    "removeQuestion": "質問を削除",
+    "removeRate": "料金を削除"
+  },
+  "source": {
+    "at": "通話内の根拠（{time}）",
+    "show": "文字起こしで表示"
+  },
+  "draft": {
+    "assumptionTitle": "通話では述べられていない内容です。送信前に確認してください。"
+  },
+  "transcript": {
+    "empty": "この録音から音声は検出されませんでした。"
+  },
+  "picker": {
+    "legend": "言語モデル",
+    "intro": "言語モデルが通話のメモを読み取り、下書きを作成します。このコンピューター上で動作します。",
+    "recommended": "おすすめ",
+    "notRecommended": "このコンピューターには非推奨",
+    "installed": "このコンピューターにインストール済み",
+    "facts": "ダウンロード {size} · メモリ約 {memory} · {license}",
+    "ramWarning": "メモリが約 {need} 必要ですが、このコンピューターには {have} あります。",
+    "others": "テスト済みのその他のモデル",
+    "advanced": "詳細設定：Ollama の別のモデルを使う",
+    "useName": "このモデル名を使う",
+    "placeholder": "name:tag の形式で入力。例：llama3.2:3b",
+    "nameLabel": "Ollama のモデル名とタグ",
+    "advancedNote": "{library}にある任意のモデル名とタグを指定できます。テストしていないモデルは、品質が低くなる場合があります。使用する前に、短いサンプル通話で動作を確認します。クラウドモデルは使えません。通話の内容がこのコンピューターの外に出ることはありません。",
+    "library": "Ollama ライブラリ",
+    "memory": "このコンピューターのメモリは {memory} です。"
+  },
+  "setup": {
+    "request": {
+      "title": "PostCall へようこそ",
+      "intro": "PostCall は完全オフラインで動作し、クライアントとの通話を非公開に保ちます。そのため、必要な AI モデルを一度だけこのコンピューターにダウンロードします。この後、通話の内容がコンピューターの外に出ることは一切ありません。",
+      "speech": "音声認識モデル（これもダウンロードします）",
+      "total": "ダウンロードの合計：",
+      "plusModel": "と、選んだモデルのサイズ（ダウンロード開始時に表示されます）",
+      "diskNeeded": "必要な空きディスク容量：",
+      "diskRoom": "ダウンロード分に加えて {margin} の余裕",
+      "diskAvailable": "現在の空き容量：",
+      "noRoom": "空きディスク容量が足りません。容量を空けるか、より小さいモデルを選んでください。",
+      "wifi": "容量が大きいため、Wi-Fi への接続をおすすめします。ダウンロードは一時停止して、後で続けることもできます。",
+      "download": "今すぐダウンロード",
+      "starting": "開始しています…"
+    },
+    "progress": {
+      "title": "PostCall をセットアップしています",
+      "overall": "セットアップ全体の {percent}%",
+      "interrupted": "PostCall が閉じられたため、ダウンロードが中断されました。続けますか？中断したところから再開します。",
+      "paused": "一時停止中です。ダウンロードは行われていません。",
+      "ready": "準備が整いました。通話の内容はこのコンピューターの中にだけ保存されます。",
+      "start": "PostCall を使い始める",
+      "choose": "別のモデルを選ぶ",
+      "useRecommended": "おすすめのモデル（{model}）を使う"
+    },
+    "steps": {
+      "engine": "ローカル AI エンジンを準備",
+      "llm": "言語モデルをダウンロード",
+      "whisper": "音声認識モデルをダウンロード",
+      "verify": "ダウンロードを検証",
+      "compat": "モデルが動作するか確認",
+      "ready": "準備完了"
+    },
+    "engine": {
+      "title": "PostCall の AI エンジンを起動できません",
+      "advice": "PostCall を閉じて、もう一度開いてください。それでも解決しない場合は、コンピューターを再起動してください。"
+    },
+    "later": {
+      "title": "PostCall にはモデルが必要です",
+      "body": "AI モデルがこのコンピューターに入るまで、PostCall の機能は使えません。次に開いたときも、もう一度お尋ねします。",
+      "button": "モデルをダウンロード"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "models": "このコンピューターの言語モデル",
+    "none": "まだありません。",
+    "inUse": "使用中",
+    "notChecked": "未確認",
+    "cloud": "クラウドモデル：使用不可",
+    "use": "このモデルを使う",
+    "checkAndUse": "確認して使う",
+    "downloadAnother": "別のモデルをダウンロード",
+    "downloadAndCheck": "ダウンロードして確認",
+    "speech": "音声認識モデル",
+    "speechReady": "このコンピューターにあります",
+    "speechPartial": "一部のみダウンロード済み",
+    "speechMissing": "未ダウンロード",
+    "computer": "このコンピューター",
+    "computerFacts": "メモリ {memory} · 空きディスク容量 {disk}",
+    "confirmDeleteModel": "{name} をこのコンピューターから削除しますか？ディスク容量が空きます。後からもう一度ダウンロードできます。",
+    "confirmDeleteSpeech": "音声認識モデルを削除しますか？もう一度ダウンロードするまで、文字起こしは使えません。"
+  },
+  "models": {
+    "gemma4_e4b": {
+      "note": "テストで最も良い結果でした。サンプル通話では13件の重要な事実のうち12件を見つけ、16 GB の Mac で30分の通話の下書きを3分以内に作成しました。"
+    },
+    "qwen3_5_9b": {
+      "note": "見つけた事実の数は同じですが、30分の通話では処理に約2倍の時間（5分）がかかり、誰も言っていない細かな内容を2点付け加えました。"
+    },
+    "qwen3_5_4b": {
+      "note": "小型で高速ですが、事実の約3分の1を見落とし、実際にはない対象外の項目を作り出しました。"
+    },
+    "mistral_nemo_12b": {
+      "note": "比較的高速ですが、メモの内容が薄く、10件中約6件の事実にとどまりました。"
+    },
+    "gemma4_12b": {
+      "note": "16 GB の Mac では遅すぎ、出力も簡潔すぎました（事実の約3分の1）。メモリ24 GB 以上のコンピューターが必要です。"
+    },
+    "whisper": {
+      "note": "録音を約99言語でテキストに変換し、言語も自動で判別します。動作中のメモリ使用量は約1 GB です。"
+    }
+  },
+  "apiErrors": {
+    "engine_missing": "文字起こしエンジンを利用できません。",
+    "model_missing": "音声認識モデルがまだダウンロードされていません。",
+    "decoder_missing": "macOS の音声変換機能が見つからないため、音声ファイルを読み込めません。",
+    "decode_failed": "音声ファイルを読み込めませんでした。mp3、m4a、wav のいずれかで書き出し直してお試しください。",
+    "transcribe_failed": "文字起こしの途中で問題が発生しました。もう一度お試しください。",
+    "interrupted": "文字起こしの途中でアプリが閉じられました。もう一度お試しください。",
+    "audio_missing": "音声ファイルが見つかりません。もう一度アップロードしてください。",
+    "llm_model_not_set": "言語モデルがまだ選択されていません。",
+    "llm_model_missing": "選択した言語モデルがインストールされていません。",
+    "llm_unreachable": "言語モデルのエンジンが起動していません。",
+    "llm_timeout": "言語モデルの応答に時間がかかりすぎました。もう一度お試しください。",
+    "llm_failed": "言語モデルでエラーが発生しました。もう一度お試しください。",
+    "invalid_model_output": "再試行しても、モデルの回答を読み取れませんでした。",
+    "draft_invalid": "再試行しても、下書きがルールに反していました（金額が含まれていました）。",
+    "not_enough_information": "通話に提案書を作成するための十分な情報がありませんでした。",
+    "profile_missing": "まずプロフィールを設定してください。",
+    "empty_transcript": "文字起こしが空のため、下書きを作成できません。",
+    "generation_failed": "下書きの作成中に問題が発生しました。もう一度お試しください。",
+    "ollama_unreachable": "ローカル AI エンジンが起動していません。",
+    "ollama_failed": "ローカル AI エンジンでエラーが発生しました。もう一度お試しください。",
+    "model_not_found": "その名前のモデルは Ollama ライブラリにありません。名前とタグを確認してください。",
+    "invalid_model_name": "モデル名が正しくありません。name:tag の形式で入力してください。例：gemma4:e4b",
+    "cloud_model": "クラウドモデルは、通話の内容をサーバーに送信します。PostCall は、このコンピューター上で動作するモデルだけを使います。",
+    "network_error": "ネットワーク接続が切れたため、ダウンロードが止まりました。もう一度お試しください。中断したところから続きます。",
+    "checksum_mismatch": "ダウンロードしたファイルが破損していたため、削除しました。もう一度お試しください。",
+    "download_failed": "ダウンロードサーバーから期待したファイルが届きませんでした。しばらくしてからもう一度お試しください。",
+    "pull_failed": "モデルをダウンロードできませんでした。もう一度お試しください。",
+    "not_enough_disk": "このダウンロードに必要な空きディスク容量がありません。",
+    "model_not_installed": "そのモデルはこのコンピューターにありません。",
+    "setup_failed": "セットアップ中に問題が発生しました。もう一度お試しください。",
+    "setup_busy": "すでにダウンロードを実行中です。",
+    "nothing_to_resume": "再開できる中断中のダウンロードはありません。",
+    "compat_needed": "このモデルは、このコンピューターではまだ確認されていません。",
+    "model_in_use": "これは使用中のモデルです。先に別のモデルへ切り替えてください。",
+    "compat_no_chat": "このモデルは文章作成の用途で実行できませんでした。検索など、別の目的向けのモデルかもしれません。",
+    "compat_invalid_output": "再試行しても、このモデルはアプリに必要な構造化メモを返しませんでした。",
+    "compat_not_enough": "このモデルは動作しましたが、短いテスト通話から役立つ内容を見つけられませんでした。おそらくサイズが小さすぎます。",
+    "compat_timeout": "このモデルは短いテストでも時間がかかりすぎました。このコンピューターには大きすぎる可能性があります。",
+    "compat_model_missing": "テストする前にモデルが見つからなくなりました。もう一度お試しください。",
+    "profile_not_set_up": "プロフィールがまだ設定されていません。",
+    "call_not_found": "通話が見つかりません。",
+    "transcribe_first": "提案書の下書きを作成する前に、通話を文字起こししてください。",
+    "draft_in_progress": "この通話の下書きは、すでに作成中です。",
+    "no_draft": "この通話の下書きはまだありません。",
+    "draft_not_running": "キャンセルできるのは、作成中の下書きだけです。",
+    "draft_not_ready": "下書きはまだ完成していません。",
+    "unsupported_file_type": "対応していないファイル形式です。mp3、m4a、wav、mp4 のいずれかを使ってください。",
+    "file_empty": "ファイルが空です。",
+    "transcript_not_ready": "文字起こしはまだ完了していません。",
+    "call_not_running": "キャンセルできるのは、実行中の文字起こしだけです。",
+    "cannot_retry": "再試行できるのは、音声ファイルが残っている、失敗した文字起こしだけです。",
+    "cancel_transcription_first": "削除する前に、文字起こしをキャンセルしてください。",
+    "cancel_draft_first": "通話を削除する前に、下書きをキャンセルしてください。",
+    "pdf_unsupported_characters": "この提案書には、PDF エクスポートで表示できない文字が含まれています（西ヨーロッパの言語にのみ対応しています）。代わりに Markdown でエクスポートしてください。",
+    "edit_summary_prices": "概要には金額を含められません。",
+    "edit_prices_outside_investment": "金額は費用セクションにのみ記載できます。{where}には記載できません。",
+    "edit_unknown_segments": "{where}の項目が、文字起こしにない区間を参照しています：{segments}。",
+    "edit_unknown_section": "不明なセクション：{section}"
+  }
+}

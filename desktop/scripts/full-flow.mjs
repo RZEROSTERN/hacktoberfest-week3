@@ -77,7 +77,7 @@ function linkModel(name, tag) {
 
 // VS Code-based terminals set ELECTRON_RUN_AS_NODE, which would make Electron behave as plain Node.
 const cleanEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => key !== 'ELECTRON_RUN_AS_NODE'))
-const shell = spawn(appBin, [`--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${userData}`], { stdio: ['ignore', 'ignore', 'ignore'], env: cleanEnv })
+const shell = spawn(appBin, [`--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${userData}`, '--lang=en-US'], { stdio: ['ignore', 'ignore', 'ignore'], env: cleanEnv })
 let page = null
 let apiBase = ''
 const apiJson = async p => (await fetch(`${apiBase}${p}`)).json()

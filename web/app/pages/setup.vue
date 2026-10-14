@@ -3,13 +3,14 @@ import type { Recommended, SetupProgress, SetupStatus } from '~/types/api'
 import { defaultSelection, effectiveModel, type ModelSelection } from '~/utils/setup'
 
 const setup = useSetup()
+const errors = useErrors()
 const ready = useState<boolean | null>('setupReady', () => null)
 
 const status = ref<SetupStatus | null>(null)
 const data = ref<Recommended | null>(null)
 const progress = ref<SetupProgress | null>(null)
 const selection = ref<ModelSelection>({ choice: '', custom: '' })
-const loadError = ref<string | null>(null)
+const unreachable = ref(false)
 const startError = ref<string | null>(null)
 const starting = ref(false)
 const pausing = ref(false)
@@ -19,7 +20,7 @@ const sawRun = ref(false) // a run was active in this visit
 let stopFollowing: (() => void) | null = null
 
 async function load() {
-  loadError.value = null
+  unreachable.value = false
   try {
     const [s, r, p] = await Promise.all([setup.status(), setup.recommended(), setup.progress()])
     status.value = s
@@ -29,7 +30,7 @@ async function load() {
     if (!selection.value.choice) selection.value = defaultSelection(r.llm)
     if (p.state === 'running') follow()
   } catch {
-    loadError.value = 'Could not reach the local engine. Is the app still running?'
+    unreachable.value = true
   }
 }
 
@@ -57,7 +58,7 @@ onBeforeUnmount(() => stopFollowing?.())
 
 /** What to show. A leftover "done" or "failed" from an old run is ignored once the app is ready. */
 const view = computed(() => {
-  if (loadError.value) return 'error'
+  if (unreachable.value) return 'error'
   if (!status.value || !data.value || !progress.value) return 'loading'
   if (status.value.problem) return 'engine'
   const state = progress.value.state
@@ -89,7 +90,7 @@ async function begin(model: string) {
     later.value = false
     follow()
   } catch (e) {
-    startError.value = setup.apiErrorMessage(e, 'The download could not be started.')
+    startError.value = errors.message(e, 'errors.downloadStart')
   } finally {
     starting.value = false
   }
@@ -102,7 +103,7 @@ async function onResume() {
     sawRun.value = true
     follow()
   } catch (e) {
-    startError.value = setup.apiErrorMessage(e, 'The download could not be resumed.')
+    startError.value = errors.message(e, 'errors.downloadResume')
   }
 }
 
@@ -127,38 +128,38 @@ async function finish() {
       v-if="view === 'loading'"
       class="muted"
     >
-      Loading…
+      {{ $t('common.loading') }}
     </p>
 
     <div
       v-else-if="view === 'error' || view === 'engine'"
       role="alert"
     >
-      <h1>PostCall can't start its AI engine</h1>
+      <h1>{{ $t('setup.engine.title') }}</h1>
       <p class="error">
-        {{ loadError ?? status?.problem_message }}
+        {{ unreachable ? $t('errors.engineUnreachable') : errors.job(status?.problem ?? null, status?.problem_message ?? null) }}
       </p>
       <p class="muted">
-        Close and reopen PostCall. If it keeps happening, restart your computer.
+        {{ $t('setup.engine.advice') }}
       </p>
       <button
         class="button"
         @click="load"
       >
-        Try again
+        {{ $t('common.tryAgain') }}
       </button>
     </div>
 
     <div v-else-if="view === 'later'">
-      <h1>PostCall needs its models</h1>
+      <h1>{{ $t('setup.later.title') }}</h1>
       <p>
-        Nothing in PostCall works until the AI models are on this computer. You will be asked again the next time you open it.
+        {{ $t('setup.later.body') }}
       </p>
       <button
         class="button"
         @click="later = false"
       >
-        Download models
+        {{ $t('setup.later.button') }}
       </button>
     </div>
 

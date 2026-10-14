@@ -180,6 +180,12 @@ h1 {
   padding: 6px 0;
 }
 
+/* The text fills its row, so lines align the same way whether they are short or long. */
+.transcript li > span {
+  flex: 1;
+  min-width: 0;
+}
+
 .stamp {
   flex: none;
   width: 4.5rem;
@@ -189,13 +195,16 @@ h1 {
 
 nav {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 4px 16px;
   margin-top: 4px;
 }
 
+/* The brand, the pages and the language picker: they wrap on a narrow window instead of pushing it wider. */
 .shell > header {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 8px 24px;
   align-items: baseline;
 }
 
@@ -275,7 +284,7 @@ fieldset.sections {
 }
 
 .proposal ul {
-  padding-left: 20px;
+  padding-inline-start: 20px;
 }
 
 .prewrap {
@@ -288,7 +297,7 @@ fieldset.sections {
 
 .badge {
   display: inline-block;
-  margin-left: 8px;
+  margin-inline-start: 8px;
   padding: 0 8px;
   border-radius: 999px;
   background: var(--notice-bg);
@@ -298,7 +307,7 @@ fieldset.sections {
 .chip {
   font: inherit;
   font-size: 0.8rem;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   padding: 0 8px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -313,11 +322,14 @@ fieldset.sections {
 }
 
 .quote {
-  margin: 6px 0 6px 12px;
+  margin: 6px 0;
+  margin-inline-start: 12px;
   padding: 8px 12px;
-  border-left: 3px solid var(--accent);
+  border-inline-start: 3px solid var(--accent);
   background: var(--notice-bg);
-  border-radius: 0 6px 6px 0;
+  border-radius: 6px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
 }
 
 .link {
@@ -328,7 +340,7 @@ fieldset.sections {
   text-decoration: underline;
   cursor: pointer;
   padding: 0;
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 
 .transcript li.highlight {
@@ -354,7 +366,7 @@ h2 {
 
 .plain {
   list-style: none;
-  padding-left: 0;
+  padding-inline-start: 0;
   margin: 0 0 8px;
 }
 
@@ -503,7 +515,7 @@ h2 {
 }
 
 .detail {
-  margin-left: 0.6rem;
+  margin-inline-start: 0.6rem;
 }
 
 .shell > footer {
@@ -541,4 +553,27 @@ h2 {
   margin: 0;
   padding: 16px 0 8px;
   background: var(--bg);
+}
+
+/* The play triangle points the way the language reads. */
+[dir='rtl'] .chip .play {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+/* Times and sizes are numbers: keep them in reading order inside right-to-left text. */
+.stamp,
+.chip bdi {
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+
+.shell > header .language-switcher {
+  margin-inline-start: auto;
+  font: inherit;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
 }

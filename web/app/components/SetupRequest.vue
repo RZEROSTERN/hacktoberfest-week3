@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Recommended } from '~/types/api'
-import { formatBytes } from '~/utils/bytes'
 import { diskNeeded, downloadSize, effectiveModel, enoughDisk, type ModelSelection } from '~/utils/setup'
 
 const selection = defineModel<ModelSelection>({ required: true })
+const format = useFormat()
 
 const props = defineProps<{
   data: Recommended
@@ -20,10 +20,9 @@ const chosen = computed(() => effectiveModel(selection.value))
 
 <template>
   <section>
-    <h1>Welcome to PostCall</h1>
+    <h1>{{ $t('setup.request.title') }}</h1>
     <p>
-      PostCall works fully offline and keeps your client calls private. For that, the AI models it needs
-      are downloaded once to this computer. After this, nothing about your calls ever leaves it.
+      {{ $t('setup.request.intro') }}
     </p>
 
     <div class="page-grid">
@@ -36,38 +35,38 @@ const chosen = computed(() => effectiveModel(selection.value))
 
       <div>
         <div class="card">
-          <strong>Speech model (also downloaded)</strong>
+          <strong>{{ $t('setup.request.speech') }}</strong>
           <p>
-            {{ data.whisper.title }} · {{ formatBytes(data.whisper.size_bytes) }} · {{ data.whisper.license }}
+            {{ data.whisper.title }} · {{ format.bytes(data.whisper.size_bytes) }} · {{ data.whisper.license }}
             <span
               v-if="data.whisper.state === 'ready'"
               class="badge"
-            >Already on this computer</span>
+            >{{ $t('picker.installed') }}</span>
           </p>
           <p class="muted">
-            {{ data.whisper.note }}
+            {{ format.modelNote('whisper', data.whisper.note) }}
           </p>
         </div>
 
         <div class="card">
           <p>
-            <strong>Total download:</strong>
-            {{ formatBytes(size.bytes) }}<span v-if="!size.known"> plus the size of your model (shown when the download starts)</span>
+            <strong>{{ $t('setup.request.total') }}</strong>
+            {{ format.bytes(size.bytes) }}<span v-if="!size.known"> {{ $t('setup.request.plusModel') }}</span>
           </p>
           <p>
-            <strong>Free disk space needed:</strong> {{ formatBytes(diskNeeded(size, data.margin_bytes)) }}
-            (the downloads plus {{ formatBytes(data.margin_bytes) }} of room) ·
-            <strong>Available:</strong> {{ formatBytes(data.system.free_disk_bytes) }}
+            <strong>{{ $t('setup.request.diskNeeded') }}</strong> {{ format.bytes(diskNeeded(size, data.margin_bytes)) }}
+            ({{ $t('setup.request.diskRoom', { margin: format.bytes(data.margin_bytes) }) }}) ·
+            <strong>{{ $t('setup.request.diskAvailable') }}</strong> {{ format.bytes(data.system.free_disk_bytes) }}
           </p>
           <p
             v-if="!roomOk"
             class="error"
             role="alert"
           >
-            There is not enough free disk space. Free some space or choose a smaller model.
+            {{ $t('setup.request.noRoom') }}
           </p>
           <p class="muted">
-            We recommend connecting to Wi-Fi: this is a large download. You can pause it and continue later.
+            {{ $t('setup.request.wifi') }}
           </p>
         </div>
 
@@ -85,14 +84,14 @@ const chosen = computed(() => effectiveModel(selection.value))
             :disabled="starting || !chosen || !roomOk"
             @click="$emit('start')"
           >
-            {{ starting ? 'Starting…' : 'Download now' }}
+            {{ starting ? $t('setup.request.starting') : $t('setup.request.download') }}
           </button>
           <button
             class="button secondary"
             :disabled="starting"
             @click="$emit('later')"
           >
-            Not now
+            {{ $t('common.notNow') }}
           </button>
         </div>
       </div>

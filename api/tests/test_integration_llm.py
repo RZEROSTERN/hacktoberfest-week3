@@ -7,6 +7,7 @@ The model tag comes from POSTCALL_LLM_MODEL, which seeds the local settings.
 import json
 import os
 import time
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -63,9 +64,8 @@ pytestmark = [
 ]
 
 
-def test_real_model_on_the_sample_call(tmp_path: Path) -> None:
-    if not model_installed():
-        pytest.skip(f"the model {MODEL} is not installed in Ollama")
+def sample_client(tmp_path: Path) -> TestClient:
+    """The app with the real model, the sample call's transcript and a saved profile."""
     settings = Settings(
         port=8000,
         data_dir=tmp_path / "data",
@@ -96,6 +96,13 @@ def test_real_model_on_the_sample_call(tmp_path: Path) -> None:
         session.commit()
     client = TestClient(app)
     assert client.put("/profile", json=PROFILE).status_code == 200
+    return client
+
+
+def test_real_model_on_the_sample_call(tmp_path: Path) -> None:
+    if not model_installed():
+        pytest.skip(f"the model {MODEL} is not installed in Ollama")
+    client = sample_client(tmp_path)
 
     started = time.monotonic()
     assert client.post("/calls/sample/draft").status_code == 202
@@ -138,3 +145,38 @@ def test_real_model_on_the_sample_call(tmp_path: Path) -> None:
     assert "reserv" in requirements and "galer" in requirements  # key facts of the sample
 
     assert elapsed < 180, f"notes + proposal took {elapsed:.0f} s, the target is under 3 minutes"
+
+
+# The script a proposal in each of these languages must mostly be written in. The call is in
+# Spanish, so a model that ignores the language instruction copies the notes and stays in Latin.
+SCRIPTS = {
+    "ar": ("ARABIC",),
+    "ja": ("HIRAGANA", "KATAKANA", "CJK UNIFIED"),
+    "ru": ("CYRILLIC",),
+}
+
+
+@pytest.mark.parametrize("language", sorted(SCRIPTS))
+def test_a_proposal_in_another_script_is_written_in_that_script(
+    tmp_path: Path, language: str
+) -> None:
+    if not model_installed():
+        pytest.skip(f"the model {MODEL} is not installed in Ollama")
+    client = sample_client(tmp_path)
+    assert client.post("/calls/sample/draft", json={"language": language}).status_code == 202
+    wait_until(
+        lambda: client.get("/calls/sample/draft").json()["status"] in ("done", "failed"),
+        timeout=400,
+    )
+    draft: dict[str, Any] = client.get("/calls/sample/draft").json()
+    assert draft["status"] == "done", draft
+    sections = {s["id"]: s for s in draft["proposal"]["sections"]}
+    body = " ".join(
+        [sections["summary"]["text"], sections["problem"]["text"]]
+        + [item["text"] for item in sections["scope"]["items"]]
+    )
+    letters = [c for c in body if c.isalpha()]
+    names = [unicodedata.name(c, "") for c in letters]
+    right_script = [n for n in names if any(script in n for script in SCRIPTS[language])]
+    share = len(right_script) / len(letters)
+    assert share > 0.5, f"the proposal is not written in {language}: {body[:200]}"

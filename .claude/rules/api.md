@@ -24,3 +24,6 @@ paths:
   items stay assumptions. Any response header the web app must read needs listing in CORS `expose_headers`.
 - Model management uses only Ollama's documented endpoints. Model names are validated, cloud models are
   refused (name and `remote_host`), and a model is only used after it passed the compatibility check.
+- Every refusal is `ApiError(status, code)`, never a bare `HTTPException`: the code and its English text live in
+  `ERROR_MESSAGES` (`errors.py`), values for the message go in as keyword arguments, and the web app needs
+  `apiErrors.<code>` in `en.json` (a test fails if one is missing). Proposal wording for each language is in `i18n.py`.

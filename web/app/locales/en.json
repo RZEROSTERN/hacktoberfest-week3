@@ -1,0 +1,362 @@
+{
+  "language": {
+    "label": "Language"
+  },
+  "nav": {
+    "main": "Main",
+    "calls": "Calls",
+    "profile": "Profile",
+    "settings": "Settings",
+    "notices": "Third-party notices"
+  },
+  "common": {
+    "loading": "Loading…",
+    "tryAgain": "Try again",
+    "notNow": "Not now",
+    "pause": "Pause",
+    "pausing": "Pausing…",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling…",
+    "delete": "Delete",
+    "saving": "Saving…"
+  },
+  "errors": {
+    "engineUnreachable": "Could not reach the local engine. Is the app still running?",
+    "generic": "Something went wrong.",
+    "upload": "The upload failed.",
+    "uploadCancelled": "Upload cancelled.",
+    "draftStart": "The draft could not be started.",
+    "draftCancel": "Could not cancel the draft.",
+    "draftSave": "The changes could not be saved.",
+    "export": "The proposal could not be exported.",
+    "profileSave": "The profile could not be saved.",
+    "modelSelect": "That model could not be selected.",
+    "modelDelete": "The model could not be deleted.",
+    "whisperDelete": "The speech model could not be deleted.",
+    "downloadStart": "The download could not be started.",
+    "downloadResume": "The download could not be resumed."
+  },
+  "download": {
+    "progress": "{done} of {total}",
+    "waiting": "waiting for data…"
+  },
+  "eta": {
+    "lessThanMinute": "less than a minute left",
+    "about": "about {time} left"
+  },
+  "status": {
+    "queued": "Waiting to start",
+    "converting": "Preparing the audio",
+    "transcribing": "Transcribing… {percent}%",
+    "done": "Transcript ready",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "draftStatus": {
+    "queued": "Waiting to start",
+    "extracting": "Reading the call",
+    "extractingParts": "Reading the call (part {part} of {total})",
+    "drafting": "Writing the proposal",
+    "done": "Draft ready",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "consent": {
+    "title": "Recording consent.",
+    "body": "Only upload a call if every participant agreed to be recorded."
+  },
+  "profileNotice": {
+    "title": "Set up your profile first.",
+    "link": "Set up my profile"
+  },
+  "home": {
+    "title": "Your calls",
+    "intro": "Turn a recorded client call into a draft proposal. Everything stays on this computer.",
+    "profileNotice": "Your services, rates and payment terms go into every proposal.",
+    "newProposal": "New proposal",
+    "noCalls": "No calls yet. Upload your first recording to get started."
+  },
+  "upload": {
+    "title": "New proposal",
+    "intro": "Upload the recording of your discovery call (mp3, m4a, wav or mp4). It is transcribed on this computer.",
+    "fileLabel": "Call recording",
+    "keepAudio": "Keep the audio file after transcription",
+    "keepAudioNote": "By default the recording is deleted from this computer as soon as the transcript is ready.",
+    "uploading": "Uploading… {percent}%",
+    "start": "Start transcription",
+    "cancel": "Cancel upload"
+  },
+  "call": {
+    "language": "Language: {language}",
+    "cancelledNote": "Transcription cancelled. The recording was removed from this computer.",
+    "uploadAgain": "Upload again",
+    "audioKept": "The audio file is kept on this computer.",
+    "audioDeleted": "The audio file was deleted after transcription.",
+    "proposalDraft": "Proposal draft",
+    "profileNotice": "The draft uses your services, rates and payment terms.",
+    "draftCancelled": "The draft was cancelled.",
+    "writeIn": "Write it in",
+    "callLanguage": "The language of the call",
+    "callLanguageNamed": "The language of the call ({language})",
+    "draft": "Draft proposal",
+    "draftAgain": "Draft again",
+    "warnings": "Some items had no source in the call and are marked “Assumption”. Check them before sending.",
+    "sourceHint": "Click a time next to an item to see what was said in the call.",
+    "edit": "Edit proposal",
+    "downloadMd": "Download Markdown",
+    "downloadPdf": "Download PDF",
+    "pdfUnsupported": "The PDF export only supports Western European languages. Download this proposal as Markdown instead.",
+    "saved": "Changes saved.",
+    "saveChanges": "Save changes",
+    "discard": "Discard changes",
+    "unsaved": "You have unsaved changes. Downloads use the saved version.",
+    "basedOn": "What the draft is based on",
+    "transcript": "Transcript",
+    "delete": "Delete call",
+    "confirmDelete": "Delete this call and its transcript from this computer?",
+    "confirmRedraft": "Write a new draft? It replaces the current one, including any changes you made.",
+    "confirmDiscard": "Discard your changes?",
+    "confirmLeave": "You have unsaved changes. Leave without saving?"
+  },
+  "profile": {
+    "title": "Your profile",
+    "intro": "Used to write your proposals: your services, rates, payment terms, tone and the sections you prefer. It stays on this computer.",
+    "name": "Name or business name",
+    "services": "Services you offer",
+    "servicesHint": "(one per line)",
+    "hourlyRate": "Hourly rate",
+    "hourlyRateHint": "(any currency, written as you want it to appear, e.g. 650 MXN per hour)",
+    "projectRates": "Project rates",
+    "projectRatesHint": "(one per line, e.g. Website up to 5 sections: 24,000 MXN)",
+    "ratesNote": "Prices in your proposals come only from these rates. A budget the client mentions is shown as a note, never used as the price.",
+    "paymentTerms": "Default payment terms",
+    "tone": "Tone",
+    "toneHint": "(e.g. professional and friendly)",
+    "save": "Save profile",
+    "saved": "Profile saved."
+  },
+  "sections": {
+    "legend": "Proposal sections",
+    "help": "Choose the sections your proposals include and their order. The investment section always comes after the scope.",
+    "moveUp": "Move {section} up",
+    "moveDown": "Move {section} down",
+    "summary": "Summary",
+    "problem": "Understanding of the problem",
+    "scope": "Scope",
+    "deliverables": "Deliverables",
+    "out_of_scope": "Out of scope",
+    "timeline": "Timeline",
+    "open_questions": "Open questions",
+    "investment": "Investment",
+    "terms": "Terms"
+  },
+  "notes": {
+    "client": "Client:",
+    "openQuestions": "Questions the call left open",
+    "groups": {
+      "client_context": "About the client",
+      "problem": "Problem",
+      "goals": "Goals",
+      "requirements": "Requirements",
+      "constraints": "Constraints",
+      "budget": "Budget mentioned",
+      "deadlines": "Deadlines mentioned",
+      "next_steps": "Next steps",
+      "risks": "Risks"
+    }
+  },
+  "notices": {
+    "title": "Third-party notices",
+    "intro": "PostCall is made of open-source parts that run on your computer. Here is what is inside and under which license.",
+    "english": "The license texts below are in English, as their authors published them."
+  },
+  "proposal": {
+    "empty": "Nothing was identified for this section."
+  },
+  "editor": {
+    "addItem": "Add item",
+    "addQuestion": "Add question",
+    "addRate": "Add rate",
+    "assumption": "Assumption",
+    "assumptionNoSource": "Assumption (no source in the call)",
+    "itemText": "Item text",
+    "priceNote": "Price note",
+    "question": "Question",
+    "rate": "Rate",
+    "rates": "Rates (written as you want them to appear)",
+    "removeItem": "Remove item",
+    "removeQuestion": "Remove question",
+    "removeRate": "Remove rate"
+  },
+  "source": {
+    "at": "Source in the call at {time}",
+    "show": "Show in transcript"
+  },
+  "draft": {
+    "assumptionTitle": "This was not said in the call. Check it before sending."
+  },
+  "transcript": {
+    "empty": "No speech was detected in this recording."
+  },
+  "picker": {
+    "legend": "Language model",
+    "intro": "The language model reads your call notes and writes the draft. It runs on this computer.",
+    "recommended": "Recommended",
+    "notRecommended": "Not recommended for this computer",
+    "installed": "Already on this computer",
+    "facts": "{size} download · about {memory} of memory · {license}",
+    "ramWarning": "Needs about {need} of memory; this computer has {have}.",
+    "others": "Other models we tested",
+    "advanced": "Advanced: use another model from Ollama",
+    "useName": "Use this model name",
+    "placeholder": "name:tag, for example llama3.2:3b",
+    "nameLabel": "Ollama model name and tag",
+    "advancedNote": "Any model name and tag from the {library}. Models we have not tested may give lower quality. It is tried on a short sample call before you can use it. Cloud models are not allowed: your calls never leave this computer.",
+    "library": "Ollama library",
+    "memory": "This computer has {memory} of memory."
+  },
+  "setup": {
+    "request": {
+      "title": "Welcome to PostCall",
+      "intro": "PostCall works fully offline and keeps your client calls private. For that, the AI models it needs are downloaded once to this computer. After this, nothing about your calls ever leaves it.",
+      "speech": "Speech model (also downloaded)",
+      "total": "Total download:",
+      "plusModel": "plus the size of your model (shown when the download starts)",
+      "diskNeeded": "Free disk space needed:",
+      "diskRoom": "the downloads plus {margin} of room",
+      "diskAvailable": "Available:",
+      "noRoom": "There is not enough free disk space. Free some space or choose a smaller model.",
+      "wifi": "We recommend connecting to Wi-Fi: this is a large download. You can pause it and continue later.",
+      "download": "Download now",
+      "starting": "Starting…"
+    },
+    "progress": {
+      "title": "Setting up PostCall",
+      "overall": "{percent}% of the setup",
+      "interrupted": "The download was interrupted when PostCall closed. Do you want to continue it? It picks up where it stopped.",
+      "paused": "Paused. Nothing is downloading.",
+      "ready": "Everything is ready. Your calls stay on this computer.",
+      "start": "Start using PostCall",
+      "choose": "Choose another model",
+      "useRecommended": "Use the recommended model ({model})"
+    },
+    "steps": {
+      "engine": "Preparing the local AI engine",
+      "llm": "Downloading the language model",
+      "whisper": "Downloading the speech model",
+      "verify": "Verifying the downloads",
+      "compat": "Checking that the model works",
+      "ready": "Ready"
+    },
+    "engine": {
+      "title": "PostCall can't start its AI engine",
+      "advice": "Close and reopen PostCall. If it keeps happening, restart your computer."
+    },
+    "later": {
+      "title": "PostCall needs its models",
+      "body": "Nothing in PostCall works until the AI models are on this computer. You will be asked again the next time you open it.",
+      "button": "Download models"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "models": "Language models on this computer",
+    "none": "None yet.",
+    "inUse": "In use",
+    "notChecked": "Not checked yet",
+    "cloud": "Cloud model: not allowed",
+    "use": "Use this model",
+    "checkAndUse": "Check and use",
+    "downloadAnother": "Download another model",
+    "downloadAndCheck": "Download and check",
+    "speech": "Speech model",
+    "speechReady": "On this computer",
+    "speechPartial": "Partly downloaded",
+    "speechMissing": "Not downloaded",
+    "computer": "This computer",
+    "computerFacts": "{memory} of memory · {disk} of free disk space",
+    "confirmDeleteModel": "Delete {name} from this computer? It frees disk space; you can download it again later.",
+    "confirmDeleteSpeech": "Delete the speech model? Transcription stops working until it is downloaded again."
+  },
+  "models": {
+    "gemma4_e4b": {
+      "note": "The best tested: it found 12 of 13 key facts in our sample call and drafted a 30-minute call in under 3 minutes on a 16 GB Mac."
+    },
+    "qwen3_5_9b": {
+      "note": "Found as many facts, but about twice as slow on a 30-minute call (5 minutes) and added two small details nobody said."
+    },
+    "qwen3_5_4b": {
+      "note": "Small and fast, but it missed about a third of the facts and invented an out-of-scope item."
+    },
+    "mistral_nemo_12b": {
+      "note": "Reasonably fast, but its notes were thin: about 6 of 10 facts."
+    },
+    "gemma4_12b": {
+      "note": "Too slow and too terse on a 16 GB Mac (about a third of the facts). Needs a computer with 24 GB of memory or more."
+    },
+    "whisper": {
+      "note": "Turns the recording into text in about 99 languages and detects the language by itself. Uses about 1 GB of memory while it works."
+    }
+  },
+  "apiErrors": {
+    "engine_missing": "The transcription engine is not available.",
+    "model_missing": "The speech model has not been downloaded yet.",
+    "decoder_missing": "The macOS audio converter is missing, so audio files cannot be read.",
+    "decode_failed": "The audio file could not be read. Try exporting it again as mp3, m4a or wav.",
+    "transcribe_failed": "Something went wrong while transcribing. You can try again.",
+    "interrupted": "The app was closed while transcribing. You can try again.",
+    "audio_missing": "The audio file is no longer available. Please upload it again.",
+    "llm_model_not_set": "No language model is selected yet.",
+    "llm_model_missing": "The selected language model is not installed.",
+    "llm_unreachable": "The language model engine is not running.",
+    "llm_timeout": "The language model took too long to answer. Try again.",
+    "llm_failed": "The language model returned an error. Try again.",
+    "invalid_model_output": "The model's answer could not be understood, even after a retry.",
+    "draft_invalid": "The draft broke a rule (it contained prices), even after a retry.",
+    "not_enough_information": "The call did not contain enough information to draft a proposal.",
+    "profile_missing": "Set up your profile first.",
+    "empty_transcript": "The transcript is empty, so there is nothing to draft from.",
+    "generation_failed": "Something went wrong while drafting. You can try again.",
+    "ollama_unreachable": "The local AI engine is not running.",
+    "ollama_failed": "The local AI engine returned an error. Try again.",
+    "model_not_found": "No model with that name exists in the Ollama library. Check name and tag.",
+    "invalid_model_name": "That is not a valid model name. Use name:tag, for example gemma4:e4b.",
+    "cloud_model": "Cloud models send your calls to a server. PostCall only uses models that run on this computer.",
+    "network_error": "The download stopped because the network connection was lost. Try again: it continues where it left off.",
+    "checksum_mismatch": "The downloaded file was damaged, so it was deleted. Try again.",
+    "download_failed": "The download server did not send the expected file. Try again later.",
+    "pull_failed": "The model could not be downloaded. Try again.",
+    "not_enough_disk": "There is not enough free disk space for this download.",
+    "model_not_installed": "That model is not on this computer.",
+    "setup_failed": "Something went wrong during setup. Try again.",
+    "setup_busy": "A download is already in progress.",
+    "nothing_to_resume": "There is no interrupted download to resume.",
+    "compat_needed": "This model has not been checked on this computer yet.",
+    "model_in_use": "This is the model in use. Switch to another model first.",
+    "compat_no_chat": "This model could not be run for writing tasks. It may be built for something else, like search.",
+    "compat_invalid_output": "This model did not return the structured notes the app needs, even after a retry.",
+    "compat_not_enough": "This model ran, but it found nothing useful in a short test call. It is probably too small.",
+    "compat_timeout": "This model took too long on a short test. It may be too big for this computer.",
+    "compat_model_missing": "The model disappeared before it could be tested. Try again.",
+    "profile_not_set_up": "The profile has not been set up yet.",
+    "call_not_found": "Call not found.",
+    "transcribe_first": "Transcribe the call before drafting a proposal.",
+    "draft_in_progress": "A draft is already being written for this call.",
+    "no_draft": "There is no draft for this call yet.",
+    "draft_not_running": "Only a draft in progress can be cancelled.",
+    "draft_not_ready": "The draft is not ready yet.",
+    "unsupported_file_type": "Unsupported file type. Use mp3, m4a, wav or mp4.",
+    "file_empty": "The file is empty.",
+    "transcript_not_ready": "The transcript is not ready yet.",
+    "call_not_running": "Only a running transcription can be cancelled.",
+    "cannot_retry": "Only a failed transcription with its audio still on disk can be retried.",
+    "cancel_transcription_first": "Cancel the transcription before deleting it.",
+    "cancel_draft_first": "Cancel the draft before deleting the call.",
+    "pdf_unsupported_characters": "The PDF export cannot draw some characters in this proposal (it supports Western European languages). Export it as Markdown instead.",
+    "edit_summary_prices": "The summary never includes prices.",
+    "edit_prices_outside_investment": "Prices belong in the investment section only, not in {where}.",
+    "edit_unknown_segments": "An item in {where} cites segments that are not in the transcript: {segments}.",
+    "edit_unknown_section": "Unknown section: {section}"
+  }
+}

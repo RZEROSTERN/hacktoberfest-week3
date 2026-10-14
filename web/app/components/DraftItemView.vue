@@ -7,12 +7,12 @@ defineEmits<{ show: [segmentId: number] }>()
 
 <template>
   <li class="draft-item">
-    <span>{{ item.text }}</span>
+    <span dir="auto">{{ item.text }}</span>
     <span
       v-if="item.assumption"
       class="badge"
-      title="This was not said in the call. Check it before sending."
-    >Assumption</span>
+      :title="$t('draft.assumptionTitle')"
+    >{{ $t('editor.assumption') }}</span>
     <SourceChips
       :sources="item.sources"
       @show="$emit('show', $event)"

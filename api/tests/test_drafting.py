@@ -224,6 +224,6 @@ def test_open_questions_come_from_the_model_without_duplicates() -> None:
 
 
 def test_unsupported_languages_fall_back_to_english_wording() -> None:
-    draft = assemble(out(), notes(), profile(), "ja")
+    draft = assemble(out(), notes(), profile(), "ko")  # Korean is not one of the eleven languages
     assert draft.investment.note == "The final price depends on the agreed scope."
-    assert draft.language == "ja"
+    assert draft.language == "ko"

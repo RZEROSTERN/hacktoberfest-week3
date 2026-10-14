@@ -40,9 +40,15 @@ export function enoughDisk(size: DownloadSize, data: Recommended): boolean {
   return data.system.free_disk_bytes >= diskNeeded(size, data.margin_bytes)
 }
 
-export function ramWarning(choice: LlmChoice, totalRamBytes: number): string | null {
+/** The values for the memory warning of a model that needs more than this computer has; null when it is fine. */
+export function ramWarning(choice: LlmChoice, totalRamBytes: number): { need: number, have: number } | null {
   if (!choice.not_recommended_for_this_computer) return null
-  return `Needs about ${choice.ram_gb} GB of memory; this computer has ${Math.round(totalRamBytes / 2 ** 30)} GB.`
+  return { need: choice.ram_gb, have: Math.round(totalRamBytes / 2 ** 30) }
+}
+
+/** The key of a model's translated description: `gemma4:e4b` -> `models.gemma4_e4b`. */
+export function modelMessageKey(model: string): string {
+  return `models.${model.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')}`
 }
 
 /** Pages that need no models, so the route guard lets them through: the wizard and static information. */

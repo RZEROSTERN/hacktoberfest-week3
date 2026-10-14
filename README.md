@@ -14,7 +14,7 @@ Writing the proposal is unpaid work that happens after every discovery call. It 
 
 ## Who it is for
 
-Freelancers (developers, designers, consultants, writers) and small agencies, anywhere in the world, who run discovery calls and then write scope-and-price proposals. The proposal is written in the language of the call (Spanish, English, Portuguese, French, German and Italian can also be chosen).
+Freelancers (developers, designers, consultants, writers) and small agencies, anywhere in the world, who run discovery calls and then write scope-and-price proposals. The proposal is written in the language of the call, or in any of the eleven languages below, which are also the languages of the interface.
 
 ## How it works
 
@@ -65,6 +65,18 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
    Use Wi-Fi. The app then prepares its local AI engine, downloads both models, verifies them (the speech model against a fixed checksum), and runs a short built-in sample through the language model to confirm it can produce the structured notes the app needs. Downloads can be paused and resumed, survive closing the app, and offer a retry if the network drops. This is the only time the app uses the internet.
 
 PostCall keeps its data, models and logs in `~/Library/Application Support/PostCall`. To remove everything, delete the app and that folder (about 7.2 GB once the models are downloaded).
+
+## Languages
+
+PostCall's interface is available in **English, Spanish, French, Portuguese, Japanese, German, Russian, Italian, Hindi, Chinese (Simplified) and Arabic**. It opens in your computer's language when it is one of these (English otherwise); change it any time with the language list at the top right, and PostCall remembers your choice. Arabic runs right to left, and the proposal and transcript text keep their own direction, so a Spanish proposal reads correctly inside an Arabic window.
+
+<img src="docs/screenshots/interface-ar.png" alt="The call page in Arabic, right to left, with a Spanish proposal and transcript inside it" width="860">
+
+- **Proposals** can be written in any of the eleven languages, whatever the interface language is. The section titles and fixed sentences (price note, "to be confirmed", the budget and deadline questions) exist in all eleven; the rest is written by the language model, so quality depends on the model you chose.
+- **Sizes, speeds and times** use each language's own number and unit conventions.
+- **Stays in English:** the third-party license texts (they are legal text published by their authors), the names of models and engines, and the few messages the app does not have a translation for yet.
+- **Translations are drafts.** They were written with AI assistance, with the section names matched to the wording the generated proposals use, and checked by tests (every language has every message, with the same values) and by looking at the screens in all eleven languages. No native speaker has reviewed them, so expect some stiff or imperfect wording. To fix one, edit its file in [`web/app/locales/`](web/app/locales/), run the web tests (`cd web && npm test`), and open a pull request; English (`en.json`) is the source for everything.
+- **Before the window opens**, the start page and the error dialogs use the system language.
 
 ## Choosing and switching models
 
@@ -211,7 +223,8 @@ A **one-time license, no subscription.** Most AI products charge monthly because
 - Apple Silicon and macOS 14 or later only. The first release has been tried on macOS 27 only. Windows, Linux and the Mac App Store are planned, not built: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Not tested on an 8 GB Mac, and not tested with calls longer than the 5-minute sample (the 32-minute file repeats it).
 - Tested on a Spanish call. English is covered by the built-in check; other languages depend on what Whisper and the chosen model can do.
-- PDF export uses a built-in font that covers Western European languages. Other scripts are refused with a message; export Markdown instead.
+- PDF export uses a built-in font that covers Western European languages (English, Spanish, French, Portuguese, German, Italian). For proposals in Japanese, Chinese, Russian, Hindi or Arabic the PDF button is switched off and the Markdown export is the one to use.
+- The translations of the interface were drafted with AI assistance and have not been reviewed by native speakers (see [Languages](#languages)). Proposals in the five newest languages were checked on one sample call only.
 - The app is not signed or notarized, so the first launch needs the steps above.
 
 ## License

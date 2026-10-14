@@ -364,7 +364,7 @@ def test_nothing_from_the_call_is_logged(
 # -- prompts ------------------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("name", ["notes_v3.md", "proposal_v1.md"])
+@pytest.mark.parametrize("name", ["notes_v3.md", "proposal_v2.md"])
 def test_prompts_are_versioned_files_and_work_with_any_model(name: str) -> None:
     text = (default_prompts_dir() / name).read_text()
     assert (
@@ -374,14 +374,14 @@ def test_prompts_are_versioned_files_and_work_with_any_model(name: str) -> None:
 
 
 def test_the_proposal_prompt_forbids_prices_and_asks_for_sources() -> None:
-    text = (default_prompts_dir() / "proposal_v1.md").read_text()
+    text = (default_prompts_dir() / "proposal_v2.md").read_text()
     assert "{language}" in text
     assert "amount of money" in text and "assumption" in text
 
 
 def test_a_custom_prompts_folder_is_used(settings: Settings, tmp_path: Path) -> None:
     (tmp_path / "notes_v3.md").write_text("CUSTOM NOTES PROMPT")
-    (tmp_path / "proposal_v1.md").write_text("CUSTOM DRAFT PROMPT {language}")
+    (tmp_path / "proposal_v2.md").write_text("CUSTOM DRAFT PROMPT {language}")
     llm = ScriptedLLM([notes_json(), draft_json()])
     client = TestClient(
         create_app(

@@ -50,7 +50,7 @@ const alive = (pid) => { try { process.kill(pid, 0); return true } catch { retur
 // wrapper would not kill the app.
 const electronBinary = path.join(desktop, 'node_modules', 'electron', 'dist', readFileSync(path.join(desktop, 'node_modules', 'electron', 'path.txt'), 'utf8').trim())
 const command = appBin ?? electronBinary
-const args = [...(appBin ? [] : ['.']), `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${userData}`]
+const args = [...(appBin ? [] : ['.']), `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${userData}`, '--lang=en-US']
 function startShell() {
   // VS Code-based terminals set ELECTRON_RUN_AS_NODE, which would make Electron behave as plain Node.
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => key !== 'ELECTRON_RUN_AS_NODE'))

@@ -4,30 +4,30 @@ import type { DraftNotes } from '~/types/api'
 defineProps<{ notes: DraftNotes }>()
 defineEmits<{ show: [segmentId: number] }>()
 
-const LABELS: Record<string, string> = {
-  client_context: 'About the client',
-  problem: 'Problem',
-  goals: 'Goals',
-  requirements: 'Requirements',
-  constraints: 'Constraints',
-  budget: 'Budget mentioned',
-  deadlines: 'Deadlines mentioned',
-  next_steps: 'Next steps',
-  risks: 'Risks',
-}
+const GROUPS = [
+  'client_context',
+  'problem',
+  'goals',
+  'requirements',
+  'constraints',
+  'budget',
+  'deadlines',
+  'next_steps',
+  'risks',
+]
 </script>
 
 <template>
   <div class="proposal">
     <p v-if="notes.client">
-      <strong>Client:</strong> {{ notes.client }}
+      <strong>{{ $t('notes.client') }}</strong> <bdi>{{ notes.client }}</bdi>
     </p>
     <template
-      v-for="(label, group) in LABELS"
+      v-for="group in GROUPS"
       :key="group"
     >
       <section v-if="notes.groups[group]?.length">
-        <h3>{{ label }}</h3>
+        <h3>{{ $t(`notes.groups.${group}`) }}</h3>
         <ul>
           <DraftItemView
             v-for="(item, index) in notes.groups[group]"
@@ -39,11 +39,12 @@ const LABELS: Record<string, string> = {
       </section>
     </template>
     <section v-if="notes.open_questions.length">
-      <h3>Questions the call left open</h3>
+      <h3>{{ $t('notes.openQuestions') }}</h3>
       <ul>
         <li
           v-for="question in notes.open_questions"
           :key="question"
+          dir="auto"
         >
           {{ question }}
         </li>

@@ -1,0 +1,362 @@
+{
+  "language": {
+    "label": "Idioma"
+  },
+  "nav": {
+    "main": "Principal",
+    "calls": "Chamadas",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "notices": "Avisos de terceiros"
+  },
+  "common": {
+    "loading": "Carregando…",
+    "tryAgain": "Tentar novamente",
+    "notNow": "Agora não",
+    "pause": "Pausar",
+    "pausing": "Pausando…",
+    "resume": "Retomar",
+    "cancel": "Cancelar",
+    "cancelling": "Cancelando…",
+    "delete": "Excluir",
+    "saving": "Salvando…"
+  },
+  "errors": {
+    "engineUnreachable": "Não foi possível acessar o motor local. O app ainda está aberto?",
+    "generic": "Algo deu errado.",
+    "upload": "O envio falhou.",
+    "uploadCancelled": "Envio cancelado.",
+    "draftStart": "Não foi possível iniciar o rascunho.",
+    "draftCancel": "Não foi possível cancelar o rascunho.",
+    "draftSave": "Não foi possível salvar as alterações.",
+    "export": "Não foi possível exportar a proposta.",
+    "profileSave": "Não foi possível salvar o perfil.",
+    "modelSelect": "Não foi possível selecionar esse modelo.",
+    "modelDelete": "Não foi possível excluir o modelo.",
+    "whisperDelete": "Não foi possível excluir o modelo de fala.",
+    "downloadStart": "Não foi possível iniciar o download.",
+    "downloadResume": "Não foi possível retomar o download."
+  },
+  "download": {
+    "progress": "{done} de {total}",
+    "waiting": "aguardando dados…"
+  },
+  "eta": {
+    "lessThanMinute": "tempo restante: menos de um minuto",
+    "about": "tempo restante: cerca de {time}"
+  },
+  "status": {
+    "queued": "Aguardando para começar",
+    "converting": "Preparando o áudio",
+    "transcribing": "Transcrevendo… {percent}%",
+    "done": "Transcrição pronta",
+    "failed": "Falhou",
+    "cancelled": "Cancelada"
+  },
+  "draftStatus": {
+    "queued": "Aguardando para começar",
+    "extracting": "Lendo a chamada",
+    "extractingParts": "Lendo a chamada (parte {part} de {total})",
+    "drafting": "Escrevendo a proposta",
+    "done": "Rascunho pronto",
+    "failed": "Falhou",
+    "cancelled": "Cancelado"
+  },
+  "consent": {
+    "title": "Consentimento para gravação.",
+    "body": "Só envie uma chamada se todos os participantes concordaram em ser gravados."
+  },
+  "profileNotice": {
+    "title": "Configure seu perfil primeiro.",
+    "link": "Configurar meu perfil"
+  },
+  "home": {
+    "title": "Suas chamadas",
+    "intro": "Transforme uma chamada gravada com um cliente em um rascunho de proposta. Tudo fica neste computador.",
+    "profileNotice": "Seus serviços, valores e condições de pagamento entram em todas as propostas.",
+    "newProposal": "Nova proposta",
+    "noCalls": "Nenhuma chamada ainda. Envie sua primeira gravação para começar."
+  },
+  "upload": {
+    "title": "Nova proposta",
+    "intro": "Envie a gravação da sua chamada de descoberta (mp3, m4a, wav ou mp4). Ela é transcrita neste computador.",
+    "fileLabel": "Gravação da chamada",
+    "keepAudio": "Manter o arquivo de áudio após a transcrição",
+    "keepAudioNote": "Por padrão, a gravação é apagada deste computador assim que a transcrição fica pronta.",
+    "uploading": "Enviando… {percent}%",
+    "start": "Iniciar transcrição",
+    "cancel": "Cancelar envio"
+  },
+  "call": {
+    "language": "Idioma: {language}",
+    "cancelledNote": "Transcrição cancelada. A gravação foi removida deste computador.",
+    "uploadAgain": "Enviar novamente",
+    "audioKept": "O arquivo de áudio foi mantido neste computador.",
+    "audioDeleted": "O arquivo de áudio foi apagado após a transcrição.",
+    "proposalDraft": "Rascunho da proposta",
+    "profileNotice": "O rascunho usa seus serviços, valores e condições de pagamento.",
+    "draftCancelled": "O rascunho foi cancelado.",
+    "writeIn": "Escrever em",
+    "callLanguage": "O idioma da chamada",
+    "callLanguageNamed": "O idioma da chamada ({language})",
+    "draft": "Gerar rascunho",
+    "draftAgain": "Gerar novamente",
+    "warnings": "Alguns itens não tinham fonte na chamada e estão marcados como “Suposição”. Confira-os antes de enviar.",
+    "sourceHint": "Clique em um horário ao lado de um item para ver o que foi dito na chamada.",
+    "edit": "Editar proposta",
+    "downloadMd": "Baixar Markdown",
+    "downloadPdf": "Baixar PDF",
+    "pdfUnsupported": "A exportação em PDF só aceita idiomas da Europa Ocidental. Baixe esta proposta em Markdown.",
+    "saved": "Alterações salvas.",
+    "saveChanges": "Salvar alterações",
+    "discard": "Descartar alterações",
+    "unsaved": "Você tem alterações não salvas. Os downloads usam a versão salva.",
+    "basedOn": "Em que o rascunho se baseia",
+    "transcript": "Transcrição",
+    "delete": "Excluir chamada",
+    "confirmDelete": "Excluir esta chamada e sua transcrição deste computador?",
+    "confirmRedraft": "Gerar um novo rascunho? Ele substitui o atual, incluindo as alterações que você fez.",
+    "confirmDiscard": "Descartar suas alterações?",
+    "confirmLeave": "Você tem alterações não salvas. Sair sem salvar?"
+  },
+  "profile": {
+    "title": "Seu perfil",
+    "intro": "Usado para escrever suas propostas: seus serviços, valores, condições de pagamento, tom e as seções de sua preferência. Fica neste computador.",
+    "name": "Nome ou nome da empresa",
+    "services": "Serviços que você oferece",
+    "servicesHint": "(um por linha)",
+    "hourlyRate": "Valor por hora",
+    "hourlyRateHint": "(qualquer moeda, escrito como você quer que apareça, por exemplo 650 MXN por hora)",
+    "projectRates": "Valores por projeto",
+    "projectRatesHint": "(um por linha, por exemplo Site com até 5 seções: 24,000 MXN)",
+    "ratesNote": "Os preços das suas propostas vêm somente destes valores. Um orçamento mencionado pelo cliente aparece como observação e nunca é usado como preço.",
+    "paymentTerms": "Condições de pagamento padrão",
+    "tone": "Tom",
+    "toneHint": "(por exemplo profissional e amigável)",
+    "save": "Salvar perfil",
+    "saved": "Perfil salvo."
+  },
+  "sections": {
+    "legend": "Seções da proposta",
+    "help": "Escolha as seções que suas propostas incluem e a ordem delas. A seção de investimento sempre vem depois do escopo.",
+    "moveUp": "Mover {section} para cima",
+    "moveDown": "Mover {section} para baixo",
+    "summary": "Resumo",
+    "problem": "Entendimento do problema",
+    "scope": "Escopo",
+    "deliverables": "Entregáveis",
+    "out_of_scope": "Fora do escopo",
+    "timeline": "Cronograma",
+    "open_questions": "Perguntas em aberto",
+    "investment": "Investimento",
+    "terms": "Termos"
+  },
+  "notes": {
+    "client": "Cliente:",
+    "openQuestions": "Perguntas que a chamada deixou em aberto",
+    "groups": {
+      "client_context": "Sobre o cliente",
+      "problem": "Problema",
+      "goals": "Objetivos",
+      "requirements": "Requisitos",
+      "constraints": "Restrições",
+      "budget": "Orçamento mencionado",
+      "deadlines": "Prazos mencionados",
+      "next_steps": "Próximos passos",
+      "risks": "Riscos"
+    }
+  },
+  "notices": {
+    "title": "Avisos de terceiros",
+    "intro": "O PostCall é feito de componentes de código aberto que rodam no seu computador. Veja o que há dentro dele e sob qual licença.",
+    "english": "Os textos das licenças abaixo estão em inglês, como foram publicados por seus autores."
+  },
+  "proposal": {
+    "empty": "Nada foi identificado para esta seção."
+  },
+  "editor": {
+    "addItem": "Adicionar item",
+    "addQuestion": "Adicionar pergunta",
+    "addRate": "Adicionar valor",
+    "assumption": "Suposição",
+    "assumptionNoSource": "Suposição (sem fonte na chamada)",
+    "itemText": "Texto do item",
+    "priceNote": "Observação sobre o preço",
+    "question": "Pergunta",
+    "rate": "Valor",
+    "rates": "Valores (escritos como você quer que apareçam)",
+    "removeItem": "Remover item",
+    "removeQuestion": "Remover pergunta",
+    "removeRate": "Remover valor"
+  },
+  "source": {
+    "at": "Fonte na chamada em {time}",
+    "show": "Mostrar na transcrição"
+  },
+  "draft": {
+    "assumptionTitle": "Isso não foi dito na chamada. Confira antes de enviar."
+  },
+  "transcript": {
+    "empty": "Nenhuma fala foi detectada nesta gravação."
+  },
+  "picker": {
+    "legend": "Modelo de linguagem",
+    "intro": "O modelo de linguagem lê as anotações da sua chamada e escreve o rascunho. Ele roda neste computador.",
+    "recommended": "Recomendado",
+    "notRecommended": "Não recomendado para este computador",
+    "installed": "Já está neste computador",
+    "facts": "Download de {size} · cerca de {memory} de memória · {license}",
+    "ramWarning": "Precisa de cerca de {need} de memória; este computador tem {have}.",
+    "others": "Outros modelos que testamos",
+    "advanced": "Avançado: usar outro modelo do Ollama",
+    "useName": "Usar este nome de modelo",
+    "placeholder": "nome:tag, por exemplo llama3.2:3b",
+    "nameLabel": "Nome e tag do modelo no Ollama",
+    "advancedNote": "Qualquer nome e tag da {library}. Modelos que não testamos podem ter qualidade menor. Ele é testado com uma chamada de exemplo curta antes de você poder usá-lo. Modelos na nuvem não são permitidos: suas chamadas nunca saem deste computador.",
+    "library": "biblioteca do Ollama",
+    "memory": "Este computador tem {memory} de memória."
+  },
+  "setup": {
+    "request": {
+      "title": "Boas-vindas ao PostCall",
+      "intro": "O PostCall funciona totalmente offline e mantém privadas as suas chamadas com clientes. Para isso, os modelos de IA de que ele precisa são baixados uma única vez para este computador. Depois disso, nada sobre as suas chamadas sai dele.",
+      "speech": "Modelo de fala (também será baixado)",
+      "total": "Download total:",
+      "plusModel": "mais o tamanho do seu modelo (mostrado quando o download começar)",
+      "diskNeeded": "Espaço livre em disco necessário:",
+      "diskRoom": "os downloads mais {margin} de folga",
+      "diskAvailable": "Disponível:",
+      "noRoom": "Não há espaço livre suficiente em disco. Libere espaço ou escolha um modelo menor.",
+      "wifi": "Recomendamos conectar-se ao Wi-Fi: este é um download grande. Você pode pausá-lo e continuar depois.",
+      "download": "Baixar agora",
+      "starting": "Iniciando…"
+    },
+    "progress": {
+      "title": "Configurando o PostCall",
+      "overall": "{percent}% da configuração",
+      "interrupted": "O download foi interrompido quando o PostCall foi fechado. Deseja continuar? Ele retoma de onde parou.",
+      "paused": "Em pausa. Nada está sendo baixado.",
+      "ready": "Tudo pronto. Suas chamadas ficam neste computador.",
+      "start": "Começar a usar o PostCall",
+      "choose": "Escolher outro modelo",
+      "useRecommended": "Usar o modelo recomendado ({model})"
+    },
+    "steps": {
+      "engine": "Preparando o motor de IA local",
+      "llm": "Baixando o modelo de linguagem",
+      "whisper": "Baixando o modelo de fala",
+      "verify": "Verificando os downloads",
+      "compat": "Verificando se o modelo funciona",
+      "ready": "Pronto"
+    },
+    "engine": {
+      "title": "O PostCall não consegue iniciar o motor de IA",
+      "advice": "Feche e abra o PostCall novamente. Se continuar acontecendo, reinicie o computador."
+    },
+    "later": {
+      "title": "O PostCall precisa dos modelos",
+      "body": "Nada no PostCall funciona até que os modelos de IA estejam neste computador. Vamos perguntar de novo na próxima vez que você abrir o app.",
+      "button": "Baixar modelos"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "models": "Modelos de linguagem neste computador",
+    "none": "Nenhum ainda.",
+    "inUse": "Em uso",
+    "notChecked": "Ainda não verificado",
+    "cloud": "Modelo na nuvem: não permitido",
+    "use": "Usar este modelo",
+    "checkAndUse": "Verificar e usar",
+    "downloadAnother": "Baixar outro modelo",
+    "downloadAndCheck": "Baixar e verificar",
+    "speech": "Modelo de fala",
+    "speechReady": "Neste computador",
+    "speechPartial": "Parcialmente baixado",
+    "speechMissing": "Não baixado",
+    "computer": "Este computador",
+    "computerFacts": "{memory} de memória · {disk} de espaço livre em disco",
+    "confirmDeleteModel": "Excluir {name} deste computador? Isso libera espaço em disco; você pode baixá-lo de novo depois.",
+    "confirmDeleteSpeech": "Excluir o modelo de fala? A transcrição para de funcionar até que ele seja baixado novamente."
+  },
+  "models": {
+    "gemma4_e4b": {
+      "note": "O melhor entre os testados: encontrou 12 dos 13 fatos-chave da nossa chamada de exemplo e elaborou o rascunho de uma chamada de 30 minutos em menos de 3 minutos em um Mac de 16 GB."
+    },
+    "qwen3_5_9b": {
+      "note": "Encontrou a mesma quantidade de fatos, mas foi cerca de duas vezes mais lento em uma chamada de 30 minutos (5 minutos) e acrescentou dois pequenos detalhes que ninguém disse."
+    },
+    "qwen3_5_4b": {
+      "note": "Pequeno e rápido, mas deixou passar cerca de um terço dos fatos e inventou um item fora do escopo."
+    },
+    "mistral_nemo_12b": {
+      "note": "Razoavelmente rápido, mas as anotações ficaram superficiais: cerca de 6 de 10 fatos."
+    },
+    "gemma4_12b": {
+      "note": "Lento demais e com respostas curtas demais em um Mac de 16 GB (cerca de um terço dos fatos). Precisa de um computador com 24 GB de memória ou mais."
+    },
+    "whisper": {
+      "note": "Transforma a gravação em texto em cerca de 99 idiomas e detecta o idioma sozinho. Usa cerca de 1 GB de memória enquanto trabalha."
+    }
+  },
+  "apiErrors": {
+    "engine_missing": "O motor de transcrição não está disponível.",
+    "model_missing": "O modelo de fala ainda não foi baixado.",
+    "decoder_missing": "O conversor de áudio do macOS não foi encontrado, então não é possível ler arquivos de áudio.",
+    "decode_failed": "Não foi possível ler o arquivo de áudio. Tente exportá-lo novamente como mp3, m4a ou wav.",
+    "transcribe_failed": "Algo deu errado durante a transcrição. Você pode tentar novamente.",
+    "interrupted": "O app foi fechado durante a transcrição. Você pode tentar novamente.",
+    "audio_missing": "O arquivo de áudio não está mais disponível. Envie-o novamente.",
+    "llm_model_not_set": "Nenhum modelo de linguagem foi selecionado ainda.",
+    "llm_model_missing": "O modelo de linguagem selecionado não está instalado.",
+    "llm_unreachable": "O motor do modelo de linguagem não está em execução.",
+    "llm_timeout": "O modelo de linguagem demorou demais para responder. Tente novamente.",
+    "llm_failed": "O modelo de linguagem retornou um erro. Tente novamente.",
+    "invalid_model_output": "Não foi possível entender a resposta do modelo, mesmo após uma nova tentativa.",
+    "draft_invalid": "O rascunho descumpriu uma regra (continha preços), mesmo após uma nova tentativa.",
+    "not_enough_information": "A chamada não tinha informações suficientes para elaborar uma proposta.",
+    "profile_missing": "Configure seu perfil primeiro.",
+    "empty_transcript": "A transcrição está vazia, então não há nada para usar na elaboração do rascunho.",
+    "generation_failed": "Algo deu errado ao elaborar o rascunho. Você pode tentar novamente.",
+    "ollama_unreachable": "O motor de IA local não está em execução.",
+    "ollama_failed": "O motor de IA local retornou um erro. Tente novamente.",
+    "model_not_found": "Nenhum modelo com esse nome existe na biblioteca do Ollama. Confira o nome e a tag.",
+    "invalid_model_name": "Esse não é um nome de modelo válido. Use nome:tag, por exemplo gemma4:e4b.",
+    "cloud_model": "Modelos na nuvem enviam suas chamadas para um servidor. O PostCall só usa modelos que rodam neste computador.",
+    "network_error": "O download parou porque a conexão de rede foi perdida. Tente novamente: ele continua de onde parou.",
+    "checksum_mismatch": "O arquivo baixado estava danificado, por isso foi excluído. Tente novamente.",
+    "download_failed": "O servidor de download não enviou o arquivo esperado. Tente novamente mais tarde.",
+    "pull_failed": "Não foi possível baixar o modelo. Tente novamente.",
+    "not_enough_disk": "Não há espaço livre suficiente em disco para este download.",
+    "model_not_installed": "Esse modelo não está neste computador.",
+    "setup_failed": "Algo deu errado durante a configuração. Tente novamente.",
+    "setup_busy": "Já há um download em andamento.",
+    "nothing_to_resume": "Não há nenhum download interrompido para retomar.",
+    "compat_needed": "Este modelo ainda não foi verificado neste computador.",
+    "model_in_use": "Este é o modelo em uso. Troque para outro modelo primeiro.",
+    "compat_no_chat": "Não foi possível usar este modelo para tarefas de escrita. Ele pode ter sido feito para outra finalidade, como busca.",
+    "compat_invalid_output": "Este modelo não retornou as anotações estruturadas de que o app precisa, mesmo após uma nova tentativa.",
+    "compat_not_enough": "Este modelo rodou, mas não encontrou nada útil em uma chamada de teste curta. Provavelmente é pequeno demais.",
+    "compat_timeout": "Este modelo demorou demais em um teste curto. Ele pode ser grande demais para este computador.",
+    "compat_model_missing": "O modelo desapareceu antes de poder ser testado. Tente novamente.",
+    "profile_not_set_up": "O perfil ainda não foi configurado.",
+    "call_not_found": "Chamada não encontrada.",
+    "transcribe_first": "Transcreva a chamada antes de elaborar uma proposta.",
+    "draft_in_progress": "Já há um rascunho sendo escrito para esta chamada.",
+    "no_draft": "Ainda não há rascunho para esta chamada.",
+    "draft_not_running": "Só é possível cancelar um rascunho em andamento.",
+    "draft_not_ready": "O rascunho ainda não está pronto.",
+    "unsupported_file_type": "Tipo de arquivo não compatível. Use mp3, m4a, wav ou mp4.",
+    "file_empty": "O arquivo está vazio.",
+    "transcript_not_ready": "A transcrição ainda não está pronta.",
+    "call_not_running": "Só é possível cancelar uma transcrição em andamento.",
+    "cannot_retry": "Só é possível tentar de novo uma transcrição que falhou e cujo áudio ainda esteja no disco.",
+    "cancel_transcription_first": "Cancele a transcrição antes de excluí-la.",
+    "cancel_draft_first": "Cancele o rascunho antes de excluir a chamada.",
+    "pdf_unsupported_characters": "A exportação em PDF não consegue desenhar alguns caracteres desta proposta (ela aceita idiomas da Europa Ocidental). Exporte em Markdown.",
+    "edit_summary_prices": "O resumo nunca inclui preços.",
+    "edit_prices_outside_investment": "Os preços devem ficar somente na seção de investimento, não em {where}.",
+    "edit_unknown_segments": "Um item em {where} cita trechos que não estão na transcrição: {segments}.",
+    "edit_unknown_section": "Seção desconhecida: {section}"
+  }
+}

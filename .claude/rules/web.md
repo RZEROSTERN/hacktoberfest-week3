@@ -22,4 +22,14 @@ paths:
   (`useWideScreen`). The footer stays at the bottom of the window.
 - After a layout change run `desktop/scripts/layout-check.mjs` against the packaged app (its header says how): it
   opens every page at seven window sizes and fails on sideways scrolling, blank space, uncentred or unused width.
-
+- All text a person reads comes from `app/locales/*.json` through `$t(...)` or `useFormat()`. No raw text in a
+  template (`tests/i18n.test.ts` fails on it). Add a key to `en.json` first, then to the other ten files: the tests
+  check that every language has the same keys and `{values}`. Never put `|`, `@` or a stray brace in a message
+  (vue-i18n reads them as syntax).
+- Numbers, sizes, speeds and times go through `useFormat()` (`Intl`), so no message needs a plural form.
+- CSS uses logical properties (`margin-inline-start`, `border-inline-start`; never `left`/`right`) so Arabic mirrors;
+  text from a call or a proposal gets `dir="auto"`. A header that does not wrap overflows off-screen in right-to-left.
+- API refusals are translated by their `code` (`apiErrors.<code>` in the locale files); an unknown code shows the
+  api's English text. Job errors use `error_code` the same way.
+- After a UI change run `desktop/scripts/layout-check.mjs` with `LOCALES=` for the languages you touched (all eleven
+  before a release): it checks layout, page language and direction, and English left on non-Latin pages.

@@ -5,66 +5,9 @@ from pydantic import BaseModel, Field, field_validator
 from app import i18n
 from app.catalog import LlmModel, WhisperModel
 from app.drafting import DraftItem, ProposalDraft
+from app.errors import ERROR_MESSAGES
 from app.models import Call, CallStatus, Draft, DraftStatus, Profile, Segment, SetupState
 from app.notes import GROUPS, Notes
-
-ERROR_MESSAGES = {
-    "engine_missing": "The transcription engine is not available.",
-    "model_missing": "The speech model has not been downloaded yet.",
-    "decoder_missing": "The macOS audio converter is missing, so audio files cannot be read.",
-    "decode_failed": "The audio file could not be read. Try exporting it again as mp3, m4a or wav.",
-    "transcribe_failed": "Something went wrong while transcribing. You can try again.",
-    "interrupted": "The app was closed while transcribing. You can try again.",
-    "audio_missing": "The audio file is no longer available. Please upload it again.",
-    "llm_model_not_set": "No language model is selected yet.",
-    "llm_model_missing": "The selected language model is not installed.",
-    "llm_unreachable": "The language model engine is not running.",
-    "llm_timeout": "The language model took too long to answer. Try again.",
-    "llm_failed": "The language model returned an error. Try again.",
-    "invalid_model_output": "The model's answer could not be understood, even after a retry.",
-    "draft_invalid": "The draft broke a rule (it contained prices), even after a retry.",
-    "not_enough_information": "The call did not contain enough information to draft a proposal.",
-    "profile_missing": "Set up your profile first.",
-    "empty_transcript": "The transcript is empty, so there is nothing to draft from.",
-    "generation_failed": "Something went wrong while drafting. You can try again.",
-    "ollama_unreachable": "The local AI engine is not running.",
-    "ollama_failed": "The local AI engine returned an error. Try again.",
-    "model_not_found": "No model with that name exists in the Ollama library. Check name and tag.",
-    "invalid_model_name": "That is not a valid model name. Use name:tag, for example gemma4:e4b.",
-    "cloud_model": (
-        "Cloud models send your calls to a server. "
-        "PostCall only uses models that run on this computer."
-    ),
-    "network_error": (
-        "The download stopped because the network connection was lost. "
-        "Try again: it continues where it left off."
-    ),
-    "checksum_mismatch": "The downloaded file was damaged, so it was deleted. Try again.",
-    "download_failed": "The download server did not send the expected file. Try again later.",
-    "pull_failed": "The model could not be downloaded. Try again.",
-    "not_enough_disk": "There is not enough free disk space for this download.",
-    "model_not_installed": "That model is not on this computer.",
-    "setup_failed": "Something went wrong during setup. Try again.",
-    "setup_busy": "A download is already in progress.",
-    "nothing_to_resume": "There is no interrupted download to resume.",
-    "compat_needed": "This model has not been checked on this computer yet.",
-    "model_in_use": "This is the model in use. Switch to another model first.",
-    "compat_no_chat": (
-        "This model could not be run for writing tasks. "
-        "It may be built for something else, like search."
-    ),
-    "compat_invalid_output": (
-        "This model did not return the structured notes the app needs, even after a retry."
-    ),
-    "compat_not_enough": (
-        "This model ran, but it found nothing useful in a short test call. "
-        "It is probably too small."
-    ),
-    "compat_timeout": (
-        "This model took too long on a short test. It may be too big for this computer."
-    ),
-    "compat_model_missing": "The model disappeared before it could be tested. Try again.",
-}
 
 
 class CallRead(BaseModel):

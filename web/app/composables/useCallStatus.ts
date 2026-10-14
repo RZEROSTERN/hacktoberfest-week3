@@ -6,17 +6,17 @@ export function useCallStatus(id: string) {
   const api = useCalls()
   const call = ref<Call | null>(null)
   const transcript = ref<Transcript | null>(null)
-  const loadError = ref<string | null>(null)
+  const unreachable = ref(false)
   let timer: ReturnType<typeof setInterval> | undefined
 
   async function refresh() {
     try {
       call.value = await api.get(id)
-      loadError.value = null
+      unreachable.value = false
       if (call.value.status === 'done' && !transcript.value) transcript.value = await api.transcript(id)
       if (!isActive(call.value.status)) stop()
     } catch {
-      loadError.value = 'Could not reach the local engine. Is the app still running?'
+      unreachable.value = true
     }
   }
 
@@ -43,5 +43,5 @@ export function useCallStatus(id: string) {
   onMounted(start)
   onBeforeUnmount(stop)
 
-  return { call, transcript, loadError, cancel, retry }
+  return { call, transcript, unreachable, cancel, retry }
 }

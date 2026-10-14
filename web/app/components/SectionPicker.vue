@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { moveChoice, sectionLabel, type SectionChoice } from '~/utils/sections'
+import { moveChoice, type SectionChoice } from '~/utils/sections'
 
 const choices = defineModel<SectionChoice[]>({ required: true })
 
@@ -10,9 +10,9 @@ function toggle(index: number) {
 
 <template>
   <fieldset class="sections">
-    <legend>Proposal sections</legend>
+    <legend>{{ $t('sections.legend') }}</legend>
     <p class="muted">
-      Choose the sections your proposals include and their order. The investment section always comes after the scope.
+      {{ $t('sections.help') }}
     </p>
     <ol>
       <li
@@ -25,21 +25,21 @@ function toggle(index: number) {
             :checked="choice.enabled"
             @change="toggle(index)"
           >
-          {{ sectionLabel(choice.id) }}
+          {{ $t(`sections.${choice.id}`) }}
         </label>
         <span class="move">
           <button
             type="button"
             class="icon"
             :disabled="index === 0"
-            :aria-label="`Move ${sectionLabel(choice.id)} up`"
+            :aria-label="$t('sections.moveUp', { section: $t(`sections.${choice.id}`) })"
             @click="choices = moveChoice(choices, index, -1)"
           >↑</button>
           <button
             type="button"
             class="icon"
             :disabled="index === choices.length - 1"
-            :aria-label="`Move ${sectionLabel(choice.id)} down`"
+            :aria-label="$t('sections.moveDown', { section: $t(`sections.${choice.id}`) })"
             @click="choices = moveChoice(choices, index, 1)"
           >↓</button>
         </span>

@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import type { ModelsInfo, Recommended } from '~/types/api'
-import { formatBytes, formatMemory } from '~/utils/bytes'
 import { defaultSelection, effectiveModel, type ModelSelection } from '~/utils/setup'
 
 const setup = useSetup()
+const errors = useErrors()
+const format = useFormat()
 const ready = useState<boolean | null>('setupReady', () => null)
 
 const info = ref<ModelsInfo | null>(null)
 const data = ref<Recommended | null>(null)
 const selection = ref<ModelSelection>({ choice: '', custom: '' })
-const loadError = ref<string | null>(null)
+const unreachable = ref(false)
 const error = ref<string | null>(null)
 const busy = ref(false)
 
@@ -19,9 +20,9 @@ async function load() {
     info.value = models
     data.value = recommended
     if (!selection.value.choice) selection.value = defaultSelection(recommended.llm)
-    loadError.value = null
+    unreachable.value = false
   } catch {
-    loadError.value = 'Could not reach the local engine. Is the app still running?'
+    unreachable.value = true
   }
 }
 
@@ -32,29 +33,29 @@ const models = computed(() =>
   [...(info.value?.llm ?? [])].sort((a, b) => Number(b.active) - Number(a.active) || a.name.localeCompare(b.name)),
 )
 
-async function run(action: () => Promise<unknown>, fallback: string) {
+async function run(action: () => Promise<unknown>, fallbackKey: string) {
   busy.value = true
   error.value = null
   try {
     await action()
     await load()
   } catch (e) {
-    error.value = setup.apiErrorMessage(e, fallback)
+    error.value = errors.message(e, fallbackKey)
   } finally {
     busy.value = false
   }
 }
 
-const use = (name: string) => run(() => setup.activate(name), 'That model could not be selected.')
+const use = (name: string) => run(() => setup.activate(name), 'errors.modelSelect')
 
 async function remove(name: string) {
-  if (!window.confirm(`Delete ${name} from this computer? It frees disk space; you can download it again later.`)) return
-  await run(() => setup.removeModel(name), 'The model could not be deleted.')
+  if (!window.confirm(format.t('settings.confirmDeleteModel', { name }))) return
+  await run(() => setup.removeModel(name), 'errors.modelDelete')
 }
 
 async function removeWhisper() {
-  if (!window.confirm('Delete the speech model? Transcription stops working until it is downloaded again.')) return
-  await run(() => setup.removeWhisper(), 'The speech model could not be deleted.')
+  if (!window.confirm(format.t('settings.confirmDeleteSpeech'))) return
+  await run(() => setup.removeWhisper(), 'errors.whisperDelete')
   ready.value = false
   await navigateTo('/setup')
 }
@@ -67,7 +68,7 @@ async function startSetup(model: string) {
     await setup.start(model)
     await navigateTo('/setup')
   } catch (e) {
-    error.value = setup.apiErrorMessage(e, 'The download could not be started.')
+    error.value = errors.message(e, 'errors.downloadStart')
   } finally {
     busy.value = false
   }
@@ -76,19 +77,19 @@ async function startSetup(model: string) {
 
 <template>
   <section>
-    <h1>Settings</h1>
+    <h1>{{ $t('settings.title') }}</h1>
     <p
-      v-if="loadError"
+      v-if="unreachable"
       class="error"
       role="alert"
     >
-      {{ loadError }}
+      {{ $t('errors.engineUnreachable') }}
     </p>
     <p
       v-else-if="!info || !data"
       class="muted"
     >
-      Loading…
+      {{ $t('common.loading') }}
     </p>
 
     <template v-else>
@@ -102,12 +103,12 @@ async function startSetup(model: string) {
 
       <div class="page-grid">
         <div>
-          <h2>Language models on this computer</h2>
+          <h2>{{ $t('settings.models') }}</h2>
           <p
             v-if="info.llm.length === 0"
             class="muted"
           >
-            None yet.
+            {{ $t('settings.none') }}
           </p>
           <ul class="models">
             <li
@@ -118,20 +119,20 @@ async function startSetup(model: string) {
               <div class="grow">
                 <strong>{{ model.title ?? model.name }}</strong>
                 <span class="muted detail">
-                  <template v-if="model.title">{{ model.name }} · </template>{{ formatBytes(model.size_bytes) }}
+                  <template v-if="model.title">{{ model.name }} · </template>{{ format.bytes(model.size_bytes) }}
                 </span>
                 <span
                   v-if="model.active"
                   class="badge good"
-                >In use</span>
+                >{{ $t('settings.inUse') }}</span>
                 <span
                   v-else-if="!model.compat_ok"
                   class="badge"
-                >Not checked yet</span>
+                >{{ $t('settings.notChecked') }}</span>
                 <span
                   v-if="model.cloud"
                   class="badge warn"
-                >Cloud model: not allowed</span>
+                >{{ $t('settings.cloud') }}</span>
               </div>
               <div class="row">
                 <button
@@ -140,7 +141,7 @@ async function startSetup(model: string) {
                   :disabled="busy"
                   @click="use(model.name)"
                 >
-                  Use this model
+                  {{ $t('settings.use') }}
                 </button>
                 <button
                   v-else-if="!model.active && !model.cloud"
@@ -148,7 +149,7 @@ async function startSetup(model: string) {
                   :disabled="busy"
                   @click="startSetup(model.name)"
                 >
-                  Check and use
+                  {{ $t('settings.checkAndUse') }}
                 </button>
                 <button
                   v-if="!model.active"
@@ -156,25 +157,25 @@ async function startSetup(model: string) {
                   :disabled="busy"
                   @click="remove(model.name)"
                 >
-                  Delete
+                  {{ $t('common.delete') }}
                 </button>
               </div>
             </li>
           </ul>
 
 
-          <h2>Speech model</h2>
+          <h2>{{ $t('settings.speech') }}</h2>
           <div class="card">
             <p>
-              {{ info.whisper.title }} · {{ formatBytes(info.whisper.size_bytes) }} · {{ info.whisper.license }}
+              {{ info.whisper.title }} · {{ format.bytes(info.whisper.size_bytes) }} · {{ info.whisper.license }}
               <span
                 v-if="info.whisper.state === 'ready'"
                 class="badge good"
-              >On this computer</span>
+              >{{ $t('settings.speechReady') }}</span>
               <span
                 v-else
                 class="badge warn"
-              >{{ info.whisper.state === 'partial' ? 'Partly downloaded' : 'Not downloaded' }}</span>
+              >{{ info.whisper.state === 'partial' ? $t('settings.speechPartial') : $t('settings.speechMissing') }}</span>
             </p>
             <button
               v-if="info.whisper.state !== 'missing'"
@@ -182,18 +183,18 @@ async function startSetup(model: string) {
               :disabled="busy"
               @click="removeWhisper"
             >
-              Delete
+              {{ $t('common.delete') }}
             </button>
           </div>
 
-          <h2>This computer</h2>
+          <h2>{{ $t('settings.computer') }}</h2>
           <p class="muted">
-            {{ formatMemory(info.system.total_ram_bytes) }} of memory · {{ formatBytes(info.system.free_disk_bytes) }} of free disk space
+            {{ $t('settings.computerFacts', { memory: format.memory(info.system.total_ram_bytes), disk: format.bytes(info.system.free_disk_bytes) }) }}
           </p>
         </div>
 
         <div>
-          <h2>Download another model</h2>
+          <h2>{{ $t('settings.downloadAnother') }}</h2>
           <ModelPicker
             v-model="selection"
             :data="data"
@@ -204,7 +205,7 @@ async function startSetup(model: string) {
               :disabled="busy || !effectiveModel(selection)"
               @click="startSetup(effectiveModel(selection))"
             >
-              Download and check
+              {{ $t('settings.downloadAndCheck') }}
             </button>
           </div>
 

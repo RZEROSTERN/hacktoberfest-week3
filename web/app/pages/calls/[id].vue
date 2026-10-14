@@ -5,7 +5,9 @@ const route = useRoute()
 const id = String(route.params.id)
 const api = useCalls()
 const profileApi = useProfile()
-const { call, transcript, loadError, cancel, retry } = useCallStatus(id)
+const format = useFormat()
+const errors = useErrors()
+const { call, transcript, unreachable, cancel, retry } = useCallStatus(id)
 const {
   draft,
   error: draftError,
@@ -37,6 +39,7 @@ onMounted(async () => {
   }
 })
 
+const pdfAllowed = computed(() => canExportPdf(draft.value?.proposal?.language))
 const canStart = computed(() => !draft.value || !isDraftActive(draft.value.status))
 
 // Stopping can take a moment (the model may still be loading), so say so right away.
@@ -50,13 +53,13 @@ async function onCancelDraft() {
 }
 
 async function remove() {
-  if (!window.confirm('Delete this call and its transcript from this computer?')) return
+  if (!window.confirm(format.t('call.confirmDelete'))) return
   await api.remove(id)
   await navigateTo('/')
 }
 
 async function draftAgain() {
-  if (draft.value?.status === 'done' && !window.confirm('Write a new draft? It replaces the current one, including any changes you made.')) return
+  if (draft.value?.status === 'done' && !window.confirm(format.t('call.confirmRedraft'))) return
   await startDraft(language.value || null)
 }
 
@@ -70,7 +73,7 @@ function startEditing() {
 }
 
 function discardEditing() {
-  if (dirty.value && !window.confirm('Discard your changes?')) return
+  if (dirty.value && !window.confirm(format.t('call.confirmDiscard'))) return
   editing.value = false
 }
 
@@ -86,7 +89,7 @@ async function saveChanges() {
   }
 }
 
-onBeforeRouteLeave(() => !dirty.value || window.confirm('You have unsaved changes. Leave without saving?'))
+onBeforeRouteLeave(() => !dirty.value || window.confirm(format.t('call.confirmLeave')))
 
 /** Open the transcript, scroll to the cited segment and highlight it for a moment. */
 async function showInTranscript(segmentId: number) {
@@ -103,37 +106,33 @@ async function showInTranscript(segmentId: number) {
 <template>
   <section>
     <p
-      v-if="loadError"
-      class="error"
-      role="alert"
-    >
-      {{ loadError }}
+      v-if="unreachable" class="error" role="alert" > {{ $t('errors.engineUnreachable') }}
     </p>
     <p
       v-else-if="!call"
       class="muted"
     >
-      Loading…
+      {{ $t('common.loading') }}
     </p>
 
     <template v-else>
-      <h1>{{ call.title }}</h1>
+      <h1 dir="auto">{{ call.title }}</h1>
       <p class="muted">
-        <span v-if="call.language">Language: {{ languageLabel(call.language) }}</span>
-        <span v-if="call.duration_s"> · {{ formatDuration(call.duration_s) }}</span>
+        <span v-if="call.language">{{ $t('call.language', { language: format.language(call.language) }) }}</span>
+        <span v-if="call.duration_s"> · {{ format.duration(call.duration_s) }}</span>
       </p>
 
       <template v-if="isActive(call.status)">
         <ProgressBar
           :value="call.progress"
-          :label="statusLabel(call)"
+          :label="format.callStatus(call)"
         />
         <div class="row">
           <button
             class="button secondary"
             @click="cancel"
           >
-            Cancel
+            {{ $t('common.cancel') }}
           </button>
         </div>
       </template>
@@ -143,7 +142,7 @@ async function showInTranscript(segmentId: number) {
           class="error"
           role="alert"
         >
-          {{ call.error_message }}
+          {{ errors.job(call.error_code, call.error_message) }}
         </p>
         <div class="row">
           <button
@@ -151,31 +150,31 @@ async function showInTranscript(segmentId: number) {
             class="button"
             @click="retry"
           >
-            Try again
+            {{ $t('common.tryAgain') }}
           </button>
           <button
             class="button secondary"
             @click="remove"
           >
-            Delete
+            {{ $t('common.delete') }}
           </button>
         </div>
       </template>
 
       <template v-else-if="call.status === 'cancelled'">
-        <p>Transcription cancelled. The recording was removed from this computer.</p>
+        <p>{{ $t('call.cancelledNote') }}</p>
         <div class="row">
           <NuxtLink
             to="/new"
             class="button"
           >
-            Upload again
+            {{ $t('call.uploadAgain') }}
           </NuxtLink>
           <button
             class="button secondary"
             @click="remove"
           >
-            Delete
+            {{ $t('common.delete') }}
           </button>
         </div>
       </template>
@@ -184,28 +183,24 @@ async function showInTranscript(segmentId: number) {
         <div :class="['call-layout', { 'with-pane': wide }]">
           <div>
             <p class="muted">
-              {{ call.audio_available ? 'The audio file is kept on this computer.' : 'The audio file was deleted after transcription.' }}
+              {{ call.audio_available ? $t('call.audioKept') : $t('call.audioDeleted') }}
             </p>
 
-            <h2>Proposal draft</h2>
+            <h2>{{ $t('call.proposalDraft') }}</h2>
 
             <aside
               v-if="profileKnown && !hasProfile"
               class="notice"
               role="note"
             >
-              <strong>Set up your profile first.</strong>
-              The draft uses your services, rates and payment terms.
-              <NuxtLink to="/profile">
-                Set up my profile
-              </NuxtLink>
+              <strong>{{ $t('profileNotice.title') }}</strong> {{ $t('call.profileNotice') }} <NuxtLink to="/profile"> {{ $t('profileNotice.link') }} </NuxtLink>
             </aside>
 
             <template v-else>
               <template v-if="draft && isDraftActive(draft.status)">
                 <ProgressBar
                   :value="draft.progress"
-                  :label="draftStatusLabel(draft)"
+                  :label="format.draftStatus(draft)"
                 />
                 <div class="row">
                   <button
@@ -213,7 +208,7 @@ async function showInTranscript(segmentId: number) {
                     :disabled="cancelling"
                     @click="onCancelDraft"
                   >
-                    {{ cancelling ? 'Cancelling…' : 'Cancel' }}
+                    {{ cancelling ? $t('common.cancelling') : $t('common.cancel') }}
                   </button>
                 </div>
               </template>
@@ -224,27 +219,23 @@ async function showInTranscript(segmentId: number) {
                   class="error"
                   role="alert"
                 >
-                  {{ draft.error_message }}
+                  {{ errors.job(draft.error_code, draft.error_message) }}
                 </p>
                 <p v-else-if="draft?.status === 'cancelled'">
-                  The draft was cancelled.
+                  {{ $t('call.draftCancelled') }}
                 </p>
                 <div
                   v-if="canStart && !editing"
                   class="row"
                 >
                   <label>
-                    Write it in
+                    {{ $t('call.writeIn') }}
                     <select v-model="language">
                       <option value="">
-                        The language of the call{{ call.language ? ` (${languageLabel(call.language)})` : '' }}
+                        {{ call.language ? $t('call.callLanguageNamed', { language: format.language(call.language) }) : $t('call.callLanguage') }}
                       </option>
                       <option
-                        v-for="option in PROPOSAL_LANGUAGES"
-                        :key="option.code"
-                        :value="option.code"
-                      >
-                        {{ option.label }}
+                        v-for="code in PROPOSAL_LANGUAGES" :key="code" :value="code" > {{ format.language(code) }}
                       </option>
                     </select>
                   </label>
@@ -252,7 +243,7 @@ async function showInTranscript(segmentId: number) {
                     class="button"
                     @click="draftAgain"
                   >
-                    {{ draft?.status === 'done' ? 'Draft again' : draft ? 'Try again' : 'Draft proposal' }}
+                    {{ draft?.status === 'done' ? $t('call.draftAgain') : draft ? $t('common.tryAgain') : $t('call.draft') }}
                   </button>
                 </div>
               </template>
@@ -270,10 +261,10 @@ async function showInTranscript(segmentId: number) {
                   v-if="draft.warnings.length"
                   class="muted"
                 >
-                  Some items had no source in the call and are marked “Assumption”. Check them before sending.
+                  {{ $t('call.warnings') }}
                 </p>
                 <p class="muted">
-                  Click a time next to an item to see what was said in the call.
+                  {{ $t('call.sourceHint') }}
                 </p>
 
                 <div
@@ -284,26 +275,34 @@ async function showInTranscript(segmentId: number) {
                     class="button"
                     @click="startEditing"
                   >
-                    Edit proposal
+                    {{ $t('call.edit') }}
                   </button>
                   <button
                     class="button secondary"
                     @click="download('md')"
                   >
-                    Download Markdown
+                    {{ $t('call.downloadMd') }}
                   </button>
                   <button
                     class="button secondary"
+                    :disabled="!pdfAllowed"
+                    :title="pdfAllowed ? undefined : $t('call.pdfUnsupported')"
                     @click="download('pdf')"
                   >
-                    Download PDF
+                    {{ $t('call.downloadPdf') }}
                   </button>
                   <span
                     v-if="justSaved"
                     role="status"
                     class="muted"
-                  >Changes saved.</span>
+                  >{{ $t('call.saved') }}</span>
                 </div>
+                <p
+                  v-if="!editing && !pdfAllowed"
+                  class="muted"
+                >
+                  {{ $t('call.pdfUnsupported') }}
+                </p>
                 <ProposalView
                   v-if="!editing"
                   :sections="draft.proposal.sections"
@@ -327,23 +326,23 @@ async function showInTranscript(segmentId: number) {
                       :disabled="saving || !dirty"
                       @click="saveChanges"
                     >
-                      {{ saving ? 'Saving…' : 'Save changes' }}
+                      {{ saving ? $t('common.saving') : $t('call.saveChanges') }}
                     </button>
                     <button
                       class="button secondary"
                       :disabled="saving"
                       @click="discardEditing"
                     >
-                      Discard changes
+                      {{ $t('call.discard') }}
                     </button>
                     <span
                       v-if="dirty"
                       class="muted"
-                    >You have unsaved changes. Downloads use the saved version.</span>
+                    >{{ $t('call.unsaved') }}</span>
                   </div>
                 </template>
                 <details v-if="draft.notes">
-                  <summary>What the draft is based on</summary>
+                  <summary>{{ $t('call.basedOn') }}</summary>
                   <NotesView
                     :notes="draft.notes"
                     @show="showInTranscript"
@@ -357,7 +356,7 @@ async function showInTranscript(segmentId: number) {
               :open="transcriptOpen"
               @toggle="transcriptOpen = ($event.target as HTMLDetailsElement).open"
             >
-              <summary>Transcript</summary>
+              <summary>{{ $t('call.transcript') }}</summary>
               <TranscriptView
                 :segments="transcript?.segments ?? []"
                 :highlight-id="highlightId"
@@ -369,16 +368,16 @@ async function showInTranscript(segmentId: number) {
                 class="button secondary"
                 @click="remove"
               >
-                Delete call
+                {{ $t('call.delete') }}
               </button>
             </div>
           </div>
           <aside
             v-if="wide"
             class="transcript-pane"
-            aria-label="Transcript"
+            :aria-label="$t('call.transcript')"
           >
-            <h2>Transcript</h2>
+            <h2>{{ $t('call.transcript') }}</h2>
             <TranscriptView
               :segments="transcript?.segments ?? []"
               :highlight-id="highlightId"

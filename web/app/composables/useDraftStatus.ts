@@ -1,10 +1,13 @@
 import type { Draft, SectionEdit } from '~/types/api'
 import { filenameFromDisposition } from '~/utils/editor'
-import { apiErrorMessage, isDraftActive } from '~/utils/format'
+import { parseErrorBody, readApiError } from '~/utils/apiError'
+import { isDraftActive } from '~/utils/format'
 
 /** Follows the proposal draft of one call: starts it, polls while it runs, and can cancel it. */
 export function useDraftStatus(callId: string) {
   const { base, apiFetch } = useApi()
+  const errors = useErrors()
+  const { t } = useFormat()
   const draft = ref<Draft | null>(null)
   const error = ref<string | null>(null)
 
@@ -15,7 +18,7 @@ export function useDraftStatus(callId: string) {
       return isDraftActive(draft.value.status)
     } catch (e) {
       if ((e as { statusCode?: number }).statusCode === 404) return false // no draft yet
-      error.value = 'Could not reach the local engine. Is the app still running?'
+      error.value = t('errors.engineUnreachable')
       return false
     }
   })
@@ -29,7 +32,7 @@ export function useDraftStatus(callId: string) {
       })
       poller.start()
     } catch (e) {
-      error.value = apiErrorMessage(e, 'The draft could not be started.')
+      error.value = errors.message(e, 'errors.draftStart')
     }
   }
 
@@ -37,7 +40,7 @@ export function useDraftStatus(callId: string) {
     try {
       draft.value = await apiFetch<Draft>(`/calls/${callId}/draft/cancel`, { method: 'POST' })
     } catch (e) {
-      error.value = apiErrorMessage(e, 'Could not cancel the draft.')
+      error.value = errors.message(e, 'errors.draftCancel')
     }
   }
 
@@ -48,7 +51,7 @@ export function useDraftStatus(callId: string) {
       draft.value = await apiFetch<Draft>(`/calls/${callId}/draft/proposal`, { method: 'PUT', body: { sections } })
       return true
     } catch (e) {
-      error.value = apiErrorMessage(e, 'The changes could not be saved.')
+      error.value = errors.message(e, 'errors.draftSave')
       return false
     }
   }
@@ -71,7 +74,7 @@ export function useDraftStatus(callId: string) {
       link.remove()
       setTimeout(() => URL.revokeObjectURL(url), 1000)
     } catch (e) {
-      error.value = await exportErrorMessage(e)
+      error.value = errors.fromInfo(await exportErrorInfo(e), 'errors.export')
     }
   }
 
@@ -79,16 +82,16 @@ export function useDraftStatus(callId: string) {
   return { draft, error, start, cancel, saveEdits, download }
 }
 
-/** With `responseType: 'blob'` an error body arrives as a Blob: read the api's message from it. */
-async function exportErrorMessage(error: unknown): Promise<string> {
+/** With `responseType: 'blob'` an error body arrives as a Blob: read the api's answer from it. */
+async function exportErrorInfo(error: unknown) {
+  const info = readApiError(error)
   const data = (error as { data?: unknown }).data
   if (data instanceof Blob) {
     try {
-      const detail = (JSON.parse(await data.text()) as { detail?: unknown }).detail
-      if (typeof detail === 'string') return detail
+      return parseErrorBody(JSON.parse(await data.text()), info.status)
     } catch {
       // not JSON: use the generic message
     }
   }
-  return 'The proposal could not be exported.'
+  return info
 }

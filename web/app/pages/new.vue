@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const api = useCalls()
+const errors = useErrors()
 
 const file = ref<File | null>(null)
 const keepAudio = ref(false)
@@ -25,7 +26,7 @@ async function start() {
     const call = await current.promise
     await navigateTo(`/calls/${call.id}`)
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'The upload failed.'
+    error.value = errors.message(e, 'errors.upload')
   } finally {
     uploading.value = false
     current = null
@@ -39,9 +40,9 @@ function cancelUpload() {
 
 <template>
   <section class="page-narrow">
-    <h1>New proposal</h1>
+    <h1>{{ $t('upload.title') }}</h1>
     <p class="muted">
-      Upload the recording of your discovery call (mp3, m4a, wav or mp4). It is transcribed on this computer.
+      {{ $t('upload.intro') }}
     </p>
 
     <ConsentReminder />
@@ -51,7 +52,7 @@ function cancelUpload() {
         type="file"
         accept=".mp3,.m4a,.wav,.mp4,audio/*,video/mp4"
         :disabled="uploading"
-        aria-label="Call recording"
+        :aria-label="$t('upload.fileLabel')"
         @change="onPick"
       >
     </div>
@@ -62,16 +63,16 @@ function cancelUpload() {
         type="checkbox"
         :disabled="uploading"
       >
-      Keep the audio file after transcription
+      {{ $t('upload.keepAudio') }}
     </label>
     <p class="muted">
-      By default the recording is deleted from this computer as soon as the transcript is ready.
+      {{ $t('upload.keepAudioNote') }}
     </p>
 
     <ProgressBar
       v-if="uploading"
       :value="uploadProgress"
-      :label="`Uploading… ${Math.round(uploadProgress * 100)}%`"
+      :label="$t('upload.uploading', { percent: Math.round(uploadProgress * 100) })"
     />
 
     <p
@@ -88,14 +89,14 @@ function cancelUpload() {
         :disabled="!file || uploading"
         @click="start"
       >
-        Start transcription
+        {{ $t('upload.start') }}
       </button>
       <button
         v-if="uploading"
         class="button secondary"
         @click="cancelUpload"
       >
-        Cancel upload
+        {{ $t('upload.cancel') }}
       </button>
     </div>
   </section>

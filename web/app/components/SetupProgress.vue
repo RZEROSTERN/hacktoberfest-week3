@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { SetupProgress, SetupStep } from '~/types/api'
-import { formatEta, formatProgress, formatSpeed, percent } from '~/utils/bytes'
+import { percent } from '~/utils/bytes'
+
+const format = useFormat()
+const errors = useErrors()
 
 const props = defineProps<{
   progress: SetupProgress
@@ -27,13 +30,13 @@ function hasBar(step: SetupStep) {
 function barText(step: SetupStep) {
   return [
     `${percent(step.completed, step.total)}%`,
-    formatProgress(step.completed, step.total),
-    formatSpeed(step.speed_bps),
-    formatEta(step.eta_s),
+    format.progress(step.completed, step.total),
+    format.speed(step.speed_bps),
+    format.eta(step.eta_s),
   ].filter(Boolean).join(' · ')
 }
 
-const overallText = computed(() => `${Math.round(props.progress.overall.fraction * 100)}% of the setup`)
+const overallText = computed(() => format.t('setup.progress.overall', { percent: Math.round(props.progress.overall.fraction * 100) }))
 const state = computed(() => props.progress.state)
 const offerRecommended = computed(
   () => props.recommended !== null && props.progress.llm_model !== props.recommended.model,
@@ -42,7 +45,7 @@ const offerRecommended = computed(
 
 <template>
   <section class="setup-progress">
-    <h1>Setting up PostCall</h1>
+    <h1>{{ $t('setup.progress.title') }}</h1>
 
     <ProgressBar
       :value="progress.overall.fraction"
@@ -62,7 +65,7 @@ const offerRecommended = computed(
         >{{ MARKS[step.state] }}</span>
         <div class="grow">
           <div>
-            <strong>{{ step.label }}</strong>
+            <strong>{{ $t(`setup.steps.${step.id}`) }}</strong>
             <span
               v-if="step.detail"
               class="muted detail"
@@ -82,26 +85,26 @@ const offerRecommended = computed(
       v-if="state === 'interrupted'"
       role="status"
     >
-      The download was interrupted when PostCall closed. Do you want to continue it? It picks up where it stopped.
+      {{ $t('setup.progress.interrupted') }}
     </p>
     <p
       v-else-if="state === 'paused'"
       role="status"
     >
-      Paused. Nothing is downloading.
+      {{ $t('setup.progress.paused') }}
     </p>
     <p
       v-else-if="state === 'failed' || state === 'compat_failed'"
       class="error"
       role="alert"
     >
-      {{ progress.error_message }}
+      {{ errors.job(progress.error_code, progress.error_message) }}
     </p>
     <p
       v-else-if="state === 'done'"
       role="status"
     >
-      Everything is ready. Your calls stay on this computer.
+      {{ $t('setup.progress.ready') }}
     </p>
 
     <div class="row">
@@ -111,27 +114,27 @@ const offerRecommended = computed(
         :disabled="pausing"
         @click="$emit('pause')"
       >
-        {{ pausing ? 'Pausing…' : 'Pause' }}
+        {{ pausing ? $t('common.pausing') : $t('common.pause') }}
       </button>
       <button
         v-if="state === 'paused' || state === 'interrupted'"
         class="button"
         @click="$emit('resume')"
       >
-        Resume
+        {{ $t('common.resume') }}
       </button>
       <template v-if="state === 'failed'">
         <button
           class="button"
           @click="$emit('resume')"
         >
-          Try again
+          {{ $t('common.tryAgain') }}
         </button>
         <button
           class="button secondary"
           @click="$emit('choose')"
         >
-          Choose another model
+          {{ $t('setup.progress.choose') }}
         </button>
       </template>
       <template v-if="state === 'compat_failed'">
@@ -140,13 +143,13 @@ const offerRecommended = computed(
           class="button"
           @click="$emit('recommended')"
         >
-          Use the recommended model ({{ recommended.title }})
+          {{ $t('setup.progress.useRecommended', { model: recommended.title }) }}
         </button>
         <button
           class="button secondary"
           @click="$emit('choose')"
         >
-          Choose another model
+          {{ $t('setup.progress.choose') }}
         </button>
       </template>
       <button
@@ -154,14 +157,14 @@ const offerRecommended = computed(
         class="button secondary"
         @click="$emit('later')"
       >
-        Not now
+        {{ $t('common.notNow') }}
       </button>
       <button
         v-if="state === 'done'"
         class="button"
         @click="$emit('done')"
       >
-        Start using PostCall
+        {{ $t('setup.progress.start') }}
       </button>
     </div>
   </section>

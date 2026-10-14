@@ -1,0 +1,362 @@
+{
+  "language": {
+    "label": "Sprache"
+  },
+  "nav": {
+    "main": "Hauptmenü",
+    "calls": "Gespräche",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "notices": "Drittanbieter-Hinweise"
+  },
+  "common": {
+    "loading": "Wird geladen…",
+    "tryAgain": "Erneut versuchen",
+    "notNow": "Jetzt nicht",
+    "pause": "Pausieren",
+    "pausing": "Wird pausiert…",
+    "resume": "Fortsetzen",
+    "cancel": "Abbrechen",
+    "cancelling": "Wird abgebrochen…",
+    "delete": "Löschen",
+    "saving": "Wird gespeichert…"
+  },
+  "errors": {
+    "engineUnreachable": "Die lokale Engine ist nicht erreichbar. Läuft die App noch?",
+    "generic": "Etwas ist schiefgelaufen.",
+    "upload": "Das Hochladen ist fehlgeschlagen.",
+    "uploadCancelled": "Hochladen abgebrochen.",
+    "draftStart": "Der Entwurf konnte nicht gestartet werden.",
+    "draftCancel": "Der Entwurf konnte nicht abgebrochen werden.",
+    "draftSave": "Die Änderungen konnten nicht gespeichert werden.",
+    "export": "Das Angebot konnte nicht exportiert werden.",
+    "profileSave": "Das Profil konnte nicht gespeichert werden.",
+    "modelSelect": "Dieses Modell konnte nicht ausgewählt werden.",
+    "modelDelete": "Das Modell konnte nicht gelöscht werden.",
+    "whisperDelete": "Das Spracherkennungsmodell konnte nicht gelöscht werden.",
+    "downloadStart": "Der Download konnte nicht gestartet werden.",
+    "downloadResume": "Der Download konnte nicht fortgesetzt werden."
+  },
+  "download": {
+    "progress": "{done} von {total}",
+    "waiting": "Warte auf Daten…"
+  },
+  "eta": {
+    "lessThanMinute": "noch weniger als eine Minute",
+    "about": "noch etwa {time}"
+  },
+  "status": {
+    "queued": "Wartet auf den Start",
+    "converting": "Audio wird vorbereitet",
+    "transcribing": "Wird transkribiert… {percent} %",
+    "done": "Transkript fertig",
+    "failed": "Fehlgeschlagen",
+    "cancelled": "Abgebrochen"
+  },
+  "draftStatus": {
+    "queued": "Wartet auf den Start",
+    "extracting": "Gespräch wird gelesen",
+    "extractingParts": "Gespräch wird gelesen (Teil {part} von {total})",
+    "drafting": "Angebot wird geschrieben",
+    "done": "Entwurf fertig",
+    "failed": "Fehlgeschlagen",
+    "cancelled": "Abgebrochen"
+  },
+  "consent": {
+    "title": "Einwilligung zur Aufnahme.",
+    "body": "Laden Sie ein Gespräch nur hoch, wenn alle Beteiligten der Aufnahme zugestimmt haben."
+  },
+  "profileNotice": {
+    "title": "Richten Sie zuerst Ihr Profil ein.",
+    "link": "Profil einrichten"
+  },
+  "home": {
+    "title": "Ihre Gespräche",
+    "intro": "Machen Sie aus einem aufgezeichneten Kundengespräch einen Angebotsentwurf. Alles bleibt auf diesem Computer.",
+    "profileNotice": "Ihre Leistungen, Preise und Zahlungsbedingungen fließen in jedes Angebot ein.",
+    "newProposal": "Neues Angebot",
+    "noCalls": "Noch keine Gespräche. Laden Sie Ihre erste Aufnahme hoch, um zu starten."
+  },
+  "upload": {
+    "title": "Neues Angebot",
+    "intro": "Laden Sie die Aufnahme Ihres Erstgesprächs hoch (mp3, m4a, wav oder mp4). Sie wird auf diesem Computer transkribiert.",
+    "fileLabel": "Gesprächsaufnahme",
+    "keepAudio": "Audiodatei nach der Transkription behalten",
+    "keepAudioNote": "Standardmäßig wird die Aufnahme von diesem Computer gelöscht, sobald das Transkript fertig ist.",
+    "uploading": "Wird hochgeladen… {percent} %",
+    "start": "Transkription starten",
+    "cancel": "Hochladen abbrechen"
+  },
+  "call": {
+    "language": "Sprache: {language}",
+    "cancelledNote": "Transkription abgebrochen. Die Aufnahme wurde von diesem Computer entfernt.",
+    "uploadAgain": "Erneut hochladen",
+    "audioKept": "Die Audiodatei bleibt auf diesem Computer gespeichert.",
+    "audioDeleted": "Die Audiodatei wurde nach der Transkription gelöscht.",
+    "proposalDraft": "Angebotsentwurf",
+    "profileNotice": "Der Entwurf nutzt Ihre Leistungen, Preise und Zahlungsbedingungen.",
+    "draftCancelled": "Der Entwurf wurde abgebrochen.",
+    "writeIn": "Sprache des Entwurfs",
+    "callLanguage": "Die Sprache des Gesprächs",
+    "callLanguageNamed": "Die Sprache des Gesprächs ({language})",
+    "draft": "Angebot entwerfen",
+    "draftAgain": "Neu entwerfen",
+    "warnings": "Einige Punkte hatten keine Quelle im Gespräch und sind als „Annahme“ markiert. Prüfen Sie diese vor dem Versand.",
+    "sourceHint": "Klicken Sie auf eine Zeitangabe neben einem Punkt, um zu sehen, was im Gespräch gesagt wurde.",
+    "edit": "Angebot bearbeiten",
+    "downloadMd": "Markdown herunterladen",
+    "downloadPdf": "PDF herunterladen",
+    "pdfUnsupported": "Der PDF-Export unterstützt nur westeuropäische Sprachen. Laden Sie dieses Angebot stattdessen als Markdown herunter.",
+    "saved": "Änderungen gespeichert.",
+    "saveChanges": "Änderungen speichern",
+    "discard": "Änderungen verwerfen",
+    "unsaved": "Sie haben ungespeicherte Änderungen. Downloads verwenden die gespeicherte Fassung.",
+    "basedOn": "Worauf der Entwurf beruht",
+    "transcript": "Transkript",
+    "delete": "Gespräch löschen",
+    "confirmDelete": "Dieses Gespräch und sein Transkript von diesem Computer löschen?",
+    "confirmRedraft": "Einen neuen Entwurf schreiben? Er ersetzt den aktuellen, einschließlich Ihrer Änderungen.",
+    "confirmDiscard": "Ihre Änderungen verwerfen?",
+    "confirmLeave": "Sie haben ungespeicherte Änderungen. Verlassen, ohne zu speichern?"
+  },
+  "profile": {
+    "title": "Ihr Profil",
+    "intro": "Wird zum Schreiben Ihrer Angebote verwendet: Ihre Leistungen, Preise, Zahlungsbedingungen, Tonfall und die bevorzugten Abschnitte. Es bleibt auf diesem Computer.",
+    "name": "Name oder Firmenname",
+    "services": "Ihre Leistungen",
+    "servicesHint": "(eine pro Zeile)",
+    "hourlyRate": "Stundensatz",
+    "hourlyRateHint": "(beliebige Währung, so geschrieben, wie sie erscheinen soll, z. B. 650 MXN pro Stunde)",
+    "projectRates": "Projektpreise",
+    "projectRatesHint": "(einer pro Zeile, z. B. Website mit bis zu 5 Abschnitten: 24.000 MXN)",
+    "ratesNote": "Preise in Ihren Angeboten stammen ausschließlich aus diesen Angaben. Ein vom Kunden genanntes Budget erscheint als Hinweis und wird nie als Preis verwendet.",
+    "paymentTerms": "Standard-Zahlungsbedingungen",
+    "tone": "Tonfall",
+    "toneHint": "(z. B. professionell und freundlich)",
+    "save": "Profil speichern",
+    "saved": "Profil gespeichert."
+  },
+  "sections": {
+    "legend": "Angebotsabschnitte",
+    "help": "Wählen Sie die Abschnitte Ihrer Angebote und deren Reihenfolge. Die Investition steht immer nach dem Leistungsumfang.",
+    "moveUp": "{section} nach oben verschieben",
+    "moveDown": "{section} nach unten verschieben",
+    "summary": "Zusammenfassung",
+    "problem": "Verständnis des Problems",
+    "scope": "Leistungsumfang",
+    "deliverables": "Liefergegenstände",
+    "out_of_scope": "Nicht im Leistungsumfang",
+    "timeline": "Zeitplan",
+    "open_questions": "Offene Fragen",
+    "investment": "Investition",
+    "terms": "Konditionen"
+  },
+  "notes": {
+    "client": "Kunde:",
+    "openQuestions": "Fragen, die das Gespräch offengelassen hat",
+    "groups": {
+      "client_context": "Zum Kunden",
+      "problem": "Problem",
+      "goals": "Ziele",
+      "requirements": "Anforderungen",
+      "constraints": "Einschränkungen",
+      "budget": "Genanntes Budget",
+      "deadlines": "Genannte Fristen",
+      "next_steps": "Nächste Schritte",
+      "risks": "Risiken"
+    }
+  },
+  "notices": {
+    "title": "Drittanbieter-Hinweise",
+    "intro": "PostCall besteht aus Open-Source-Bausteinen, die auf Ihrem Computer laufen. Hier sehen Sie, was enthalten ist und unter welcher Lizenz.",
+    "english": "Die Lizenztexte unten sind auf Englisch, so wie ihre Autoren sie veröffentlicht haben."
+  },
+  "proposal": {
+    "empty": "Für diesen Abschnitt wurde nichts erkannt."
+  },
+  "editor": {
+    "addItem": "Punkt hinzufügen",
+    "addQuestion": "Frage hinzufügen",
+    "addRate": "Preis hinzufügen",
+    "assumption": "Annahme",
+    "assumptionNoSource": "Annahme (keine Quelle im Gespräch)",
+    "itemText": "Text des Punkts",
+    "priceNote": "Preishinweis",
+    "question": "Frage",
+    "rate": "Preis",
+    "rates": "Preise (so geschrieben, wie sie erscheinen sollen)",
+    "removeItem": "Punkt entfernen",
+    "removeQuestion": "Frage entfernen",
+    "removeRate": "Preis entfernen"
+  },
+  "source": {
+    "at": "Quelle im Gespräch bei {time}",
+    "show": "Im Transkript anzeigen"
+  },
+  "draft": {
+    "assumptionTitle": "Das wurde im Gespräch nicht gesagt. Prüfen Sie es vor dem Versand."
+  },
+  "transcript": {
+    "empty": "In dieser Aufnahme wurde keine Sprache erkannt."
+  },
+  "picker": {
+    "legend": "Sprachmodell",
+    "intro": "Das Sprachmodell liest die Notizen zu Ihrem Gespräch und schreibt den Entwurf. Es läuft auf diesem Computer.",
+    "recommended": "Empfohlen",
+    "notRecommended": "Für diesen Computer nicht empfohlen",
+    "installed": "Bereits auf diesem Computer",
+    "facts": "{size} Download · etwa {memory} Arbeitsspeicher · {license}",
+    "ramWarning": "Benötigt etwa {need} Arbeitsspeicher; dieser Computer hat {have}.",
+    "others": "Weitere getestete Modelle",
+    "advanced": "Erweitert: anderes Modell aus Ollama verwenden",
+    "useName": "Diesen Modellnamen verwenden",
+    "placeholder": "Name:Tag, zum Beispiel llama3.2:3b",
+    "nameLabel": "Ollama-Modellname und Tag",
+    "advancedNote": "Jeder Modellname mit Tag aus der {library}. Modelle, die wir nicht getestet haben, liefern möglicherweise eine geringere Qualität. Es wird zuerst mit einem kurzen Beispielgespräch geprüft, bevor Sie es nutzen können. Cloud-Modelle sind nicht erlaubt: Ihre Gespräche verlassen diesen Computer nie.",
+    "library": "Ollama-Bibliothek",
+    "memory": "Dieser Computer hat {memory} Arbeitsspeicher."
+  },
+  "setup": {
+    "request": {
+      "title": "Willkommen bei PostCall",
+      "intro": "PostCall arbeitet vollständig offline und hält Ihre Kundengespräche privat. Dafür werden die benötigten KI-Modelle einmalig auf diesen Computer heruntergeladen. Danach verlässt nichts aus Ihren Gesprächen jemals den Computer.",
+      "speech": "Spracherkennungsmodell (wird ebenfalls heruntergeladen)",
+      "total": "Gesamter Download:",
+      "plusModel": "zuzüglich der Größe Ihres Modells (wird beim Start des Downloads angezeigt)",
+      "diskNeeded": "Benötigter freier Speicherplatz:",
+      "diskRoom": "die Downloads plus {margin} Reserve",
+      "diskAvailable": "Verfügbar:",
+      "noRoom": "Es ist nicht genug freier Speicherplatz vorhanden. Geben Sie Speicherplatz frei oder wählen Sie ein kleineres Modell.",
+      "wifi": "Wir empfehlen eine Wi-Fi-Verbindung: Der Download ist groß. Sie können ihn pausieren und später fortsetzen.",
+      "download": "Jetzt herunterladen",
+      "starting": "Wird gestartet…"
+    },
+    "progress": {
+      "title": "PostCall wird eingerichtet",
+      "overall": "{percent} % der Einrichtung",
+      "interrupted": "Der Download wurde unterbrochen, als PostCall geschlossen wurde. Möchten Sie ihn fortsetzen? Er macht dort weiter, wo er aufgehört hat.",
+      "paused": "Pausiert. Es wird nichts heruntergeladen.",
+      "ready": "Alles ist bereit. Ihre Gespräche bleiben auf diesem Computer.",
+      "start": "PostCall jetzt nutzen",
+      "choose": "Anderes Modell wählen",
+      "useRecommended": "Empfohlenes Modell verwenden ({model})"
+    },
+    "steps": {
+      "engine": "Lokale KI-Engine wird vorbereitet",
+      "llm": "Sprachmodell wird heruntergeladen",
+      "whisper": "Spracherkennungsmodell wird heruntergeladen",
+      "verify": "Downloads werden überprüft",
+      "compat": "Funktion des Modells wird geprüft",
+      "ready": "Bereit"
+    },
+    "engine": {
+      "title": "PostCall kann seine KI-Engine nicht starten",
+      "advice": "Schließen Sie PostCall und öffnen Sie es erneut. Tritt das Problem weiter auf, starten Sie Ihren Computer neu."
+    },
+    "later": {
+      "title": "PostCall braucht seine Modelle",
+      "body": "Ohne die KI-Modelle auf diesem Computer funktioniert in PostCall nichts. Beim nächsten Öffnen werden Sie erneut gefragt.",
+      "button": "Modelle herunterladen"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "models": "Sprachmodelle auf diesem Computer",
+    "none": "Noch keine.",
+    "inUse": "In Verwendung",
+    "notChecked": "Noch nicht geprüft",
+    "cloud": "Cloud-Modell: nicht erlaubt",
+    "use": "Dieses Modell verwenden",
+    "checkAndUse": "Prüfen und verwenden",
+    "downloadAnother": "Weiteres Modell herunterladen",
+    "downloadAndCheck": "Herunterladen und prüfen",
+    "speech": "Spracherkennungsmodell",
+    "speechReady": "Auf diesem Computer",
+    "speechPartial": "Teilweise heruntergeladen",
+    "speechMissing": "Nicht heruntergeladen",
+    "computer": "Dieser Computer",
+    "computerFacts": "{memory} Arbeitsspeicher · {disk} freier Speicherplatz",
+    "confirmDeleteModel": "{name} von diesem Computer löschen? Das gibt Speicherplatz frei; Sie können es später erneut herunterladen.",
+    "confirmDeleteSpeech": "Das Spracherkennungsmodell löschen? Die Transkription funktioniert erst wieder, wenn es erneut heruntergeladen wurde."
+  },
+  "models": {
+    "gemma4_e4b": {
+      "note": "Das am besten getestete Modell: Es fand 12 von 13 Kernfakten in unserem Beispielgespräch und erstellte aus einem 30-minütigen Gespräch in unter 3 Minuten einen Entwurf, auf einem Mac mit 16 GB."
+    },
+    "qwen3_5_9b": {
+      "note": "Fand genauso viele Fakten, war bei einem 30-minütigen Gespräch aber etwa doppelt so langsam (5 Minuten) und fügte zwei kleine Details hinzu, die niemand gesagt hatte."
+    },
+    "qwen3_5_4b": {
+      "note": "Klein und schnell, ließ aber etwa ein Drittel der Fakten aus und erfand einen Punkt im Abschnitt „Nicht im Leistungsumfang“."
+    },
+    "mistral_nemo_12b": {
+      "note": "Recht schnell, aber seine Notizen waren dürftig: etwa 6 von 10 Fakten."
+    },
+    "gemma4_12b": {
+      "note": "Auf einem Mac mit 16 GB zu langsam und zu knapp in den Antworten (etwa ein Drittel der Fakten). Benötigt einen Computer mit 24 GB Arbeitsspeicher oder mehr."
+    },
+    "whisper": {
+      "note": "Wandelt die Aufnahme in etwa 99 Sprachen in Text um und erkennt die Sprache selbstständig. Belegt bei der Arbeit etwa 1 GB Arbeitsspeicher."
+    }
+  },
+  "apiErrors": {
+    "engine_missing": "Die Transkriptions-Engine ist nicht verfügbar.",
+    "model_missing": "Das Spracherkennungsmodell wurde noch nicht heruntergeladen.",
+    "decoder_missing": "Der Audiokonverter von macOS fehlt, daher können Audiodateien nicht gelesen werden.",
+    "decode_failed": "Die Audiodatei konnte nicht gelesen werden. Exportieren Sie sie erneut als mp3, m4a oder wav.",
+    "transcribe_failed": "Bei der Transkription ist etwas schiefgelaufen. Sie können es erneut versuchen.",
+    "interrupted": "Die App wurde während der Transkription geschlossen. Sie können es erneut versuchen.",
+    "audio_missing": "Die Audiodatei ist nicht mehr verfügbar. Bitte laden Sie sie erneut hoch.",
+    "llm_model_not_set": "Es ist noch kein Sprachmodell ausgewählt.",
+    "llm_model_missing": "Das ausgewählte Sprachmodell ist nicht installiert.",
+    "llm_unreachable": "Die Engine des Sprachmodells läuft nicht.",
+    "llm_timeout": "Das Sprachmodell hat zu lange für die Antwort gebraucht. Versuchen Sie es erneut.",
+    "llm_failed": "Das Sprachmodell hat einen Fehler gemeldet. Versuchen Sie es erneut.",
+    "invalid_model_output": "Die Antwort des Modells konnte auch nach einem erneuten Versuch nicht verstanden werden.",
+    "draft_invalid": "Der Entwurf hat auch nach einem erneuten Versuch eine Regel verletzt (er enthielt Preise).",
+    "not_enough_information": "Das Gespräch enthielt nicht genug Informationen für einen Angebotsentwurf.",
+    "profile_missing": "Richten Sie zuerst Ihr Profil ein.",
+    "empty_transcript": "Das Transkript ist leer, daher gibt es nichts, woraus ein Entwurf entstehen könnte.",
+    "generation_failed": "Beim Erstellen des Entwurfs ist etwas schiefgelaufen. Sie können es erneut versuchen.",
+    "ollama_unreachable": "Die lokale KI-Engine läuft nicht.",
+    "ollama_failed": "Die lokale KI-Engine hat einen Fehler gemeldet. Versuchen Sie es erneut.",
+    "model_not_found": "In der Ollama-Bibliothek gibt es kein Modell mit diesem Namen. Prüfen Sie Name und Tag.",
+    "invalid_model_name": "Das ist kein gültiger Modellname. Verwenden Sie Name:Tag, zum Beispiel gemma4:e4b.",
+    "cloud_model": "Cloud-Modelle senden Ihre Gespräche an einen Server. PostCall verwendet nur Modelle, die auf diesem Computer laufen.",
+    "network_error": "Der Download wurde gestoppt, weil die Netzwerkverbindung unterbrochen wurde. Versuchen Sie es erneut: Er macht dort weiter, wo er aufgehört hat.",
+    "checksum_mismatch": "Die heruntergeladene Datei war beschädigt und wurde gelöscht. Versuchen Sie es erneut.",
+    "download_failed": "Der Download-Server hat nicht die erwartete Datei gesendet. Versuchen Sie es später erneut.",
+    "pull_failed": "Das Modell konnte nicht heruntergeladen werden. Versuchen Sie es erneut.",
+    "not_enough_disk": "Für diesen Download ist nicht genug freier Speicherplatz vorhanden.",
+    "model_not_installed": "Dieses Modell befindet sich nicht auf diesem Computer.",
+    "setup_failed": "Bei der Einrichtung ist etwas schiefgelaufen. Versuchen Sie es erneut.",
+    "setup_busy": "Es läuft bereits ein Download.",
+    "nothing_to_resume": "Es gibt keinen unterbrochenen Download, der fortgesetzt werden könnte.",
+    "compat_needed": "Dieses Modell wurde auf diesem Computer noch nicht geprüft.",
+    "model_in_use": "Dieses Modell ist gerade in Verwendung. Wechseln Sie zuerst zu einem anderen Modell.",
+    "compat_no_chat": "Dieses Modell ließ sich nicht für Schreibaufgaben ausführen. Möglicherweise ist es für etwas anderes gedacht, etwa für die Suche.",
+    "compat_invalid_output": "Dieses Modell hat auch nach einem erneuten Versuch nicht die strukturierten Notizen geliefert, die die App braucht.",
+    "compat_not_enough": "Dieses Modell lief, fand in einem kurzen Testgespräch aber nichts Brauchbares. Es ist wahrscheinlich zu klein.",
+    "compat_timeout": "Dieses Modell hat bei einem kurzen Test zu lange gebraucht. Möglicherweise ist es zu groß für diesen Computer.",
+    "compat_model_missing": "Das Modell war nicht mehr vorhanden, bevor es getestet werden konnte. Versuchen Sie es erneut.",
+    "profile_not_set_up": "Das Profil wurde noch nicht eingerichtet.",
+    "call_not_found": "Gespräch nicht gefunden.",
+    "transcribe_first": "Transkribieren Sie das Gespräch, bevor Sie ein Angebot entwerfen.",
+    "draft_in_progress": "Für dieses Gespräch wird bereits ein Entwurf geschrieben.",
+    "no_draft": "Für dieses Gespräch gibt es noch keinen Entwurf.",
+    "draft_not_running": "Nur ein laufender Entwurf kann abgebrochen werden.",
+    "draft_not_ready": "Der Entwurf ist noch nicht fertig.",
+    "unsupported_file_type": "Dateityp nicht unterstützt. Verwenden Sie mp3, m4a, wav oder mp4.",
+    "file_empty": "Die Datei ist leer.",
+    "transcript_not_ready": "Das Transkript ist noch nicht fertig.",
+    "call_not_running": "Nur eine laufende Transkription kann abgebrochen werden.",
+    "cannot_retry": "Nur eine fehlgeschlagene Transkription, deren Audiodatei noch vorhanden ist, kann wiederholt werden.",
+    "cancel_transcription_first": "Brechen Sie die Transkription ab, bevor Sie sie löschen.",
+    "cancel_draft_first": "Brechen Sie den Entwurf ab, bevor Sie das Gespräch löschen.",
+    "pdf_unsupported_characters": "Der PDF-Export kann einige Zeichen in diesem Angebot nicht darstellen (er unterstützt westeuropäische Sprachen). Exportieren Sie es stattdessen als Markdown.",
+    "edit_summary_prices": "Die Zusammenfassung enthält nie Preise.",
+    "edit_prices_outside_investment": "Preise gehören nur in den Abschnitt „Investition“, nicht in {where}.",
+    "edit_unknown_segments": "Ein Punkt in {where} verweist auf Segmente, die nicht im Transkript vorkommen: {segments}.",
+    "edit_unknown_section": "Unbekannter Abschnitt: {section}"
+  }
+}

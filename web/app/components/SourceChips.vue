@@ -19,10 +19,13 @@ function toggle(segmentId: number) {
       type="button"
       class="chip"
       :aria-expanded="selected === source.segment_id"
-      :title="`Source in the call at ${formatTimestamp(source.start)}`"
+      :title="$t('source.at', { time: formatTimestamp(source.start) })"
       @click="toggle(source.segment_id)"
     >
-      ▶ {{ formatTimestamp(source.start) }}
+      <span
+        class="play"
+        aria-hidden="true"
+      >▶</span> <bdi>{{ formatTimestamp(source.start) }}</bdi>
     </button>
     <template
       v-for="source in sources"
@@ -33,13 +36,13 @@ function toggle(segmentId: number) {
         class="quote"
       >
         <span class="stamp">{{ formatTimestamp(source.start) }}</span>
-        “{{ source.text }}”
+        <q dir="auto">{{ source.text }}</q>
         <button
           type="button"
           class="link"
           @click="$emit('show', source.segment_id)"
         >
-          Show in transcript
+          {{ $t('source.show') }}
         </button>
       </blockquote>
     </template>

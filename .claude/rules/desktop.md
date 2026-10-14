@@ -35,3 +35,7 @@ paths:
 - The build is ad-hoc signed (`identity: "-"`, no hardened runtime): Apple Silicon refuses unsigned code.
 - Always start the app with `--user-data-dir=<scratch folder>` when testing: it ignores a changed `HOME` and
   otherwise writes into `~/Library/Application Support/PostCall`, the real data folder of an installed app.
+- The shell's own strings (start page, error dialogs) are in `src/messages.ts` for the eleven languages and follow the
+  system language; `locale.test.ts` checks every language has every message. Technical details in a dialog stay English.
+- A regex written inside the template literal passed to `page.eval` loses its backslashes (`\b` becomes a backspace,
+  `\s` becomes `s`) and fails silently. Collect text in the page and match it in Node, outside the template.
