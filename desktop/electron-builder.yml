@@ -1,8 +1,8 @@
 # Unsigned (ad-hoc signed) macOS arm64 build. Everything the app needs at run time is bundled:
 # the language engine (Ollama), the api (one PyInstaller program), the transcription engine
 # (whisper-cli) and the generated web app. `make desktop-resources` produces the inputs.
-appId: dev.scopewise.desktop
-productName: Scopewise
+appId: mx.dev1.postcall
+productName: PostCall
 copyright: Copyright (c) 2026 Marco Ramírez. MIT License, with a Beerware thank-you.
 directories:
   output: release
@@ -47,5 +47,5 @@ mac:
   identity: "-"
   hardenedRuntime: false
 dmg:
-  title: Scopewise ${version}
+  title: PostCall ${version}
   sign: false

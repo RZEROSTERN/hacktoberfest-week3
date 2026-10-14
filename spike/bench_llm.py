@@ -5,7 +5,7 @@ Usage:
 
 <transcript.json> is a list of {"start", "end", "text"} segments (see bench_whisper.py).
 Writes $SPIKE_OUT/llm-<label>.json (full outputs + metrics) and appends a summary line to
-$SPIKE_OUT/llm_results.jsonl. The Ollama URL comes from SCOPEWISE_OLLAMA_URL.
+$SPIKE_OUT/llm_results.jsonl. The Ollama URL comes from POSTCALL_OLLAMA_URL.
 """
 
 import argparse
@@ -21,7 +21,7 @@ import psutil
 from pydantic import BaseModel, ValidationError
 
 OUT = Path(os.environ["SPIKE_OUT"])
-OLLAMA = os.environ["SCOPEWISE_OLLAMA_URL"]
+OLLAMA = os.environ["POSTCALL_OLLAMA_URL"]
 HERE = Path(__file__).parent
 NUM_CTX = 8192
 

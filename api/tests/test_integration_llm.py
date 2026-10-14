@@ -1,7 +1,7 @@
 """Runs the real language model through Ollama on the sample call's transcript.
 
-Opt-in because it loads a model into memory: `make test-llm` (sets SCOPEWISE_RUN_LLM_TESTS=1).
-The model tag comes from SCOPEWISE_LLM_MODEL, which seeds the local settings.
+Opt-in because it loads a model into memory: `make test-llm` (sets POSTCALL_RUN_LLM_TESTS=1).
+The model tag comes from POSTCALL_LLM_MODEL, which seeds the local settings.
 """
 
 import json
@@ -21,8 +21,8 @@ from app.models import Call, CallStatus, Segment
 from tests.fake_llm import PROFILE
 from tests.fakes import FakeDecoder, FakeTranscriber, wait_until
 
-OLLAMA = os.environ.get("SCOPEWISE_OLLAMA_URL", "")
-MODEL = os.environ.get("SCOPEWISE_LLM_MODEL", "")
+OLLAMA = os.environ.get("POSTCALL_OLLAMA_URL", "")
+MODEL = os.environ.get("POSTCALL_LLM_MODEL", "")
 TRANSCRIPT = (
     Path(__file__).resolve().parents[2]
     / "spike"
@@ -54,11 +54,11 @@ def model_installed() -> bool:
 pytestmark = [
     pytest.mark.integration,
     pytest.mark.skipif(
-        os.environ.get("SCOPEWISE_RUN_LLM_TESTS") != "1"
+        os.environ.get("POSTCALL_RUN_LLM_TESTS") != "1"
         or not OLLAMA
         or not MODEL
         or not TRANSCRIPT.is_file(),
-        reason="opt-in: needs SCOPEWISE_RUN_LLM_TESTS=1, SCOPEWISE_OLLAMA_URL, SCOPEWISE_LLM_MODEL",
+        reason="opt-in: needs POSTCALL_RUN_LLM_TESTS=1, POSTCALL_OLLAMA_URL, POSTCALL_LLM_MODEL",
     ),
 ]
 
@@ -109,7 +109,7 @@ def test_real_model_on_the_sample_call(tmp_path: Path) -> None:
         f"\nreal model {MODEL}: {draft['status']} in {elapsed:.0f} s, warnings={draft['warnings']}"
     )
 
-    if dump := os.environ.get("SCOPEWISE_DUMP_DRAFT"):  # lets a person read the real output
+    if dump := os.environ.get("POSTCALL_DUMP_DRAFT"):  # lets a person read the real output
         Path(dump).write_text(json.dumps(draft, ensure_ascii=False, indent=1))
     assert draft["status"] == "done", draft
     assert draft["model"] == MODEL

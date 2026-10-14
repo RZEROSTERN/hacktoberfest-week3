@@ -1,7 +1,7 @@
 // Runs sandboxed, before the page. It exposes one read-only value: where the local api listens.
 import { contextBridge } from 'electron'
 
-const PREFIX = '--scopewise-api-base='
+const PREFIX = '--postcall-api-base='
 
 const arg = process.argv.find(a => a.startsWith(PREFIX))
 const apiBase = arg ? arg.slice(PREFIX.length) : ''

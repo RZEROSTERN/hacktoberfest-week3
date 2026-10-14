@@ -1,6 +1,6 @@
 """Runs the real engines (macOS afconvert + whisper.cpp) on a 20-second clip of the sample call.
 
-Skipped unless SCOPEWISE_WHISPER_CLI and SCOPEWISE_TEST_WHISPER_MODEL point at files. Use a small
+Skipped unless POSTCALL_WHISPER_CLI and POSTCALL_TEST_WHISPER_MODEL point at files. Use a small
 model (base) here: the tests only need to prove the pipeline works end to end.
 """
 
@@ -17,8 +17,8 @@ from app.config import Settings
 from app.main import create_app
 from tests.fakes import wait_until
 
-CLI = os.environ.get("SCOPEWISE_WHISPER_CLI", "")
-MODEL = os.environ.get("SCOPEWISE_TEST_WHISPER_MODEL", "")
+CLI = os.environ.get("POSTCALL_WHISPER_CLI", "")
+MODEL = os.environ.get("POSTCALL_TEST_WHISPER_MODEL", "")
 SAMPLE = Path(__file__).resolve().parents[2] / "samples" / "interview.mp3"
 
 pytestmark = [
@@ -28,7 +28,7 @@ pytestmark = [
         or not Path(CLI).is_file()
         or not Path(MODEL).is_file()
         or not SAMPLE.is_file(),
-        reason="needs macOS, SCOPEWISE_WHISPER_CLI, SCOPEWISE_TEST_WHISPER_MODEL and the sample",
+        reason="needs macOS, POSTCALL_WHISPER_CLI, POSTCALL_TEST_WHISPER_MODEL and the sample",
     ),
 ]
 

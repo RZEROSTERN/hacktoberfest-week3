@@ -12,7 +12,7 @@ const ROOT = process.env.ROOT
 const S = process.env.UI_OUT ?? new URL('../../.dev/ui-check', import.meta.url).pathname
 const WEB = process.env.WEB_URL ?? 'http://localhost:3000'
 const API = 'http://127.0.0.1:8765'
-const OLLAMA = process.env.SCOPEWISE_OLLAMA_URL ?? 'http://127.0.0.1:11434'
+const OLLAMA = process.env.POSTCALL_OLLAMA_URL ?? 'http://127.0.0.1:11434'
 const GOOD = 'gemma4:e4b'
 const TINY = 'smollm2:135m'
 const DATA = `${ROOT}/.dev/setup-check`
@@ -27,7 +27,7 @@ function startApi() {
     cwd: ROOT,
     detached: true, // its own process group, so the whole tree can be killed like a quit
     stdio: 'ignore',
-    env: { ...process.env, SCOPEWISE_DATA_DIR: `${DATA}/data`, SCOPEWISE_MODELS_DIR: `${DATA}/models`, SCOPEWISE_LLM_MODEL: '' },
+    env: { ...process.env, POSTCALL_DATA_DIR: `${DATA}/data`, POSTCALL_MODELS_DIR: `${DATA}/models`, POSTCALL_LLM_MODEL: '' },
   })
 }
 function killApi(signal = 'SIGTERM') {
@@ -67,7 +67,7 @@ try {
 
   // --- 1. first launch: everything is sent to the request screen
   await page.goto(`${WEB}/`, "document.querySelector('main h1')")
-  await page.waitFor("document.body.innerText.includes('Welcome to Scopewise')", 20000, 'request screen')
+  await page.waitFor("document.body.innerText.includes('Welcome to PostCall')", 20000, 'request screen')
   check('a first launch lands on the model request, not on the app', page && (await page.eval('location.pathname')) === '/setup')
   let t = await text()
   check('it explains the offline, private download', /fully offline/.test(t) && /downloaded once to this computer/.test(t))
@@ -84,11 +84,11 @@ try {
 
   // --- 2. "Not now": nothing else works, and the same request comes back
   await page.click('Not now', 'button')
-  await page.waitFor("document.body.innerText.includes('Scopewise needs its models')", 5000, 'later screen')
+  await page.waitFor("document.body.innerText.includes('PostCall needs its models')", 5000, 'later screen')
   await page.goto(`${WEB}/profile`, "document.querySelector('main h1')")
   check('with "Not now", other pages still lead back to the setup', (await page.eval('location.pathname')) === '/setup')
   await page.goto(`${WEB}/`, "document.querySelector('main h1')")
-  check('on the next launch the same request is shown again', await has('Welcome to Scopewise'))
+  check('on the next launch the same request is shown again', await has('Welcome to PostCall'))
 
   // --- 3. names are checked
   const typeModel = async name => {
@@ -109,7 +109,7 @@ try {
   check('a model that does not exist fails with a clear message and Try again', (await has('Try again')) && (await has('Choose another model')))
   await page.shot(`${S}/31-failed.png`)
   await page.click('Choose another model', 'button')
-  await page.waitFor("document.body.innerText.includes('Welcome to Scopewise')", 5000, 'back to the list')
+  await page.waitFor("document.body.innerText.includes('Welcome to PostCall')", 5000, 'back to the list')
   check('"Choose another model" goes back to the list', true)
 
   // --- 4. a real download of the tiny model and the real speech model, with progress, pause and resume
@@ -146,9 +146,9 @@ try {
   const done = await apiJson('/setup/progress')
   check('the recommended model passes the real check; downloads already done are skipped', done.state === 'done' && done.steps.find(s => s.id === 'llm').skipped && done.steps.find(s => s.id === 'whisper').skipped)
   await page.shot(`${S}/35-ready.png`)
-  await page.click('Start using Scopewise', 'button')
+  await page.click('Start using PostCall', 'button')
   await page.waitFor("document.querySelector('main h1') && document.querySelector('main h1').textContent.includes('Your calls')", 10000, 'home')
-  check('"Start using Scopewise" opens the app, and it stays open afterwards', true)
+  check('"Start using PostCall" opens the app, and it stays open afterwards', true)
   await page.goto(`${WEB}/profile`, "document.querySelector('main h1')")
   check('after setup the request never appears again', (await page.eval('location.pathname')) === '/profile')
 
@@ -166,7 +166,7 @@ try {
 
   // --- 7. quit in the middle of a download, then come back
   await page.eval("[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Delete' && b.closest('.card')).click()")
-  await page.waitFor("document.body.innerText.includes('Welcome to Scopewise')", 15000, 'back to setup after deleting the speech model')
+  await page.waitFor("document.body.innerText.includes('Welcome to PostCall')", 15000, 'back to setup after deleting the speech model')
   check('deleting the speech model sends the app back to the setup request', (await has('Not downloaded')) || /574 MB/.test(await text()))
   await page.click('Download now', 'button')
   const dl = async () => (await apiJson('/setup/progress')).steps[2].completed
@@ -178,7 +178,7 @@ try {
   startApi()
   await waitApi()
   await page.goto(`${WEB}/`, "document.querySelector('main h1')")
-  await page.waitFor("document.body.innerText.includes('interrupted when Scopewise closed')", 20000, 'interrupted prompt')
+  await page.waitFor("document.body.innerText.includes('interrupted when PostCall closed')", 20000, 'interrupted prompt')
   check('after quitting mid-download the user is asked whether to continue (nothing restarts silently)', (await has('Resume')) && (await apiJson('/setup/progress')).state === 'interrupted', `killed at ${before}`)
   check('the progress it had reached is remembered', (await apiJson('/setup/progress')).steps[2].completed >= before * 0.9)
   await page.shot(`${S}/37-interrupted.png`)
@@ -189,7 +189,7 @@ try {
   check('the speech model was completed and matches its checksum', (await sha256(file)) === catalog.whisper.sha256)
 
   // --- 8. phone width
-  await page.click('Start using Scopewise', 'button')
+  await page.click('Start using PostCall', 'button')
   await page.resize(390, 800)
   await page.goto(`${WEB}/settings`, "document.querySelector('main h1')")
   await page.waitFor("document.querySelector('.models li')", 10000)

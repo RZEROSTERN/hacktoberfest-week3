@@ -1,6 +1,6 @@
 # Third-party notices
 
-Scopewise is built from open-source parts and runs them entirely on your computer. This page lists what is inside the app or downloaded by it, and under which license. The full license texts of the language engine, the transcription engine and the desktop shell are shipped in the app (inside the `ollama`, `whisper` and `electron` folders of its resources).
+PostCall is built from open-source parts and runs them entirely on your computer. This page lists what is inside the app or downloaded by it, and under which license. The full license texts of the language engine, the transcription engine and the desktop shell are shipped in the app (inside the `ollama`, `whisper` and `electron` folders of its resources).
 
 ## Language engine: Ollama (MIT)
 
@@ -49,4 +49,4 @@ The screens are built with Nuxt, Vue and Vue Router, all licensed under the MIT 
 
 ## Provided by your Mac
 
-Audio recordings are converted with afconvert, a tool that is part of macOS. It is not distributed with Scopewise.
+Audio recordings are converted with afconvert, a tool that is part of macOS. It is not distributed with PostCall.

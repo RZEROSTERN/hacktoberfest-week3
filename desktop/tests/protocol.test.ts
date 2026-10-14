@@ -78,17 +78,17 @@ describe('serve', () => {
   const root = site()
 
   it('answers with the right type and a policy on pages', () => {
-    const page = serve(root, 'app://scopewise/', API)
+    const page = serve(root, 'app://postcall/', API)
     expect(page.status).toBe(200)
     expect(page.headers['content-type']).toBe('text/html; charset=utf-8')
     expect(page.headers['content-security-policy']).toContain(API)
-    const script = serve(root, 'app://scopewise/_nuxt/app.js', API)
+    const script = serve(root, 'app://postcall/_nuxt/app.js', API)
     expect(script.headers['content-type']).toBe('text/javascript; charset=utf-8')
     expect(script.headers['content-security-policy']).toBeUndefined()
   })
 
   it('refuses another host or scheme', () => {
     expect(serve(root, 'app://evil/', API).status).toBe(404)
-    expect(serve(root, 'https://scopewise/', API).status).toBe(404)
+    expect(serve(root, 'https://postcall/', API).status).toBe(404)
   })
 })

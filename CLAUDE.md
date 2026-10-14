@@ -1,6 +1,6 @@
-# Scopewise
+# PostCall
 
-Local-first desktop app (working title) that turns a recorded client discovery call into a
+Local-first desktop app that turns a recorded client discovery call into a
 draft proposal for freelancers. Whisper transcribes, an open-weight LLM (via Ollama) extracts
 notes and drafts the proposal, everything runs on the user's machine.
 

@@ -42,7 +42,7 @@ const offerRecommended = computed(
 
 <template>
   <section class="setup-progress">
-    <h1>Setting up Scopewise</h1>
+    <h1>Setting up PostCall</h1>
 
     <ProgressBar
       :value="progress.overall.fraction"
@@ -82,7 +82,7 @@ const offerRecommended = computed(
       v-if="state === 'interrupted'"
       role="status"
     >
-      The download was interrupted when Scopewise closed. Do you want to continue it? It picks up where it stopped.
+      The download was interrupted when PostCall closed. Do you want to continue it? It picks up where it stopped.
     </p>
     <p
       v-else-if="state === 'paused'"
@@ -161,7 +161,7 @@ const offerRecommended = computed(
         class="button"
         @click="$emit('done')"
       >
-        Start using Scopewise
+        Start using PostCall
       </button>
     </div>
   </section>

@@ -3,16 +3,16 @@
 
 -include .env
 
-export SCOPEWISE_PORT ?= 8765
-export SCOPEWISE_OLLAMA_URL ?= http://127.0.0.1:11434
-export SCOPEWISE_DATA_DIR ?= $(CURDIR)/.dev/data
-export SCOPEWISE_MODELS_DIR ?= $(CURDIR)/.dev/models
-export SCOPEWISE_CORS_ORIGINS ?= ["http://localhost:3000","http://127.0.0.1:3000"]
-export SCOPEWISE_WHISPER_CLI ?= $(CURDIR)/.dev/whisper.cpp/build/bin/whisper-cli
-export SCOPEWISE_TEST_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-base-q5_1.bin
+export POSTCALL_PORT ?= 8765
+export POSTCALL_OLLAMA_URL ?= http://127.0.0.1:11434
+export POSTCALL_DATA_DIR ?= $(CURDIR)/.dev/data
+export POSTCALL_MODELS_DIR ?= $(CURDIR)/.dev/models
+export POSTCALL_CORS_ORIGINS ?= ["http://localhost:3000","http://127.0.0.1:3000"]
+export POSTCALL_WHISPER_CLI ?= $(CURDIR)/.dev/whisper.cpp/build/bin/whisper-cli
+export POSTCALL_TEST_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-base-q5_1.bin
 # Development seed for the local settings table; the app never hard-codes a model tag.
-export SCOPEWISE_LLM_MODEL ?= gemma4:e4b
-export NUXT_PUBLIC_API_BASE ?= http://127.0.0.1:$(SCOPEWISE_PORT)
+export POSTCALL_LLM_MODEL ?= gemma4:e4b
+export NUXT_PUBLIC_API_BASE ?= http://127.0.0.1:$(POSTCALL_PORT)
 # Electron and electron-builder download tools into these folders instead of ~/Library/Caches.
 export ELECTRON_CACHE ?= $(CURDIR)/.dev/electron-cache
 export ELECTRON_BUILDER_CACHE ?= $(CURDIR)/.dev/electron-builder-cache
@@ -63,10 +63,10 @@ dev-web:
 	cd web && npm run dev
 
 ollama-check:
-	@curl -fsS $(SCOPEWISE_OLLAMA_URL)/api/tags >/dev/null \
-		&& echo "Ollama OK at $(SCOPEWISE_OLLAMA_URL)" \
-		|| (echo "Ollama is not reachable at $(SCOPEWISE_OLLAMA_URL). Start the Ollama app (native, not Docker)." && exit 1)
-	@curl -fsS $(SCOPEWISE_OLLAMA_URL)/api/tags | python3 -c "import sys, json; print('Local models:', ', '.join(m['name'] for m in json.load(sys.stdin)['models']) or 'none')"
+	@curl -fsS $(POSTCALL_OLLAMA_URL)/api/tags >/dev/null \
+		&& echo "Ollama OK at $(POSTCALL_OLLAMA_URL)" \
+		|| (echo "Ollama is not reachable at $(POSTCALL_OLLAMA_URL). Start the Ollama app (native, not Docker)." && exit 1)
+	@curl -fsS $(POSTCALL_OLLAMA_URL)/api/tags | python3 -c "import sys, json; print('Local models:', ', '.join(m['name'] for m in json.load(sys.stdin)['models']) or 'none')"
 
 test:
 	cd api && uv run pytest
@@ -74,10 +74,10 @@ test:
 	cd desktop && npm test
 
 test-llm:
-	cd api && SCOPEWISE_RUN_LLM_TESTS=1 uv run pytest tests/test_integration_llm.py -s -q
+	cd api && POSTCALL_RUN_LLM_TESTS=1 uv run pytest tests/test_integration_llm.py -s -q
 
 test-setup:
-	cd api && SCOPEWISE_RUN_SETUP_TESTS=1 uv run pytest tests/test_integration_setup.py -s -q
+	cd api && POSTCALL_RUN_SETUP_TESTS=1 uv run pytest tests/test_integration_setup.py -s -q
 
 lint:
 	cd api && uv run ruff check . && uv run ruff format --check .
@@ -102,7 +102,8 @@ build-web:
 	cd web && npm run generate
 
 build-api:
-	cd api && uv run pyinstaller --noconfirm --clean --distpath ../desktop/build/api --workpath ../.dev/pyinstaller scopewise-api.spec
+	rm -rf desktop/build/api
+	cd api && uv run pyinstaller --noconfirm --clean --distpath ../desktop/build/api --workpath ../.dev/pyinstaller postcall-api.spec
 
 build-whisper:
 	sh desktop/scripts/build-whisper.sh

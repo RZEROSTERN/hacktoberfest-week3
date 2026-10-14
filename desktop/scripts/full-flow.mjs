@@ -3,7 +3,7 @@
 // export, and a look at the network connections the app holds. Slow (several minutes) and heavy: it
 // downloads the speech model (~574 MB) and a tiny language model (~270 MB) and loads gemma4:e4b.
 //
-//   APP_BIN=/path/Scopewise.app/Contents/MacOS/Scopewise node scripts/full-flow.mjs
+//   APP_BIN=/path/PostCall.app/Contents/MacOS/PostCall node scripts/full-flow.mjs
 //
 // gemma4:e4b is not downloaded again (9.6 GB): it is hard-linked from the system Ollama's model folder
 // (LINK_FROM, default ~/.ollama/models) into the app's own, which only reads the system folder.
@@ -19,9 +19,9 @@ const here = path.dirname(fileURLToPath(import.meta.url))
 const repo = path.resolve(here, '..', '..')
 const out = process.env.UI_OUT ?? path.join(repo, '.dev', 'full-flow')
 mkdirSync(out, { recursive: true })
-const userData = mkdtempSync(path.join(process.env.SCRATCH ?? tmpdir(), 'scopewise-flow-'))
+const userData = mkdtempSync(path.join(process.env.SCRATCH ?? tmpdir(), 'postcall-flow-'))
 const appBin = process.env.APP_BIN
-if (!appBin) throw new Error('set APP_BIN to the Scopewise executable inside the installed app')
+if (!appBin) throw new Error('set APP_BIN to the PostCall executable inside the installed app')
 const LINK_FROM = process.env.LINK_FROM ?? path.join(homedir(), '.ollama', 'models')
 const SAMPLE = path.join(repo, 'samples', 'interview.mp3')
 const CDP_PORT = 9342
@@ -102,7 +102,7 @@ try {
   await sleep(500)
 
   // ---- 1. First launch: the request, with a real download of the speech model and a tiny language model
-  await page.waitFor("document.body.innerText.includes('Welcome to Scopewise')", 20000, 'the request screen')
+  await page.waitFor("document.body.innerText.includes('Welcome to PostCall')", 20000, 'the request screen')
   let t = await page.text()
   check('first launch asks to download the models before anything else', (await page.eval('location.pathname')) === '/setup' && /fully offline/.test(t) && /Download now/.test(t) && /Not now/.test(t))
   check('the recommended Gemma 4 model is preselected, with size and license', await page.eval(`document.querySelector('input[type=radio][value="${GOOD}"]').checked`) && /6\.6 GB download/.test(t) && /Apache 2\.0/.test(t))
@@ -145,11 +145,11 @@ try {
   const ready = await apiJson('/setup/progress')
   check('Gemma 4 E4B passes the real compatibility check inside the app', ready.state === 'done' && (await apiJson('/setup/status')).ready === true)
   await page.shot(path.join(out, '04-ready.png'))
-  await page.click('Start using Scopewise', 'button')
+  await page.click('Start using PostCall', 'button')
   await page.waitFor("document.querySelector('main h1')?.textContent.includes('Your calls')", 10000, 'home')
 
   // ---- 3. Profile
-  await page.goto('app://scopewise/profile', "location.pathname === '/profile' && document.querySelector('form')")
+  await page.goto('app://postcall/profile', "location.pathname === '/profile' && document.querySelector('form')")
   const setNth = (sel, n, v) => page.eval(`(() => { const el = document.querySelectorAll(${JSON.stringify(sel)})[${n}]
     const proto = el instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
     Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, ${JSON.stringify(v)}); el.dispatchEvent(new Event('input', { bubbles: true })); return true })()`)
@@ -164,7 +164,7 @@ try {
   check('the profile is saved', true)
 
   // ---- 4. Upload and transcription
-  await page.goto('app://scopewise/new', "location.pathname === '/new' && document.querySelector('input[type=file]')")
+  await page.goto('app://postcall/new', "location.pathname === '/new' && document.querySelector('input[type=file]')")
   check('the upload screen reminds that participants must consent to being recorded', /consent/i.test(await page.text()))
   const { root } = await page.send('DOM.getDocument')
   const { nodeId } = await page.send('DOM.querySelector', { nodeId: root.nodeId, selector: 'input[type=file]' })

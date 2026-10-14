@@ -93,7 +93,7 @@ def create_app(
         executor.shutdown(wait=True, cancel_futures=True)
         setup_executor.shutdown(wait=True, cancel_futures=True)
 
-    app = FastAPI(title="Scopewise API", lifespan=lifespan)
+    app = FastAPI(title="PostCall API", lifespan=lifespan)
     app.state.settings = settings
     app.state.engine = engine
     app.state.storage = storage
