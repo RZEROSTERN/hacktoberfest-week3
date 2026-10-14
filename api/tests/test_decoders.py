@@ -25,7 +25,8 @@ from app.audio import (
 from app.config import Settings
 
 DATA = Path(__file__).parent / "data"
-CLIPS = ["clip.mp3", "clip.m4a", "clip.wav", "clip.mp4"]
+# clip-video.mp4 has a video track as well as the sound; the converters must take the sound only.
+CLIPS = ["clip.mp3", "clip.m4a", "clip.wav", "clip.mp4", "clip-video.mp4"]
 
 
 class Recorder:
@@ -154,10 +155,26 @@ def test_real_ffmpeg(clip: str, tmp_path: Path) -> None:
     assert wav_duration(dest) == pytest.approx(3.0, abs=0.3)
 
 
+def not_audio(tmp_path: Path, kind: str) -> Path:
+    """A file the converters must refuse: bytes that are not media, or a video with no sound."""
+    if kind == "junk":
+        junk = tmp_path / "junk.mp3"
+        junk.write_bytes(b"this is not audio" * 100)
+        return junk
+    return DATA / "video-only.mp4"
+
+
 @pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg on the PATH")
-def test_real_ffmpeg_refuses_a_file_that_is_not_audio(tmp_path: Path) -> None:
-    junk = tmp_path / "junk.mp3"
-    junk.write_bytes(b"this is not audio" * 100)
+@pytest.mark.parametrize("kind", ["junk", "video without sound"])
+def test_real_ffmpeg_refuses_a_file_without_audio(kind: str, tmp_path: Path) -> None:
     with pytest.raises(TranscriptionError) as raised:
-        FfmpegDecoder().to_wav(junk, tmp_path / "out.wav")
+        FfmpegDecoder().to_wav(not_audio(tmp_path, kind), tmp_path / "out.wav")
+    assert raised.value.code == "decode_failed"
+
+
+@pytest.mark.skipif(shutil.which("afconvert") is None, reason="needs macOS afconvert")
+@pytest.mark.parametrize("kind", ["junk", "video without sound"])
+def test_real_afconvert_refuses_a_file_without_audio(kind: str, tmp_path: Path) -> None:
+    with pytest.raises(TranscriptionError) as raised:
+        AfconvertDecoder().to_wav(not_audio(tmp_path, kind), tmp_path / "out.wav")
     assert raised.value.code == "decode_failed"
