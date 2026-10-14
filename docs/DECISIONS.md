@@ -577,3 +577,37 @@ models, data or the single-instance lock with an installed copy. Checked on the 
 once, then the folder it created was removed again). Lesson: a test launch ignores a changed `HOME`, so
 tests must always pass `--user-data-dir`.
 
+## 2026-10-13: License and README
+
+**License: MIT with a Beerware thank-you.** The repository had no license; the "MIT" in `desktop/package.json`
+was my own assumption from the previous step, so it was replaced with `SEE LICENSE IN LICENSE` (npm's form for
+a non-SPDX license) once the choice was made. "MIT + Beerware" can mean "either license" or "both"; I read it
+as both: the MIT License governs, and the Beerware line ("if we meet some day... buy me a beer") is a stated
+thank-you, not a condition. That keeps it a standard permissive license that companies can accept. The
+models and engines keep their own licenses, listed in `THIRD_PARTY_NOTICES.md`.
+
+**Screenshots come from the installed, packaged app,** not the development server: the dev server draws a
+Nuxt devtools badge on every screen. `desktop/scripts/screenshots.mjs` drives the app over the DevTools
+protocol using the data folder left by the end-to-end run (a finished draft, the settings with two models),
+so the pictures are real output, not mock-ups. The wizard pictures are from that run's first launch.
+
+**Numbers in the README are BENCHMARKS.md's,** with their caveats copied next to them (one sample, one run,
+a draft key-facts file, scores assigned by Claude). Two additions from this step. The bundled `whisper-cli`
+run on its own took 21.5 s and 17.0 s for the 5-minute sample, matching the 17.7 s measured in the spike, so
+packaging did not slow it down. The 74 s seen inside the packaged app happened on a busy Mac (load average
+about 10, Gemma resident, under 2 GB of free memory); the README says so instead of quoting only the best case.
+
+**Hardware.** The 8 GB minimum is the figure the app shows for the default model (the model's 4.6 GB plus
+speech, the app and macOS); it was never run on an 8 GB Mac and the README says so. macOS 14 is Ollama's own
+minimum; only macOS 27 has been tried.
+
+**Install instructions follow Apple's page** ("Safely open apps on your Mac"): try to open, then System
+Settings, Privacy & Security, Open Anyway, confirm. That page does not mention Control-click and gives no time
+limit, so neither is claimed. `xattr -dr com.apple.quarantine` is offered as a Terminal alternative and labelled
+as a common workaround, not an Apple instruction. It has not been tried on a browser-downloaded copy.
+
+**The sample's "menú de facturación".** Checking the transcript while writing the README showed that this
+scope item is not an invention: the client asked for an automatic invoicing system (2:17) and the
+interviewer's recap says "un menú de facturación" (2:52), so the draft lists both. The README uses it as the
+example of why the source links and the editor exist.
+
