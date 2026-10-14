@@ -100,108 +100,116 @@ async function startSetup(model: string) {
         {{ error }}
       </p>
 
-      <h2>Language models on this computer</h2>
-      <p
-        v-if="info.llm.length === 0"
-        class="muted"
-      >
-        None yet.
-      </p>
-      <ul class="models">
-        <li
-          v-for="model in models"
-          :key="model.name"
-          :data-model="model.name"
-        >
-          <div class="grow">
-            <strong>{{ model.title ?? model.name }}</strong>
-            <span class="muted detail">
-              <template v-if="model.title">{{ model.name }} · </template>{{ formatBytes(model.size_bytes) }}
-            </span>
-            <span
-              v-if="model.active"
-              class="badge good"
-            >In use</span>
-            <span
-              v-else-if="!model.compat_ok"
-              class="badge"
-            >Not checked yet</span>
-            <span
-              v-if="model.cloud"
-              class="badge warn"
-            >Cloud model: not allowed</span>
-          </div>
-          <div class="row">
-            <button
-              v-if="!model.active && model.compat_ok && !model.cloud"
-              class="button secondary"
-              :disabled="busy"
-              @click="use(model.name)"
+      <div class="page-grid">
+        <div>
+          <h2>Language models on this computer</h2>
+          <p
+            v-if="info.llm.length === 0"
+            class="muted"
+          >
+            None yet.
+          </p>
+          <ul class="models">
+            <li
+              v-for="model in models"
+              :key="model.name"
+              :data-model="model.name"
             >
-              Use this model
-            </button>
+              <div class="grow">
+                <strong>{{ model.title ?? model.name }}</strong>
+                <span class="muted detail">
+                  <template v-if="model.title">{{ model.name }} · </template>{{ formatBytes(model.size_bytes) }}
+                </span>
+                <span
+                  v-if="model.active"
+                  class="badge good"
+                >In use</span>
+                <span
+                  v-else-if="!model.compat_ok"
+                  class="badge"
+                >Not checked yet</span>
+                <span
+                  v-if="model.cloud"
+                  class="badge warn"
+                >Cloud model: not allowed</span>
+              </div>
+              <div class="row">
+                <button
+                  v-if="!model.active && model.compat_ok && !model.cloud"
+                  class="button secondary"
+                  :disabled="busy"
+                  @click="use(model.name)"
+                >
+                  Use this model
+                </button>
+                <button
+                  v-else-if="!model.active && !model.cloud"
+                  class="button secondary"
+                  :disabled="busy"
+                  @click="startSetup(model.name)"
+                >
+                  Check and use
+                </button>
+                <button
+                  v-if="!model.active"
+                  class="button secondary"
+                  :disabled="busy"
+                  @click="remove(model.name)"
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          </ul>
+
+
+          <h2>Speech model</h2>
+          <div class="card">
+            <p>
+              {{ info.whisper.title }} · {{ formatBytes(info.whisper.size_bytes) }} · {{ info.whisper.license }}
+              <span
+                v-if="info.whisper.state === 'ready'"
+                class="badge good"
+              >On this computer</span>
+              <span
+                v-else
+                class="badge warn"
+              >{{ info.whisper.state === 'partial' ? 'Partly downloaded' : 'Not downloaded' }}</span>
+            </p>
             <button
-              v-else-if="!model.active && !model.cloud"
+              v-if="info.whisper.state !== 'missing'"
               class="button secondary"
               :disabled="busy"
-              @click="startSetup(model.name)"
-            >
-              Check and use
-            </button>
-            <button
-              v-if="!model.active"
-              class="button secondary"
-              :disabled="busy"
-              @click="remove(model.name)"
+              @click="removeWhisper"
             >
               Delete
             </button>
           </div>
-        </li>
-      </ul>
 
-      <h2>Download another model</h2>
-      <ModelPicker
-        v-model="selection"
-        :data="data"
-      />
-      <div class="row">
-        <button
-          class="button"
-          :disabled="busy || !effectiveModel(selection)"
-          @click="startSetup(effectiveModel(selection))"
-        >
-          Download and check
-        </button>
+          <h2>This computer</h2>
+          <p class="muted">
+            {{ formatMemory(info.system.total_ram_bytes) }} of memory · {{ formatBytes(info.system.free_disk_bytes) }} of free disk space
+          </p>
+        </div>
+
+        <div>
+          <h2>Download another model</h2>
+          <ModelPicker
+            v-model="selection"
+            :data="data"
+          />
+          <div class="row">
+            <button
+              class="button"
+              :disabled="busy || !effectiveModel(selection)"
+              @click="startSetup(effectiveModel(selection))"
+            >
+              Download and check
+            </button>
+          </div>
+
+        </div>
       </div>
-
-      <h2>Speech model</h2>
-      <div class="card">
-        <p>
-          {{ info.whisper.title }} · {{ formatBytes(info.whisper.size_bytes) }} · {{ info.whisper.license }}
-          <span
-            v-if="info.whisper.state === 'ready'"
-            class="badge good"
-          >On this computer</span>
-          <span
-            v-else
-            class="badge warn"
-          >{{ info.whisper.state === 'partial' ? 'Partly downloaded' : 'Not downloaded' }}</span>
-        </p>
-        <button
-          v-if="info.whisper.state !== 'missing'"
-          class="button secondary"
-          :disabled="busy"
-          @click="removeWhisper"
-        >
-          Delete
-        </button>
-      </div>
-
-      <h2>This computer</h2>
-      <p class="muted">
-        {{ formatMemory(info.system.total_ram_bytes) }} of memory · {{ formatBytes(info.system.free_disk_bytes) }} of free disk space
-      </p>
     </template>
   </section>
 </template>

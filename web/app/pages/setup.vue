@@ -122,7 +122,7 @@ async function finish() {
 </script>
 
 <template>
-  <section>
+  <section :class="{ 'page-narrow': view !== 'request' }">
     <p
       v-if="view === 'loading'"
       class="muted"

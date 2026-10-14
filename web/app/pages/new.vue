@@ -38,7 +38,7 @@ function cancelUpload() {
 </script>
 
 <template>
-  <section>
+  <section class="page-narrow">
     <h1>New proposal</h1>
     <p class="muted">
       Upload the recording of your discovery call (mp3, m4a, wav or mp4). It is transcribed on this computer.

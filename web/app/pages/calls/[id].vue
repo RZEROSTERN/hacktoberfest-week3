@@ -20,6 +20,7 @@ const profileKnown = ref(false)
 const hasProfile = ref(false)
 const transcriptOpen = ref(false)
 const highlightId = ref<number | null>(null)
+const wide = useWideScreen()
 const cancelling = ref(false)
 const editing = ref(false)
 const editSections = ref<ProposalSection[]>([])
@@ -180,193 +181,209 @@ async function showInTranscript(segmentId: number) {
       </template>
 
       <template v-else>
-        <p class="muted">
-          {{ call.audio_available ? 'The audio file is kept on this computer.' : 'The audio file was deleted after transcription.' }}
-        </p>
-
-        <h2>Proposal draft</h2>
-
-        <aside
-          v-if="profileKnown && !hasProfile"
-          class="notice"
-          role="note"
-        >
-          <strong>Set up your profile first.</strong>
-          The draft uses your services, rates and payment terms.
-          <NuxtLink to="/profile">
-            Set up my profile
-          </NuxtLink>
-        </aside>
-
-        <template v-else>
-          <template v-if="draft && isDraftActive(draft.status)">
-            <ProgressBar
-              :value="draft.progress"
-              :label="draftStatusLabel(draft)"
-            />
-            <div class="row">
-              <button
-                class="button secondary"
-                :disabled="cancelling"
-                @click="onCancelDraft"
-              >
-                {{ cancelling ? 'Cancelling…' : 'Cancel' }}
-              </button>
-            </div>
-          </template>
-
-          <template v-else>
-            <p
-              v-if="draft?.status === 'failed'"
-              class="error"
-              role="alert"
-            >
-              {{ draft.error_message }}
-            </p>
-            <p v-else-if="draft?.status === 'cancelled'">
-              The draft was cancelled.
-            </p>
-            <div
-              v-if="canStart && !editing"
-              class="row"
-            >
-              <label>
-                Write it in
-                <select v-model="language">
-                  <option value="">
-                    The language of the call{{ call.language ? ` (${languageLabel(call.language)})` : '' }}
-                  </option>
-                  <option
-                    v-for="option in PROPOSAL_LANGUAGES"
-                    :key="option.code"
-                    :value="option.code"
-                  >
-                    {{ option.label }}
-                  </option>
-                </select>
-              </label>
-              <button
-                class="button"
-                @click="draftAgain"
-              >
-                {{ draft?.status === 'done' ? 'Draft again' : draft ? 'Try again' : 'Draft proposal' }}
-              </button>
-            </div>
-          </template>
-
-          <p
-            v-if="draftError && !editing"
-            class="error"
-            role="alert"
-          >
-            {{ draftError }}
-          </p>
-
-          <template v-if="draft?.status === 'done' && draft.proposal">
-            <p
-              v-if="draft.warnings.length"
-              class="muted"
-            >
-              Some items had no source in the call and are marked “Assumption”. Check them before sending.
-            </p>
+        <div :class="['call-layout', { 'with-pane': wide }]">
+          <div>
             <p class="muted">
-              Click a time next to an item to see what was said in the call.
+              {{ call.audio_available ? 'The audio file is kept on this computer.' : 'The audio file was deleted after transcription.' }}
             </p>
 
-            <div
-              v-if="!editing"
-              class="row"
+            <h2>Proposal draft</h2>
+
+            <aside
+              v-if="profileKnown && !hasProfile"
+              class="notice"
+              role="note"
             >
-              <button
-                class="button"
-                @click="startEditing"
-              >
-                Edit proposal
-              </button>
-              <button
-                class="button secondary"
-                @click="download('md')"
-              >
-                Download Markdown
-              </button>
-              <button
-                class="button secondary"
-                @click="download('pdf')"
-              >
-                Download PDF
-              </button>
-              <span
-                v-if="justSaved"
-                role="status"
-                class="muted"
-              >Changes saved.</span>
-            </div>
-            <ProposalView
-              v-if="!editing"
-              :sections="draft.proposal.sections"
-              @show="showInTranscript"
-            />
+              <strong>Set up your profile first.</strong>
+              The draft uses your services, rates and payment terms.
+              <NuxtLink to="/profile">
+                Set up my profile
+              </NuxtLink>
+            </aside>
+
             <template v-else>
-              <ProposalEditor
-                v-model="editSections"
-                @show="showInTranscript"
-              />
+              <template v-if="draft && isDraftActive(draft.status)">
+                <ProgressBar
+                  :value="draft.progress"
+                  :label="draftStatusLabel(draft)"
+                />
+                <div class="row">
+                  <button
+                    class="button secondary"
+                    :disabled="cancelling"
+                    @click="onCancelDraft"
+                  >
+                    {{ cancelling ? 'Cancelling…' : 'Cancel' }}
+                  </button>
+                </div>
+              </template>
+
+              <template v-else>
+                <p
+                  v-if="draft?.status === 'failed'"
+                  class="error"
+                  role="alert"
+                >
+                  {{ draft.error_message }}
+                </p>
+                <p v-else-if="draft?.status === 'cancelled'">
+                  The draft was cancelled.
+                </p>
+                <div
+                  v-if="canStart && !editing"
+                  class="row"
+                >
+                  <label>
+                    Write it in
+                    <select v-model="language">
+                      <option value="">
+                        The language of the call{{ call.language ? ` (${languageLabel(call.language)})` : '' }}
+                      </option>
+                      <option
+                        v-for="option in PROPOSAL_LANGUAGES"
+                        :key="option.code"
+                        :value="option.code"
+                      >
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </label>
+                  <button
+                    class="button"
+                    @click="draftAgain"
+                  >
+                    {{ draft?.status === 'done' ? 'Draft again' : draft ? 'Try again' : 'Draft proposal' }}
+                  </button>
+                </div>
+              </template>
+
               <p
-                v-if="draftError"
+                v-if="draftError && !editing"
                 class="error"
                 role="alert"
               >
                 {{ draftError }}
               </p>
-              <div class="row">
-                <button
-                  class="button"
-                  :disabled="saving || !dirty"
-                  @click="saveChanges"
-                >
-                  {{ saving ? 'Saving…' : 'Save changes' }}
-                </button>
-                <button
-                  class="button secondary"
-                  :disabled="saving"
-                  @click="discardEditing"
-                >
-                  Discard changes
-                </button>
-                <span
-                  v-if="dirty"
+
+              <template v-if="draft?.status === 'done' && draft.proposal">
+                <p
+                  v-if="draft.warnings.length"
                   class="muted"
-                >You have unsaved changes. Downloads use the saved version.</span>
-              </div>
+                >
+                  Some items had no source in the call and are marked “Assumption”. Check them before sending.
+                </p>
+                <p class="muted">
+                  Click a time next to an item to see what was said in the call.
+                </p>
+
+                <div
+                  v-if="!editing"
+                  class="row"
+                >
+                  <button
+                    class="button"
+                    @click="startEditing"
+                  >
+                    Edit proposal
+                  </button>
+                  <button
+                    class="button secondary"
+                    @click="download('md')"
+                  >
+                    Download Markdown
+                  </button>
+                  <button
+                    class="button secondary"
+                    @click="download('pdf')"
+                  >
+                    Download PDF
+                  </button>
+                  <span
+                    v-if="justSaved"
+                    role="status"
+                    class="muted"
+                  >Changes saved.</span>
+                </div>
+                <ProposalView
+                  v-if="!editing"
+                  :sections="draft.proposal.sections"
+                  @show="showInTranscript"
+                />
+                <template v-else>
+                  <ProposalEditor
+                    v-model="editSections"
+                    @show="showInTranscript"
+                  />
+                  <p
+                    v-if="draftError"
+                    class="error"
+                    role="alert"
+                  >
+                    {{ draftError }}
+                  </p>
+                  <div class="row">
+                    <button
+                      class="button"
+                      :disabled="saving || !dirty"
+                      @click="saveChanges"
+                    >
+                      {{ saving ? 'Saving…' : 'Save changes' }}
+                    </button>
+                    <button
+                      class="button secondary"
+                      :disabled="saving"
+                      @click="discardEditing"
+                    >
+                      Discard changes
+                    </button>
+                    <span
+                      v-if="dirty"
+                      class="muted"
+                    >You have unsaved changes. Downloads use the saved version.</span>
+                  </div>
+                </template>
+                <details v-if="draft.notes">
+                  <summary>What the draft is based on</summary>
+                  <NotesView
+                    :notes="draft.notes"
+                    @show="showInTranscript"
+                  />
+                </details>
+              </template>
             </template>
-            <details v-if="draft.notes">
-              <summary>What the draft is based on</summary>
-              <NotesView
-                :notes="draft.notes"
-                @show="showInTranscript"
+
+            <details
+              v-if="!wide"
+              :open="transcriptOpen"
+              @toggle="transcriptOpen = ($event.target as HTMLDetailsElement).open"
+            >
+              <summary>Transcript</summary>
+              <TranscriptView
+                :segments="transcript?.segments ?? []"
+                :highlight-id="highlightId"
               />
             </details>
-          </template>
-        </template>
 
-        <details
-          :open="transcriptOpen"
-          @toggle="transcriptOpen = ($event.target as HTMLDetailsElement).open"
-        >
-          <summary>Transcript</summary>
-          <TranscriptView
-            :segments="transcript?.segments ?? []"
-            :highlight-id="highlightId"
-          />
-        </details>
-
-        <div class="row">
-          <button
-            class="button secondary"
-            @click="remove"
+            <div class="row">
+              <button
+                class="button secondary"
+                @click="remove"
+              >
+                Delete call
+              </button>
+            </div>
+          </div>
+          <aside
+            v-if="wide"
+            class="transcript-pane"
+            aria-label="Transcript"
           >
-            Delete call
-          </button>
+            <h2>Transcript</h2>
+            <TranscriptView
+              :segments="transcript?.segments ?? []"
+              :highlight-id="highlightId"
+            />
+          </aside>
         </div>
       </template>
     </template>

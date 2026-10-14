@@ -29,9 +29,41 @@ body {
 }
 
 .shell {
-  max-width: 760px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 16px 48px;
+  padding: 0 clamp(16px, 3vw, 40px) 32px;
+  /* Fill the window, so a short page keeps its footer at the bottom instead of leaving blank space under it. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.shell > main {
+  flex: 1;
+}
+
+/* Running text keeps a readable line length however wide the window is. */
+.shell main p {
+  max-width: 75ch;
+}
+
+/* Two columns when there is room, one when there is not: no breakpoints, the columns wrap by themselves. */
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 0 48px;
+  align-items: start;
+}
+
+.page-grid > div > h2:first-child {
+  margin-top: 0;
+}
+
+/* Pages that are one short column of text or one form stay a centred, readable column. */
+.page-narrow {
+  max-width: 760px;
+  margin-inline: auto;
 }
 
 .shell > header {
@@ -116,14 +148,24 @@ h1 {
   list-style: none;
   padding: 0;
   margin: 24px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
 }
 
 .calls li {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.calls li a {
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .transcript {
@@ -472,4 +514,31 @@ h2 {
 }
 .shell > footer a {
   color: var(--muted);
+}
+
+/* The call page: the proposal on the left and the transcript beside it on wide windows. */
+.call-layout.with-pane {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+  gap: 40px;
+  align-items: start;
+}
+
+.transcript-pane {
+  position: sticky;
+  top: 16px;
+  box-sizing: border-box;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 16px 8px;
+}
+
+.transcript-pane h2 {
+  position: sticky;
+  top: 0;
+  margin: 0;
+  padding: 16px 0 8px;
+  background: var(--bg);
 }

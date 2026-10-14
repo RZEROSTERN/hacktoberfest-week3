@@ -6,7 +6,7 @@ const sections = parseNotices(raw)
 </script>
 
 <template>
-  <section class="notices">
+  <section class="notices page-narrow">
     <h1>Third-party notices</h1>
     <p class="muted">
       PostCall is made of open-source parts that run on your computer. Here is what is inside and under which license.
