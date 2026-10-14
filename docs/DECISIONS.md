@@ -777,3 +777,38 @@ in English. Third-party licenses are legal text: the page says in each language 
 Spanish test's 180 s timing assertion passed warm (104 s), and failed once at 207 s with every accuracy assertion
 before it passing. It was left as it is, not loosened.
 
+## 2026-10-13: Release 1.0.0
+
+**What is released.** `PostCall-1.0.0-arm64.dmg`, 306,493,098 bytes, SHA-256
+`306d0156d2f8f64eb50838ca71d7e9d1792e494071a2539d68e3b3e3d2f7cb69`, built with `make desktop-dist` from the
+`release/1.0.0` branch (commit `77a19f6`; the only change on that branch is the api version, 0.1.0 to 1.0.0). Ad-hoc
+signed, bundle id `mx.dev1.postcall`. Flow: `release/1.0.0` from `develop`, a pull request into `master`, the tag
+`v1.0.0` on the merge commit, `master` merged back into `develop` through a pull request, then the GitHub Release.
+
+**What was checked on this build, installed into a scratch folder.**
+- Lifecycle (`shell-check.mjs`, 22 checks): 21 pass. The one failure, "a deep link that is not a pre-rendered page
+  still loads the app", is a race in the script: it reads the page text in the first instant after navigating, when the
+  body is still empty. A direct probe loaded the same deep link, waited for it to render (807 ms on this Mac) and found
+  the page present, redirected to the setup screen as it should be.
+- End to end with my system Ollama stopped (`full-flow.mjs`, 26 checks): **25 pass in the second complete run.** The
+  failure is the speed target: notes and proposal took 194 s against the 3-minute target on a Mac whose load average
+  was above 20 (earlier runs of the same step: 52 s on a quiet Mac, 104 s and 140 s on busy ones). Nothing was
+  loosened. The run used a copy of the script with waits tripled for the loaded machine.
+- **A first complete run failed at the edit step and I could not explain it.** The Save button stayed disabled
+  after the script set the summary text, although real typing then enabled it and saved correctly. It did not
+  recur: the same sequence was repeated 12 more times in the packaged app (immediately after opening the editor, with a
+  delay, with a fuller input event, eight times in one session) and a second complete run passed that step. My best
+  guess is that the scripted, instantaneous input event landed while the page was re-rendering; I did not prove it.
+  If a freelancer reports edits that do not register, this is where to look.
+- In the same code before the version bump: the 222 page-and-window combinations in all eleven languages, the first
+  launch screen in all eleven, the language list, and 13 system-language checks (see the languages entry).
+- Tests: api 217 (+7 opt-in), web 95, desktop 49; lint and typecheck clean.
+
+**Not verified.** Opening the `.dmg` as a browser download through Gatekeeper's approval (the copy was launched
+directly); installing into `/Applications`; macOS 14 to 26.1 (only macOS 27 was available); an 8 GB Mac; any real
+freelancer using it (planned for the day after the release); native-speaker review of the translations.
+
+**Follow-ups after 1.0.0, none of them blocking.** Fix the deep-link race in `shell-check.mjs` (wait for the page to
+render). Update `full-flow.mjs`: it looked for curly quote characters in the source quote's text, but the quote is now
+drawn with `<q>` so the marks are CSS, not text. Decide what to do about the unexplained edit-step failure above.
+
