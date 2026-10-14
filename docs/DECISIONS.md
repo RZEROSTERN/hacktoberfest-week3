@@ -471,3 +471,99 @@ verified: a real Wi-Fi drop between Ollama and its registry (that failure arrive
 line, which is mapped from real message patterns but was not seen live), a drop during a real
 Hugging Face download (tested against a local server plus one full real download), and the
 bundled Ollama (desktop step).
+
+## 2026-10-13: Desktop shell and packaging
+
+**Shape.** Electron 44.7.1 with electron-builder 26.15.3, written in TypeScript and compiled to
+CommonJS: a sandboxed preload has to be one self-contained CommonJS file that only requires
+`electron`. The main process is small and split by job: `layout` (where things are), `env` (what each
+child gets), `supervisor` (start, watch, stop), `pidfile`, `protocol` (serving the web app),
+`security` (what a window may do). All but `main.ts` are plain functions or classes with unit tests
+that run real child processes, not mocks.
+
+**What the packaged app contains.** The Ollama standalone macOS archive (v0.35.1, pinned by SHA-256),
+the api as one PyInstaller program, a `whisper-cli` built from a pinned whisper.cpp revision, and the
+generated web app. whisper.cpp publishes no macOS binary, so `build-whisper.sh` builds it statically
+(`BUILD_SHARED_LIBS=OFF`, Metal shader embedded, `GGML_NATIVE=OFF`, arm64, deployment target 13): one
+7.7 MB file with only system libraries, which gave the same transcript at the same speed as the
+development build. Sizes: `.dmg` 306 MB, installed app about 800 MB (Electron 287 MB, Ollama 455 MB,
+api 30 MB, whisper-cli 8 MB).
+
+**Ollama trimmed to what Apple Silicon loads.** The archive also holds Intel libraries, CPU backends
+and a quantize tool; none are copied. `ollama`, `llama-server` and the two MLX Metal folders stay,
+untouched, so Ollama's own signature stays valid. Both MLX folders stay because the newer one is built
+for macOS 26.2 and the older (`mlx_metal_v3`) is what runs on macOS 14 to 26.1: dropping it would save
+184 MB and break those Macs. Ollama's binaries need macOS 14, so that is the app's minimum. Ollama's own
+MIT license is not in the archive, so the script fetches it from the same tag with its own checksum.
+
+**The bundled Ollama is isolated.** It starts with a whitelisted environment (`PATH`, `TMPDIR`, `LANG`...
+only): its own `HOME`, `OLLAMA_HOST=127.0.0.1:<port>`, `OLLAMA_MODELS` inside the app's data folder and
+`OLLAMA_NO_CLOUD=1`. A user's own `OLLAMA_*` variables cannot reach it. Verified with the system Ollama
+stopped (and a fresh data folder asking for models even when the system one has them).
+
+**Lifecycle.** Two free ports are picked before anything starts; Ollama starts first and is waited for
+on `/api/version`, then the api on `/health` (up to 90 s: the PyInstaller program unpacks itself, 4.5 s
+warm and 6.7 s cold on this Mac). Each child leads its own process group, so stopping kills the group
+(`SIGTERM`, then `SIGKILL` after 8 s) and nothing like `llama-server` or `whisper-cli` outlives it. A
+crashed service is restarted once; a second crash shows a dialog with a button to the logs. Three more
+guards: a pid file in the data folder lets the next start stop an Ollama left behind by a force quit
+(only when the pid still runs the same program, so a recycled pid is never touched); the api watches the
+app's pid (`SCOPEWISE_PARENT_PID`) and stops itself within two seconds when it is gone; a single-instance
+lock avoids two apps fighting over one data folder. Closing the window quits the app: a transcription in
+progress is then marked "interrupted" by the api's own recovery, and its audio is kept.
+
+**PyInstaller `--onefile`.** The brief asks for a single executable. The cost is the unpack on every
+start; `--onedir` would start faster but ship as a folder. Kept onefile; the few seconds hide behind a
+"Starting Scopewise" page. electron-builder re-signs it ad hoc with everything else and it still runs
+(checked on the installed copy, not only on the build output).
+
+**Serving the web app: `app://scopewise`, not `file://`.** The generated pages use absolute asset
+paths and the api needs an explicit CORS origin, which `file://` pages do not have. A privileged custom
+scheme gives a normal origin without opening a port. `nuxt generate` writes no file for routes like
+`/calls/<id>`, so a request without a file extension falls back to `200.html`; a missing asset stays a
+404. Paths are resolved inside the web folder only (traversal, encoded `..` and NUL are refused).
+Bug found by the tests: in the main process `new URL('app://x').origin` is `"null"` (Node, not
+Chromium), so the app compares scheme and host.
+
+**Security.** `contextIsolation` on, `nodeIntegration` off, `sandbox` on, devTools only when unpackaged,
+and one value through `contextBridge` (`apiBase`, accepted only if it is `http://127.0.0.1:<port>`).
+Every page is served with a CSP: `default-src 'none'`, scripts only from the app and by SHA-256 for the
+two inline scripts Nuxt generates (import map and config), no `eval`, `connect-src` limited to the app
+and its api. Requests to anything else are cancelled, permission requests are denied, `<webview>` is
+blocked, navigation away from the app is blocked, and the only address opened in the user's browser is
+`https://ollama.com` (the model library link). Electron fuses switched off: `runAsNode`, `NODE_OPTIONS`,
+`--inspect`, plus `onlyLoadAppFromAsar`. Ollama is reachable only by the api: a test shows the page
+cannot call it.
+
+**"Not now".** In the packaged app it shows the page "Scopewise needs its models" with a Download button,
+as in development; the app does not quit. The request returns on the next launch.
+
+**Signing.** No Apple Developer ID, so the build is ad-hoc signed (`identity: "-"`,
+`hardenedRuntime: false`; the electron-builder schema documents both and says hardened runtime breaks
+Electron's frameworks under an ad-hoc signature). Apple Silicon will not run unsigned code at all, and
+signing at all is what makes the app launch. Users still have to approve the first launch (README).
+
+**Third-party notices.** One file at the repository root, shipped as a resource and rendered by the
+`/notices` page (a build-time raw import, so the screen and the file cannot differ). Linked from every
+page. Electron's license and Chromium's `LICENSES.chromium.html` are shipped next to it because
+electron-builder does not include them. The route guard first redirected `/notices` to the setup screen,
+so on a fresh install the licenses were unreachable; found by the first real run, fixed with a test.
+
+**Nothing outside the repository.** Electron and electron-builder download their tools into
+`.dev/electron-cache` and `.dev/electron-builder-cache`, not `~/Library/Caches`.
+
+**What was verified, on this Mac (M2 Pro, macOS 27.0, installed copy of the `.dmg`'s app, system
+Ollama stopped).** `make desktop-check`: 22 checks (both services up, loopback-only ports, CSP and
+isolation, notices, a killed api restarted on its address, quit leaves no process behind, a force quit
+leaves Ollama until the next start removes it and stops the api by itself). A 26-check run of the whole
+product inside the app with real downloads: request screen, the speech model (574 MB) and a tiny model
+through the bundled Ollama with progress, the tiny model refused by the check, Gemma 4 E4B accepted,
+profile, upload, 5-minute call transcribed in 74 s, notes and proposal in 140 s, source quote, edit,
+Markdown and PDF export, audio deleted, no connection beyond this computer, everything stopped on quit.
+**Not verified:** opening the `.dmg` as a browser download (the quarantine flag and Gatekeeper's
+approval; the copy was launched directly), installing into `/Applications` (outside the repository),
+macOS 14 to 26.1 (this Mac loads the newer MLX libraries, so `mlx_metal_v3` has not run), Intel Macs
+(not supported), the dialog after a second crash (the policy is unit-tested; the dialog was not seen),
+and Electron's Save dialog for exports (the check saved downloads without it).
+**gemma4:e4b was hard-linked** from the system Ollama's folder into the app's own for that run, to avoid
+a 9.6 GB download; the download path itself was exercised with the tiny model and the speech model.

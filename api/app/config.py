@@ -34,3 +34,6 @@ class Settings(BaseSettings):
     # Folder with the versioned prompt files; defaults to the `prompts` folder next to the app
     # package (which is also where the packaged binary unpacks it).
     prompts_dir: Path | None = None
+
+    # Process id of the desktop app that started this api. When it disappears the api shuts down.
+    parent_pid: int | None = None

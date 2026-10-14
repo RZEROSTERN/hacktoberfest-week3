@@ -1,0 +1,51 @@
+# Unsigned (ad-hoc signed) macOS arm64 build. Everything the app needs at run time is bundled:
+# the language engine (Ollama), the api (one PyInstaller program), the transcription engine
+# (whisper-cli) and the generated web app. `make desktop-resources` produces the inputs.
+appId: dev.scopewise.desktop
+productName: Scopewise
+copyright: Copyright (c) 2026 Marco Ramírez. MIT License.
+directories:
+  output: release
+  buildResources: assets
+files:
+  - dist/**
+  - package.json
+asar: true
+# Switch off the Electron features this app never uses, so it cannot be turned into a general Node runtime.
+electronFuses:
+  runAsNode: false
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  onlyLoadAppFromAsar: true
+  grantFileProtocolExtraPrivileges: false
+extraResources:
+  - from: build/ollama
+    to: ollama
+  - from: build/api
+    to: api
+  - from: build/whisper
+    to: whisper
+  - from: ../web/.output/public
+    to: web
+  - from: ../THIRD_PARTY_NOTICES.md
+    to: THIRD_PARTY_NOTICES.md
+  # Electron's license and the texts of the Chromium components it includes.
+  - from: node_modules/electron/dist/LICENSE
+    to: electron/LICENSE
+  - from: node_modules/electron/dist/LICENSES.chromium.html
+    to: electron/LICENSES.chromium.html
+mac:
+  category: public.app-category.productivity
+  icon: assets/icon.icns
+  target:
+    - target: dmg
+      arch: arm64
+  # Ollama's binaries are built for macOS 14.
+  minimumSystemVersion: "14.0"
+  # No Developer ID certificate: sign ad hoc, which Apple Silicon needs to run the app at all.
+  # Hardened runtime would reject Electron's own frameworks under an ad-hoc signature.
+  identity: "-"
+  hardenedRuntime: false
+dmg:
+  title: Scopewise ${version}
+  sign: false

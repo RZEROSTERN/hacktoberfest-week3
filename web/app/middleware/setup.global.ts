@@ -1,6 +1,8 @@
+import { isOpenWithoutModels } from '~/utils/setup'
+
 /** Until the models are downloaded and checked, nothing else in the app works: send everything to /setup. */
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path === '/setup') return
+  if (isOpenWithoutModels(to.path)) return
   const ready = useState<boolean | null>('setupReady', () => null)
   if (ready.value === true) return
   const { status } = useSetup()

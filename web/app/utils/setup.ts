@@ -44,3 +44,10 @@ export function ramWarning(choice: LlmChoice, totalRamBytes: number): string | n
   if (!choice.not_recommended_for_this_computer) return null
   return `Needs about ${choice.ram_gb} GB of memory; this computer has ${Math.round(totalRamBytes / 2 ** 30)} GB.`
 }
+
+/** Pages that need no models, so the route guard lets them through: the wizard and static information. */
+const OPEN_PAGES = new Set(['/setup', '/notices'])
+
+export function isOpenWithoutModels(path: string): boolean {
+  return OPEN_PAGES.has(path)
+}

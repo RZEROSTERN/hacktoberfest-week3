@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LlmChoice, Recommended } from '../app/types/api'
-import { CUSTOM, defaultSelection, diskNeeded, downloadSize, effectiveModel, enoughDisk, ramWarning } from '../app/utils/setup'
+import { CUSTOM, defaultSelection, diskNeeded, downloadSize, effectiveModel, enoughDisk, isOpenWithoutModels, ramWarning } from '../app/utils/setup'
 
 const choice = (over: Partial<LlmChoice>): LlmChoice => ({
   model: 'gemma4:e4b',
@@ -69,5 +69,18 @@ describe('ramWarning', () => {
     expect(ramWarning(choice({}), 16 * 2 ** 30)).toBeNull()
     const big = choice({ not_recommended_for_this_computer: true, ram_gb: 24 })
     expect(ramWarning(big, 16 * 2 ** 30)).toBe('Needs about 24 GB of memory; this computer has 16 GB.')
+  })
+})
+
+describe('isOpenWithoutModels', () => {
+  it('lets the wizard and the license notices through before the models exist', () => {
+    expect(isOpenWithoutModels('/setup')).toBe(true)
+    expect(isOpenWithoutModels('/notices')).toBe(true)
+  })
+
+  it('holds everything else back', () => {
+    for (const path of ['/', '/new', '/profile', '/settings', '/calls/abc', '/notices/x']) {
+      expect(isOpenWithoutModels(path), path).toBe(false)
+    }
   })
 })
