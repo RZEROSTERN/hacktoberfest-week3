@@ -1,5 +1,6 @@
 {
   "name": "scopewise-desktop",
+  "productName": "Scopewise",
   "version": "1.0.0",
   "private": true,
   "description": "Scopewise: turns a recorded client call into a draft proposal, entirely on this computer.",

@@ -15,6 +15,10 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true } },
 ])
 
+// The packaged app's data lives in "Scopewise"; running from the repository uses its own folder, so a
+// development shell never shares data, models or the single-instance lock with an installed app.
+if (!app.isPackaged) app.setPath('userData', path.join(app.getPath('appData'), 'Scopewise (development)'))
+
 const OLLAMA_START_TIMEOUT_MS = 60_000
 const API_START_TIMEOUT_MS = 90_000 // the packaged api unpacks itself on a cold start
 
