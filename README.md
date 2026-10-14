@@ -137,7 +137,7 @@ flowchart LR
 | `desktop/` | Electron shell (TypeScript). Picks two free loopback ports, starts the bundled Ollama and then the API, waits for both health checks, serves the web app from its own `app://` address with a strict content security policy, restarts a crashed service once, and stops everything on quit. Sandboxed window, one value exposed to the page. |
 | `samples/` | Role-played, consented sample calls and their expected key facts. |
 | `spike/` | The model benchmark scripts (not shipped). |
-| `docs/` | [DECISIONS.md](docs/DECISIONS.md) (every technical decision and why) and [BENCHMARKS.md](docs/BENCHMARKS.md). |
+| `docs/` | [DECISIONS.md](docs/DECISIONS.md) (every technical decision and why), [BENCHMARKS.md](docs/BENCHMARKS.md), and [DEPLOYMENT.md](docs/DEPLOYMENT.md) (the plan for Linux, Windows and the Mac App Store). |
 
 The packaged app contains the Ollama standalone build (v0.35.1), the API as one program, a static `whisper-cli` built from a pinned whisper.cpp revision, and the generated web app. The `.dmg` is 306 MB (about 800 MB installed).
 
@@ -208,7 +208,7 @@ A **one-time license, no subscription.** Most AI products charge monthly because
 
 ## Known limits
 
-- Apple Silicon and macOS 14 or later only. The first release has been tried on macOS 27 only.
+- Apple Silicon and macOS 14 or later only. The first release has been tried on macOS 27 only. Windows, Linux and the Mac App Store are planned, not built: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Not tested on an 8 GB Mac, and not tested with calls longer than the 5-minute sample (the 32-minute file repeats it).
 - Tested on a Spanish call. English is covered by the built-in check; other languages depend on what Whisper and the chosen model can do.
 - PDF export uses a built-in font that covers Western European languages. Other scripts are refused with a message; export Markdown instead.
