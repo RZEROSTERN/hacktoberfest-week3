@@ -2,13 +2,13 @@ import asyncio
 from collections.abc import AsyncIterator
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
 from app.catalog import ModelNameError
+from app.errors import ERROR_MESSAGES, ApiError
 from app.models import TERMINAL_SETUP_STATES
 from app.schemas import (
-    ERROR_MESSAGES,
     InstalledModelRead,
     LlmChoiceRead,
     ModelsRead,
@@ -48,8 +48,8 @@ def _system(request: Request) -> SystemRead:
     )
 
 
-def _refuse(code: str) -> HTTPException:
-    return HTTPException(_STATUS.get(code, 422), ERROR_MESSAGES.get(code, "Something went wrong."))
+def _refuse(code: str) -> ApiError:
+    return ApiError(_STATUS.get(code, 422), code, ERROR_MESSAGES.get(code, "Something went wrong."))
 
 
 @router.get("/system")
@@ -152,7 +152,7 @@ def get_models(request: Request) -> ModelsRead:
     try:
         models = manager.models()
     except Exception as exc:
-        raise HTTPException(503, ERROR_MESSAGES["ollama_unreachable"]) from exc
+        raise ApiError(503, "ollama_unreachable") from exc
     state, on_disk = manager.whisper.state()
     llm: list[InstalledModelRead] = []
     for m in models:

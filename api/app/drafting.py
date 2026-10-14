@@ -208,7 +208,13 @@ def notes_for_model(notes: Notes) -> dict[str, Any]:
 
 
 class EditError(Exception):
-    """An edit that breaks a rule; the message is shown to the user as is."""
+    """An edit that breaks a rule. `code` and `params` let the web app say it in the user's
+    language; the message is the English text."""
+
+    def __init__(self, code: str, message: str, **params: object) -> None:
+        super().__init__(message)
+        self.code = code
+        self.params = params
 
 
 class ItemEdit(BaseModel):
@@ -232,10 +238,12 @@ class ProposalEdit(BaseModel):
 
 def _no_money(where: str, text: str) -> None:
     if contains_money(text):
+        if where == "summary":
+            raise EditError("edit_summary_prices", "The summary never includes prices.")
         raise EditError(
-            "The summary never includes prices."
-            if where == "summary"
-            else f"Prices belong in the investment section only, not in {where}."
+            "edit_prices_outside_investment",
+            f"Prices belong in the investment section only, not in {where}.",
+            where=where,
         )
 
 
@@ -252,7 +260,10 @@ def _edited_items(
         unknown = [i for i in value.segment_ids if i not in valid_ids]
         if unknown:
             raise EditError(
-                f"An item in {where} cites segments that are not in the transcript: {unknown}."
+                "edit_unknown_segments",
+                f"An item in {where} cites segments that are not in the transcript: {unknown}.",
+                where=where,
+                segments=", ".join(str(i) for i in unknown),
             )
         ids = sorted(set(value.segment_ids))
         # An item with no source in the call is an assumption, whoever wrote it.
@@ -302,5 +313,7 @@ def apply_edit(current: ProposalDraft, edit: ProposalEdit, valid_ids: set[int]) 
                         section.items, valid_ids, "investment", flag_unsourced=False
                     )
             case _:
-                raise EditError(f"Unknown section: {section.id}")
+                raise EditError(
+                    "edit_unknown_section", f"Unknown section: {section.id}", section=section.id
+                )
     return data

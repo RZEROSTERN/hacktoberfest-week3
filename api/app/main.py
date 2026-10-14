@@ -2,8 +2,9 @@ from collections.abc import AsyncIterator
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.audio import AfconvertDecoder, Decoder
 from app.catalog import Catalog, load_catalog
@@ -11,6 +12,7 @@ from app.compat import CompatChecker, OllamaCompatChecker
 from app.config import Settings
 from app.db import make_engine
 from app.downloads import WhisperDownloader
+from app.errors import ApiError
 from app.generation import GenerationManager, default_prompts_dir
 from app.jobs import TranscriptionManager
 from app.llm import LLM, OllamaChat
@@ -94,6 +96,17 @@ def create_app(
         setup_executor.shutdown(wait=True, cancel_futures=True)
 
     app = FastAPI(title="PostCall API", lifespan=lifespan)
+
+    @app.exception_handler(ApiError)
+    async def refuse(_request: Request, exc: ApiError) -> JSONResponse:
+        # `detail` is the English text, as FastAPI always sends it; a client translates by
+        # `code` and `params`.
+        return JSONResponse(
+            {"detail": exc.detail, "code": exc.code, "params": exc.params},
+            status_code=exc.status_code,
+            headers=exc.headers,
+        )
+
     app.state.settings = settings
     app.state.engine = engine
     app.state.storage = storage

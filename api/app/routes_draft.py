@@ -1,11 +1,12 @@
 from datetime import UTC, datetime
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Body, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Body, Query, Request, Response
 from sqlmodel import Session, col, delete, select
 
 from app import export
 from app.drafting import EditError, ProposalDraft, ProposalEdit, apply_edit
+from app.errors import ApiError
 from app.generation import GenerationManager
 from app.models import ACTIVE_DRAFT_STATUSES, Call, CallStatus, Draft, DraftStatus, Profile, Segment
 from app.notes import Notes
@@ -29,7 +30,7 @@ def _read(session: Session, draft: Draft) -> DraftRead:
 def get_profile(session: SessionDep) -> ProfileRead:
     profile = session.get(Profile, 1)
     if profile is None:
-        raise HTTPException(404, "The profile has not been set up yet.")
+        raise ApiError(404, "profile_not_set_up")
     return ProfileRead.from_profile(profile)
 
 
@@ -57,14 +58,14 @@ def create_draft(
 ) -> DraftRead:
     call = session.get(Call, call_id)
     if call is None:
-        raise HTTPException(404, "Call not found.")
+        raise ApiError(404, "call_not_found")
     if call.status != CallStatus.DONE:
-        raise HTTPException(409, "Transcribe the call before drafting a proposal.")
+        raise ApiError(409, "transcribe_first")
     if session.get(Profile, 1) is None:
-        raise HTTPException(409, "Set up your profile first.")
+        raise ApiError(409, "profile_missing")
     existing = session.get(Draft, call_id)
     if existing is not None and existing.status in ACTIVE_DRAFT_STATUSES:
-        raise HTTPException(409, "A draft is already being written for this call.")
+        raise ApiError(409, "draft_in_progress")
     session.exec(delete(Draft).where(col(Draft.call_id) == call_id))
     language = (body.language if body and body.language else None) or call.language or "en"
     draft = Draft(call_id=call_id, language=language)
@@ -79,7 +80,7 @@ def create_draft(
 def get_draft(session: SessionDep, call_id: str) -> DraftRead:
     draft = session.get(Draft, call_id)
     if draft is None:
-        raise HTTPException(404, "There is no draft for this call yet.")
+        raise ApiError(404, "no_draft")
     return _read(session, draft)
 
 
@@ -87,9 +88,9 @@ def get_draft(session: SessionDep, call_id: str) -> DraftRead:
 def cancel_draft(request: Request, session: SessionDep, call_id: str) -> DraftRead:
     draft = session.get(Draft, call_id)
     if draft is None:
-        raise HTTPException(404, "There is no draft for this call yet.")
+        raise ApiError(404, "no_draft")
     if draft.status not in ACTIVE_DRAFT_STATUSES:
-        raise HTTPException(409, "Only a draft in progress can be cancelled.")
+        raise ApiError(409, "draft_not_running")
     _generation(request).cancel(call_id)
     return _read(session, draft)
 
@@ -97,9 +98,9 @@ def cancel_draft(request: Request, session: SessionDep, call_id: str) -> DraftRe
 def _finished_draft(session: Session, call_id: str) -> tuple[Draft, ProposalDraft]:
     draft = session.get(Draft, call_id)
     if draft is None:
-        raise HTTPException(404, "There is no draft for this call yet.")
+        raise ApiError(404, "no_draft")
     if draft.status != DraftStatus.DONE or draft.proposal is None:
-        raise HTTPException(409, "The draft is not ready yet.")
+        raise ApiError(409, "draft_not_ready")
     return draft, ProposalDraft.model_validate(draft.proposal)
 
 
@@ -111,20 +112,12 @@ def edit_proposal(session: SessionDep, call_id: str, body: ProposalEdit) -> Draf
     try:
         edited = apply_edit(current, body, {s.idx for s in segments})
     except EditError as exc:
-        raise HTTPException(422, str(exc)) from exc
+        raise ApiError(422, exc.code, str(exc), **exc.params) from exc
     draft.proposal = edited.model_dump()
     draft.updated_at = datetime.now(UTC)
     session.add(draft)
     session.commit()
     return _read(session, draft)
-
-
-EXPORT_MESSAGES = {
-    "pdf_unsupported_characters": (
-        "The PDF export cannot draw some characters in this proposal (it supports Western European "
-        "languages). Export it as Markdown instead."
-    ),
-}
 
 
 @router.get("/calls/{call_id}/draft/export")
@@ -142,7 +135,7 @@ def export_proposal(
         else:
             body, media_type = export.to_pdf(document), "application/pdf"
     except export.ExportError as exc:
-        raise HTTPException(422, EXPORT_MESSAGES[exc.code]) from exc
+        raise ApiError(422, exc.code) from exc
     name = export.filename(document, fmt)
     return Response(
         body,

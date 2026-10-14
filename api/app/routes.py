@@ -4,10 +4,11 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from sqlmodel import Session, col, delete, select
 
 from app.audio import SUPPORTED_EXTENSIONS
+from app.errors import ApiError
 from app.jobs import TranscriptionManager
 from app.models import ACTIVE_DRAFT_STATUSES, ACTIVE_STATUSES, Call, CallStatus, Draft, Segment
 from app.schemas import CallRead, SegmentRead, TranscriptRead
@@ -37,7 +38,7 @@ def _storage(request: Request) -> Storage:
 def _get_call(session: Session, call_id: str) -> Call:
     call = session.get(Call, call_id)
     if call is None:
-        raise HTTPException(404, "Call not found.")
+        raise ApiError(404, "call_not_found")
     return call
 
 
@@ -55,7 +56,7 @@ def create_call(
     name = Path(file.filename or "recording").name
     ext = Path(name).suffix.lower()
     if ext not in SUPPORTED_EXTENSIONS:
-        raise HTTPException(415, "Unsupported file type. Use mp3, m4a, wav or mp4.")
+        raise ApiError(415, "unsupported_file_type")
     call = Call(id=uuid.uuid4().hex, title=name[:200], keep_audio=keep_audio, audio_ext=ext)
     storage = _storage(request)
     dest = storage.original(call)
@@ -64,7 +65,7 @@ def create_call(
         shutil.copyfileobj(file.file, out, 1024 * 1024)  # streamed: recordings can be large
     if dest.stat().st_size == 0:
         storage.remove_audio(call.id)
-        raise HTTPException(400, "The file is empty.")
+        raise ApiError(400, "file_empty")
     session.add(call)
     session.commit()
     _manager(request).submit(call.id)
@@ -87,7 +88,7 @@ def get_call(request: Request, session: SessionDep, call_id: str) -> CallRead:
 def get_transcript(session: SessionDep, call_id: str) -> TranscriptRead:
     call = _get_call(session, call_id)
     if call.status != CallStatus.DONE:
-        raise HTTPException(409, "The transcript is not ready yet.")
+        raise ApiError(409, "transcript_not_ready")
     segments = session.exec(
         select(Segment).where(Segment.call_id == call_id).order_by(col(Segment.idx))
     ).all()
@@ -103,7 +104,7 @@ def get_transcript(session: SessionDep, call_id: str) -> TranscriptRead:
 def cancel_call(request: Request, session: SessionDep, call_id: str) -> CallRead:
     call = _get_call(session, call_id)
     if call.status not in ACTIVE_STATUSES:
-        raise HTTPException(409, "Only a running transcription can be cancelled.")
+        raise ApiError(409, "call_not_running")
     _manager(request).cancel(call_id)
     return _read(request, call)
 
@@ -112,9 +113,7 @@ def cancel_call(request: Request, session: SessionDep, call_id: str) -> CallRead
 def retry_call(request: Request, session: SessionDep, call_id: str) -> CallRead:
     call = _get_call(session, call_id)
     if call.status != CallStatus.FAILED or not _storage(request).audio_exists(call):
-        raise HTTPException(
-            409, "Only a failed transcription with its audio still on disk can be retried."
-        )
+        raise ApiError(409, "cannot_retry")
     call.status = CallStatus.QUEUED
     call.progress = 0.0
     call.error_code = None
@@ -129,10 +128,10 @@ def retry_call(request: Request, session: SessionDep, call_id: str) -> CallRead:
 def delete_call(request: Request, session: SessionDep, call_id: str) -> None:
     call = _get_call(session, call_id)
     if call.status in ACTIVE_STATUSES:
-        raise HTTPException(409, "Cancel the transcription before deleting it.")
+        raise ApiError(409, "cancel_transcription_first")
     draft = session.get(Draft, call_id)
     if draft is not None and draft.status in ACTIVE_DRAFT_STATUSES:
-        raise HTTPException(409, "Cancel the draft before deleting the call.")
+        raise ApiError(409, "cancel_draft_first")
     session.exec(delete(Draft).where(col(Draft.call_id) == call_id))
     session.exec(delete(Segment).where(col(Segment.call_id) == call_id))
     session.delete(call)

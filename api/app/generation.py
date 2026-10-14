@@ -28,7 +28,7 @@ from app.notes import Line, Notes, Problem
 log = logging.getLogger("postcall.generation")
 
 NOTES_PROMPT = "notes_v3.md"
-PROPOSAL_PROMPT = "proposal_v1.md"
+PROPOSAL_PROMPT = "proposal_v2.md"
 
 
 class GenerationError(Exception):
