@@ -13,8 +13,12 @@ export SCOPEWISE_TEST_WHISPER_MODEL ?= $(CURDIR)/.dev/models/whisper.cpp/ggml-ba
 # Development seed for the local settings table; the app never hard-codes a model tag.
 export SCOPEWISE_LLM_MODEL ?= gemma4:e4b
 export NUXT_PUBLIC_API_BASE ?= http://127.0.0.1:$(SCOPEWISE_PORT)
+# Electron and electron-builder download tools into these folders instead of ~/Library/Caches.
+export ELECTRON_CACHE ?= $(CURDIR)/.dev/electron-cache
+export ELECTRON_BUILDER_CACHE ?= $(CURDIR)/.dev/electron-builder-cache
 
-.PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test test-llm test-setup lint typecheck format
+.PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test test-llm test-setup lint typecheck format \
+	desktop-setup build-web build-api build-whisper fetch-ollama desktop-resources desktop-dev desktop-dist desktop-check
 
 help:
 	@echo "make setup        install api + web dependencies and create .env"
@@ -23,12 +27,17 @@ help:
 	@echo "make dev-api      start only the api"
 	@echo "make dev-web      start only the web app"
 	@echo "make ollama-check check that Ollama answers and list its local models"
-	@echo "make test         run api and web tests"
+	@echo "make test         run api, web and desktop tests"
 	@echo "make test-llm    run the real-model test on the sample call (loads the language model)"
 	@echo "make test-setup  run the real download/interruption/compatibility tests (pulls a ~270 MB model)"
-	@echo "make lint         ruff + eslint"
-	@echo "make typecheck    mypy + nuxt typecheck"
+	@echo "make lint         ruff + eslint (web and desktop)"
+	@echo "make typecheck    mypy + nuxt typecheck + tsc (desktop)"
 	@echo "make format       ruff format"
+	@echo "make desktop-setup      install the desktop shell dependencies (downloads Electron into .dev/)"
+	@echo "make desktop-resources  build everything the app bundles: web, api, whisper-cli, Ollama"
+	@echo "make desktop-dev        run the desktop shell from this repository (after desktop-resources)"
+	@echo "make desktop-dist       build the unsigned macOS arm64 .dmg into desktop/release/"
+	@echo "make desktop-check      start the desktop shell for real and check it (processes, ports, isolation)"
 
 setup:
 	@test -f .env || cp .env.example .env
@@ -62,6 +71,7 @@ ollama-check:
 test:
 	cd api && uv run pytest
 	cd web && npm test
+	cd desktop && npm test
 
 test-llm:
 	cd api && SCOPEWISE_RUN_LLM_TESTS=1 uv run pytest tests/test_integration_llm.py -s -q
@@ -73,10 +83,40 @@ lint:
 	cd api && uv run ruff check . && uv run ruff format --check .
 	cd api && uv run ruff check ../spike && uv run ruff format --check ../spike
 	cd web && npm run lint
+	cd desktop && npm run lint
 
 typecheck:
 	cd api && uv run mypy app tests
 	cd web && npm run typecheck
+	cd desktop && npm run typecheck
 
 format:
 	cd api && uv run ruff format . ../spike
+
+# -- desktop shell (Electron) -------------------------------------------------------------------
+
+desktop-setup:
+	cd desktop && npm install && node node_modules/electron/install.js
+
+build-web:
+	cd web && npm run generate
+
+build-api:
+	cd api && uv run pyinstaller --noconfirm --clean --distpath ../desktop/build/api --workpath ../.dev/pyinstaller scopewise-api.spec
+
+build-whisper:
+	sh desktop/scripts/build-whisper.sh
+
+fetch-ollama:
+	sh desktop/scripts/fetch-ollama.sh
+
+desktop-resources: build-web build-api build-whisper fetch-ollama
+
+desktop-dev:
+	cd desktop && npm run start
+
+desktop-dist: desktop-resources
+	cd desktop && npm run dist
+
+desktop-check:
+	cd desktop && npm run build && node scripts/shell-check.mjs

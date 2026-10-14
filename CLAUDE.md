@@ -5,7 +5,7 @@ draft proposal for freelancers. Whisper transcribes, an open-weight LLM (via Oll
 notes and drafts the proposal, everything runs on the user's machine.
 
 - `api/` FastAPI (Python 3.12, uv, SQLModel/SQLite), `prompts/` for versioned prompts
-- `web/` Nuxt 4 SPA (`ssr: false`), `desktop/` Electron shell (not built yet)
+- `web/` Nuxt 4 SPA (`ssr: false`), `desktop/` Electron shell that bundles Ollama, the api and whisper-cli
 - `docs/` DECISIONS.md and BENCHMARKS.md, `samples/` consented call recordings with key facts,
   `spike/` model benchmark scripts (not shipped; see docs/BENCHMARKS.md)
 
@@ -14,7 +14,8 @@ notes and drafts the proposal, everything runs on the user's machine.
 - Run everything: `make dev` (api on 8765, web on 3000); `make dev-api`, `make dev-web`
 - Check Ollama: `make ollama-check`. Test / lint / typecheck: `make test`, `make lint`,
   `make typecheck` (`make format` fixes ruff). Opt-in with real models: `make test-llm` (~4.6 GB), `make test-setup` (pulls ~270 MB)
-- Look at the real UI: `web/ui-check/README.md` (headless Chrome). Desktop commands: added later
+- Look at the real UI: `web/ui-check/README.md` (headless Chrome)
+- Desktop: `make desktop-setup`, `make desktop-dist` (everything + `.dmg`), `make desktop-dev`, `make desktop-check`
 
 ## Git: GitFlow, no stacked PRs
 - `master` is production. `develop` is integration. Never commit to either directly.
