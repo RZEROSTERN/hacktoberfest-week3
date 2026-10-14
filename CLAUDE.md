@@ -6,7 +6,7 @@ notes and drafts the proposal, everything runs on the user's machine.
 
 - `api/` FastAPI (Python 3.12, uv, SQLModel/SQLite), `prompts/` for versioned prompts
 - `web/` Nuxt 4 SPA (`ssr: false`), `desktop/` Electron shell that bundles Ollama, the api and whisper-cli
-- `docs/` DECISIONS.md and BENCHMARKS.md, `samples/` consented call recordings with key facts,
+- `docs/` DECISIONS.md, BENCHMARKS.md and DEPLOYMENT.md (plan for Linux, Windows, Mac App Store; not built), `samples/` consented call recordings with key facts,
   `spike/` model benchmark scripts (not shipped; see docs/BENCHMARKS.md)
 
 ## Commands (from repo root)

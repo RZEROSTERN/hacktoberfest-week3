@@ -674,3 +674,29 @@ which was done by looking at the pictures.
 transcribe the 5-minute call and 52 s for notes and proposal, against 74 s and 140 s in the earlier run on a
 busy one. Same code, same models; the README gives both, as a range.
 
+## 2026-10-13: Deployment guide for Linux, Windows and the Mac App Store
+
+A plan, not a build: `docs/DEPLOYMENT.md`. Nothing for these platforms was built or run here (one Mac), so every
+claim in it is labelled verified (read in a cited source or measured in this repository) or unverified. Reading the
+code against the documentation found problems worth knowing before any port starts:
+
+- **Windows would break the app, not just fail to run it.** The API watches the desktop app with `os.kill(pid, 0)`.
+  Python's docs say that on Windows any signal other than the two console events "will cause the process to be
+  unconditionally killed by the TerminateProcess API", so the API would terminate the desktop app every two seconds.
+  The same docs and Node's explain two other POSIX assumptions: `SIGTERM` is abrupt on Windows (there is no
+  graceful stop then force sequence), and `os.sysconf` is Unix-only (the memory check on the model screen).
+- **The audio decoder is macOS-only** (`afconvert`); Linux and Windows need a bundled decoder.
+- **Ollama's Linux and Windows archives are about 1.4 GB** (the macOS one is 152 MiB), mostly GPU libraries, so the
+  installers become about 1.6 to 1.7 GB unless the GPU libraries are trimmed or downloaded after install.
+- **The Mac App Store conflicts with three design choices:** models downloaded after install (rule 2.4.5(iv)), a
+  PyInstaller `--onefile` API that runs code unpacked outside the bundle (rule 2.5.2), and license keys (rule 2.4.5(vi),
+  which also rules out the one-time-license idea in the store). The guide recommends prototyping the sandbox
+  unknowns with a development-signed build before paying for anything.
+- **Ubuntu 24.04 restricts the Chromium sandbox** through AppArmor, so a Linux `.deb` should ship an AppArmor profile;
+  `--no-sandbox` is not an option because the window must stay sandboxed.
+- **Signing options are version-dependent:** electron-builder 26.15.3 (used here) has `win.signtoolOptions` and
+  `win.azureSignOptions`; version 27 replaces both with `win.sign`.
+
+The effort figures in the guide's summary are my estimates, labelled as such, and the open decisions (platforms and
+order, certificates, GPU libraries, a store edition with bundled models, updates) are listed for the owner.
+
