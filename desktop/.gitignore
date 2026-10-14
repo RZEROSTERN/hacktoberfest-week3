@@ -1,0 +1,5 @@
+node_modules/
+dist/
+release/
+# Large binaries produced by scripts/ (whisper.cpp, Ollama) and the packaged api and web files.
+build/

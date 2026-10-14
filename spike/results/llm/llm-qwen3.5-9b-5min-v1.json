@@ -1,0 +1,231 @@
+{
+ "model": "qwen3.5:9b",
+ "label": "qwen3.5-9b-5min-v1",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 95.6,
+ "notes_check": {
+  "items": 11,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 11
+ },
+ "notes": {
+  "client": "",
+  "client_context": [
+   {
+    "text": "Kevin tiene actualmente una pizzería que se llama Trevos y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "quote": "Buenas noches.\nQue, bueno, él tiene actualmente una pizzería que se llama Trevos y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "segment_ids": [
+     3,
+     4,
+     5
+    ]
+   },
+   {
+    "text": "Tienen dos locales: uno en la Supermanzada 316 y el otro en Bofi.",
+    "quote": "Como dijiste al principio, tenemos dos aquí en Cancún.\nUna está ubicada en la Supermanzada 316 y la otra está ubicada en Bofi.",
+    "segment_ids": [
+     43,
+     44,
+     45
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "El problema que tenemos en la pizzería es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "quote": "Bueno, el problema que tenemos en la pizzería es que la manejamos mediante Facebook\ny Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones\nimplementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     8,
+     9,
+     10
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Nos gustaría implementar un sistema en línea para manejar mejor el negocio y quitar las limitaciones de Facebook.",
+    "quote": "implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     10
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "El sistema debe tener un menú más elegante y bien para el usuario.",
+    "quote": "Bueno, lo que queremos implementar es que al momento de que entre en la página tenga\nun menú más elegante, que sea bien para el usuario",
+    "segment_ids": [
+     13,
+     14
+    ]
+   },
+   {
+    "text": "El sistema debe tener una sección donde puedan ver los distintos tipos de menús que manejan en la pizzería.",
+    "quote": "que tenga una sección donde puedan\nver los distintos tipos de menús que manejamos en la pizzería",
+    "segment_ids": [
+     14,
+     15
+    ]
+   },
+   {
+    "text": "El sistema debe permitir hacer reservaciones sin estar mandando mensajes por Facebook.",
+    "quote": "que puedan hacer reservaciones\nsin estar mandando mensajes por Facebook",
+    "segment_ids": [
+     15,
+     16
+    ]
+   },
+   {
+    "text": "El sistema debe mostrar una galería de las instalaciones y cómo preparan las pizzas.",
+    "quote": "o mostrarles una galería en la cual les mostremos\ncómo son las instalaciones, nuestras diversas instalaciones\ncómo preparamos las pizzas",
+    "segment_ids": [
+     16,
+     17,
+     18
+    ]
+   },
+   {
+    "text": "El sistema debe tener un sistema de facturación automático que se active al momento de hacer una reservación.",
+    "quote": "y un sistema de facturación automático\nque eso viene al momento de que ellos\nhagan una reservación",
+    "segment_ids": [
+     19,
+     20,
+     21
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No necesitan sección para editar clientes o sistema de registros por el momento.",
+    "quote": "Entonces, esa sección no nos serviría por el momento.",
+    "segment_ids": [
+     42
+    ]
+   },
+   {
+    "text": "El cliente quiere un prototipo de diseño enviado durante las siguientes semanas para recibir comentarios y visto bueno antes de continuar.",
+    "quote": "Y voy a enviártelo durante las siguientes semanas\nPara que me des un visto bueno\nO para que me des comentarios y me digas que partes quieres modificar",
+    "segment_ids": [
+     50,
+     51,
+     52
+    ]
+   }
+  ],
+  "budget_or_deadlines": [],
+  "risks": [],
+  "open_questions": []
+ },
+ "ollama_ps": [
+  {
+   "name": "qwen3.5:9b",
+   "size": 5642083368,
+   "size_vram": 5642083368,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 76.1,
+ "proposal_stats": [
+  {
+   "total_s": 74.247349167,
+   "load_s": 0.932156625,
+   "prompt_tokens": 1313,
+   "prompt_s": 15.410391,
+   "output_tokens": 620,
+   "output_s": 37.566296,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Implementación de un sistema en línea para la pizzería Trevos, con dos locales en Cacún, para superar las limitaciones de Facebook y gestionar el negocio de manera más eficiente.",
+  "problem_understanding": "El cliente actualmente gestiona su pizzería (Trevos) a través de Facebook, lo cual tiene limitaciones. Quieren migrar a un sistema en línea que permita manejar mejor el negocio, ofreciendo un menú elegante, gestión de menús, reservas sin depender de mensajes, una galería de instalaciones y facturación automática.",
+  "scope": [
+   {
+    "text": "El sistema debe tener un menú más elegante y bien para el usuario.",
+    "segment_ids": [
+     13,
+     14
+    ],
+    "assumption": false
+   },
+   {
+    "text": "El sistema debe tener una sección donde puedan ver los distintos tipos de menús que manejan en la pizzería.",
+    "segment_ids": [
+     14,
+     15
+    ],
+    "assumption": false
+   },
+   {
+    "text": "El sistema debe permitir hacer reservaciones sin estar mandando mensajes por Facebook.",
+    "segment_ids": [
+     15,
+     16
+    ],
+    "assumption": false
+   },
+   {
+    "text": "El sistema debe mostrar una galería de las instalaciones y cómo preparan las pizzas.",
+    "segment_ids": [
+     16,
+     17,
+     18
+    ],
+    "assumption": false
+   },
+   {
+    "text": "El sistema debe tener un sistema de facturación automático que se active al momento de hacer una reservación.",
+    "segment_ids": [
+     19,
+     20,
+     21
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [],
+  "out_of_scope": [
+   {
+    "text": "No necesitan sección para editar clientes o sistema de registros por el momento.",
+    "segment_ids": [
+     42
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "El cliente quiere un prototipo de diseño enviado durante las siguientes semanas para recibir comentarios y visto bueno antes de continuar.",
+  "open_questions": [
+   "¿Cuál es el número estimado de secciones o funcionalidades específicas que tendrá el sistema final?",
+   "¿Existe un presupuesto específico asignado para este proyecto?"
+  ],
+  "investment": "El costo dependerá del alcance final y las horas requeridas, considerando una tarifa de 650 MXN por hora. Si el sitio web tiene hasta 5 secciones, la inversión podría ser de 24,000 MXN.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 6
+ },
+ "trap_hits": [],
+ "wall_s": 172.4,
+ "notes_stats": [
+  {
+   "total_s": 92.697082709,
+   "load_s": 23.236134625,
+   "prompt_tokens": 2150,
+   "prompt_s": 10.264791,
+   "output_tokens": 995,
+   "output_s": 58.137903,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 6303,
+ "peak_system_growth_mb": 6690
+}

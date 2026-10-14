@@ -1,0 +1,336 @@
+{
+ "model": "gemma4:e4b",
+ "label": "e4b-5min-v1",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 48.3,
+ "notes_check": {
+  "items": 18,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 10
+ },
+ "notes": {
+  "client": "Trevos",
+  "client_context": [
+   {
+    "text": "él tiene actualmente una pizzería que se llama Trevos",
+    "quote": "él tiene actualmente una pizzería que se llama Trevos",
+    "segment_ids": [
+     5
+    ]
+   },
+   {
+    "text": "actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "quote": "actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "segment_ids": [
+     5
+    ]
+   },
+   {
+    "text": "tenemos dos aquí en Cancún.",
+    "quote": "tenemos dos aquí en Cancún.",
+    "segment_ids": [
+     44
+    ]
+   },
+   {
+    "text": "Una está ubicada en la Supermanzada 316 y la otra está ubicada en Bofi.",
+    "quote": "Una está ubicada en la Supermanzada 316 y la otra está ubicada en Bofi.",
+    "segment_ids": [
+     45
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "el problema que tenemos en la pizzería es que la manejamos mediante Facebook",
+    "quote": "Bueno, el problema que tenemos en la pizzería es que la manejamos mediante Facebook",
+    "segment_ids": [
+     8
+    ]
+   },
+   {
+    "text": "Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones",
+    "quote": "y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones",
+    "segment_ids": [
+     9
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "quote": "implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     10
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario",
+    "quote": "Bueno, lo que queremos implementar es que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario",
+    "segment_ids": [
+     13
+    ]
+   },
+   {
+    "text": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería",
+    "quote": "que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería",
+    "segment_ids": [
+     14
+    ]
+   },
+   {
+    "text": "que puedan hacer reservaciones sin estar mandando mensajes por Facebook",
+    "quote": "que puedan hacer reservaciones sin estar mandando mensajes por Facebook",
+    "segment_ids": [
+     15
+    ]
+   },
+   {
+    "text": "mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones",
+    "quote": "o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones",
+    "segment_ids": [
+     16
+    ]
+   },
+   {
+    "text": "cómo preparamos las pizzas",
+    "quote": "cómo preparamos las pizzas",
+    "segment_ids": [
+     18
+    ]
+   },
+   {
+    "text": "un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación",
+    "quote": "y un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación",
+    "segment_ids": [
+     19
+    ]
+   },
+   {
+    "text": "Un menú de facturación",
+    "quote": "Un menú de facturación",
+    "segment_ids": [
+     31
+    ]
+   },
+   {
+    "text": "Una galería de tu pizzería de sus locales",
+    "quote": "Una galería de tu pizzería de sus locales",
+    "segment_ids": [
+     33
+    ]
+   },
+   {
+    "text": "Reservas",
+    "quote": "Reservas, ahorita me acabas de decir",
+    "segment_ids": [
+     36
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas. Entonces, esa sección no nos serviría por el momento.",
+    "quote": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas. Entonces, esa sección no nos serviría por el momento.",
+    "segment_ids": [
+     41
+    ]
+   }
+  ],
+  "budget_or_deadlines": [
+   {
+    "text": "Voy a enviártelo durante las siguientes semanas Para que me des un visto bueno O para que me des comentarios y me digas que partes quieres modificar",
+    "quote": "Voy a enviártelo durante las siguientes semanas Para que me des un visto bueno O para que me des comentarios y me digas que partes quieres modificar",
+    "segment_ids": [
+     50
+    ]
+   }
+  ],
+  "risks": [],
+  "open_questions": [
+   "¿Qué partes quieres modificar?"
+  ]
+ },
+ "ollama_ps": [
+  {
+   "name": "gemma4:e4b",
+   "size": 279047043,
+   "size_vram": 279047043,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 54.5,
+ "proposal_stats": [
+  {
+   "total_s": 53.847380208,
+   "load_s": 0.327899167,
+   "prompt_tokens": 1425,
+   "prompt_s": 20.693379,
+   "output_tokens": 1034,
+   "output_s": 28.208091,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Propuesta para implementar un sistema en línea para la pizzería Trevos, con el objetivo de superar las limitaciones de la gestión actual a través de Facebook y mejorar la experiencia del usuario.",
+  "problem_understanding": "El negocio de la pizzería Trevos, que opera dos locales en Cancún, actualmente maneja sus operaciones a través de Facebook, lo cual presenta limitaciones. El objetivo es implementar un sistema en línea que mejore la gestión del negocio.",
+  "scope": [
+   {
+    "text": "Implementar un sistema en línea para manejar mejor el negocio.",
+    "segment_ids": [
+     10
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario.",
+    "segment_ids": [
+     13
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería.",
+    "segment_ids": [
+     14
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que puedan hacer reservaciones sin estar mandando mensajes por Facebook.",
+    "segment_ids": [
+     15
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas.",
+    "segment_ids": [
+     16,
+     18
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     19
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Un menú de facturación.",
+    "segment_ids": [
+     31
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Una galería de tu pizzería de sus locales.",
+    "segment_ids": [
+     33
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Reservas.",
+    "segment_ids": [
+     36
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Menú elegante y amigable para el usuario en la página.",
+    "segment_ids": [
+     13
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Sección para mostrar los distintos tipos de menús de la pizzería.",
+    "segment_ids": [
+     14
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Funcionalidad de reservaciones en línea.",
+    "segment_ids": [
+     15,
+     36
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Galería mostrando instalaciones y proceso de preparación de pizzas.",
+    "segment_ids": [
+     16,
+     18,
+     33
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Sistema de facturación automático al momento de la reservación.",
+    "segment_ids": [
+     19
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Menú de facturación.",
+    "segment_ids": [
+     31
+    ],
+    "assumption": false
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "Sección para clientes frecuentes o para probar cosas nuevas.",
+    "segment_ids": [
+     41
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "No se proporcionó información sobre el cronograma.",
+  "open_questions": [
+   "¿Qué partes quieres modificar?",
+   "Se requiere información para poder cotizar el proyecto."
+  ],
+  "investment": "Para cotizar el proyecto, se requiere definir el alcance final, ya que la tarifa por proyecto para un sitio web de hasta 5 secciones es de 24,000 MXN, y la tarifa por hora es de 650 MXN.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 16
+ },
+ "trap_hits": [],
+ "wall_s": 103.0,
+ "notes_stats": [
+  {
+   "total_s": 47.324841959,
+   "load_s": 1.413208167,
+   "prompt_tokens": 2212,
+   "prompt_s": 8.985976,
+   "output_tokens": 1292,
+   "output_s": 33.213423,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 4443,
+ "peak_system_growth_mb": 726
+}

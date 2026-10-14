@@ -1,0 +1,55 @@
+{
+  "about": "Manual scoring of each 5-minute run against samples/interview.facts.json (DRAFT facts, not yet confirmed by a person). 1 = captured, 0.5 = partly captured, 0 = missed. The 32-minute runs repeat the same call six times, so only their timing is used. Scored by Claude by reading the saved outputs in this folder.",
+  "prompt_versions": {
+    "v1": "notes_v1.md: model writes text + verbatim quote + segment_ids per item",
+    "v2": "notes_v2.md: model writes text + segment_ids only; quotes are looked up from the transcript by code"
+  },
+  "runs": {
+    "gemma4:e4b v1": {
+      "F01": 0.5, "F02": 1, "F03": 1, "F04": 1, "F05": 1, "F06": 1, "F07": 1, "F08": 1, "F09": 1, "F10": 1, "F11": 1, "F12": 0, "F13": 1,
+      "captured": 11.5,
+      "invented_or_wrong": ["Proposal lists 'Sección para clientes frecuentes o para probar cosas nuevas' as out of scope: it misread the answer about not needing edit permissions."],
+      "other_issues": ["Open question '¿Qué partes quieres modificar?' is the freelancer's own line, not a real gap.", "Budget and deadline never listed as open questions.", "'Menú de facturación' and 'Reservas' appear as duplicate scope items."]
+    },
+    "gemma4:e4b v2": {
+      "F01": 1, "F02": 1, "F03": 1, "F04": 1, "F05": 1, "F06": 1, "F07": 1, "F08": 1, "F09": 1, "F10": 1, "F11": 1, "F12": 0, "F13": 1,
+      "captured": 12,
+      "invented_or_wrong": [],
+      "other_issues": ["Same weak open question as v1 ('¿Qué partes quieren modificar?').", "Budget and deadline not raised as open questions; the timeline section does say no schedule was given."]
+    },
+    "qwen3.5:9b v1": {
+      "F01": 1, "F02": 1, "F03": 1, "F04": 1, "F05": 1, "F06": 1, "F07": 1, "F08": 1, "F09": 1, "F10": 1, "F11": 1, "F12": 0, "F13": 1,
+      "captured": 12,
+      "invented_or_wrong": [],
+      "other_issues": ["Deliverables section empty.", "Timeline says the client wants a prototype; it is the freelancer who promised to send it.", "Budget raised as open question, deadline not."]
+    },
+    "qwen3.5:9b v2": {
+      "F01": 1, "F02": 1, "F03": 1, "F04": 1, "F05": 1, "F06": 1, "F07": 1, "F08": 1, "F09": 1, "F10": 1, "F11": 1, "F12": 0, "F13": 1,
+      "captured": 12,
+      "invented_or_wrong": ["Problem text says 'videos de preparación de pizzas' (client only said how they prepare the pizzas).", "Timeline says a schedule must be defined 'basado en la revisión de documentos' (no documents were mentioned)."],
+      "other_issues": ["Goals list is polluted with requirements.", "Best open questions of all models: deadline, budget, and whether photos/videos are ready."]
+    },
+    "mistral-nemo:12b v1": {
+      "F01": 0, "F02": 0.5, "F03": 1, "F04": 1, "F05": 1, "F06": 1, "F07": 1, "F08": 1, "F09": 1, "F10": 1, "F11": 1, "F12": 0, "F13": 0,
+      "captured": 9.5,
+      "invented_or_wrong": [],
+      "other_issues": ["Notes written in English although the call is Spanish.", "All requirements merged into one item.", "Investment section only says 'see my profile' with no rates.", "Asks both budget and deadline."]
+    },
+    "mistral-nemo:12b v2": {
+      "F01": 0, "F02": 0.5, "F03": 1, "F04": 1, "F05": 1, "F06": 1, "F07": 0, "F08": 1, "F09": 0.5, "F10": 1, "F11": 1, "F12": 0, "F13": 0,
+      "captured": 8,
+      "invented_or_wrong": [],
+      "other_issues": ["Thin: scope has one item, most requirements ended up as 'goals'.", "Asks both budget and deadline."]
+    },
+    "qwen3.5:4b v2": {
+      "F01": 1, "F02": 1, "F03": 0, "F04": 1, "F05": 1, "F06": 1, "F07": 1, "F08": 1, "F09": 1, "F10": 1, "F11": 0, "F12": 0, "F13": 0,
+      "captured": 9,
+      "invented_or_wrong": ["Proposal out of scope: 'Sección de recetas o procesos de preparación detallados para clientes no frecuentes' was never discussed."],
+      "other_issues": ["Requirements are raw sentence fragments merged together.", "Asks both budget and deadline."]
+    },
+    "gemma4:12b": {
+      "captured": null,
+      "note": "Did not complete. See docs/BENCHMARKS.md, 'Gemma 4 12B'."
+    }
+  }
+}

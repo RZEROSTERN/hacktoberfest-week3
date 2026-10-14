@@ -1,0 +1,189 @@
+{
+ "model": "mistral-nemo:12b",
+ "label": "mistral-nemo-12b-5min-v2",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 49.1,
+ "notes_check": {
+  "items": 10,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 0
+ },
+ "notes": {
+  "client": "",
+  "client_context": [
+   {
+    "text": "Trevos",
+    "segment_ids": [
+     5
+    ]
+   },
+   {
+    "text": "Trevos tiene dos locales en Cancún",
+    "segment_ids": [
+     44
+    ]
+   },
+   {
+    "text": "Una está ubicada en la Supermanzada 316 y la otra está ubicada en Bofi",
+    "segment_ids": [
+     45
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "La pizzería se maneja mediante Facebook y Facebook tiene algunas limitaciones",
+    "segment_ids": [
+     8
+    ]
+   },
+   {
+    "text": "Quieren quitar esas limitaciones implementando un sistema en línea que les permita manejar mejor el negocio",
+    "segment_ids": [
+     10
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Quieren tener un menú más elegante",
+    "segment_ids": [
+     31
+    ]
+   },
+   {
+    "text": "Quieren tener una galería de sus locales",
+    "segment_ids": [
+     34
+    ]
+   },
+   {
+    "text": "Quieren tener reservas",
+    "segment_ids": [
+     36
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "Necesitan un sistema de facturación automático",
+    "segment_ids": [
+     19
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No necesitan una sección para editar clientes",
+    "segment_ids": [
+     42
+    ]
+   }
+  ],
+  "budget_or_deadlines": [],
+  "risks": [],
+  "open_questions": [
+   "¿Cuál es el presupuesto para este proyecto?",
+   "¿Cuál es la fecha límite para la implementación del sistema?"
+  ]
+ },
+ "ollama_ps": [
+  {
+   "name": "mistral-nemo:12b",
+   "size": 7525283921,
+   "size_vram": 7525283921,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 32.5,
+ "proposal_stats": [
+  {
+   "total_s": 31.863720375,
+   "load_s": 0.151061125,
+   "prompt_tokens": 1156,
+   "prompt_s": 6.79309,
+   "output_tokens": 428,
+   "output_s": 23.754558,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Propuesta para el desarrollo de un sistema de gestión en línea para Trevos",
+  "problem_understanding": "Trevos tiene dos locales en Cancún y actualmente maneja su negocio mediante Facebook, lo cual tiene algunas limitaciones. Quieren implementar un sistema en línea para manejar mejor su negocio.",
+  "scope": [
+   {
+    "text": "Desarrollar un sistema de facturación automático",
+    "segment_ids": [
+     19
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "Crear un menú más elegante",
+    "segment_ids": [
+     31
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Incluir una galería de los locales de Trevos",
+    "segment_ids": [
+     34
+    ],
+    "assumption": true
+   },
+   {
+    "text": "Implementar un sistema de reservas en línea",
+    "segment_ids": [
+     36
+    ],
+    "assumption": false
+   }
+  ],
+  "out_of_scope": [
+   {
+    "text": "No se requiere una sección para editar clientes",
+    "segment_ids": [
+     42
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "Pendiente definir la fecha límite para la implementación del sistema.",
+  "open_questions": [
+   "¿Cuál es el presupuesto para este proyecto?",
+   "¿Cuál es la fecha límite para la implementación del sistema?"
+  ],
+  "investment": "Para desarrollar el sistema de gestión en línea para Trevos, se requiere un sitio web de hasta 5 secciones. Según mi tarifa de proyecto, el costo sería de 24,000 MXN. Sin embargo, necesito conocer el presupuesto para poder ajustar el alcance del proyecto en consecuencia.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 1,
+  "total_items": 5
+ },
+ "trap_hits": [],
+ "wall_s": 81.7,
+ "notes_stats": [
+  {
+   "total_s": 48.676401,
+   "load_s": 9.302389166,
+   "prompt_tokens": 2240,
+   "prompt_s": 14.093972,
+   "output_tokens": 398,
+   "output_s": 23.917733,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 7630,
+ "peak_system_growth_mb": 4738
+}

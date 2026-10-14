@@ -1,1 +1,20 @@
 CLAUDE.local.md
+
+# Local config and dev data
+.env
+.env.*
+!.env.example
+.dev/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store

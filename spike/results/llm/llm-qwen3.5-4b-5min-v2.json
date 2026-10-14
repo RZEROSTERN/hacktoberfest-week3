@@ -1,0 +1,182 @@
+{
+ "model": "qwen3.5:4b",
+ "label": "qwen3.5-4b-5min-v2",
+ "audio_segments": 60,
+ "notes_chunks": 1,
+ "notes_s": 24.8,
+ "notes_check": {
+  "items": 7,
+  "unsourced": 0,
+  "bad_segment_ids": 0,
+  "verbatim_quotes": 0
+ },
+ "notes": {
+  "client": "",
+  "client_context": [
+   {
+    "text": "Kevin tiene actualmente una pizzería que se llama Trevos y actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Cacún.",
+    "segment_ids": [
+     5
+    ]
+   }
+  ],
+  "problem": [
+   {
+    "text": "El problema que tenemos en la pizzería es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     8,
+     9,
+     10
+    ]
+   }
+  ],
+  "goals": [
+   {
+    "text": "Nos gustaría quitar esas limitaciones implementando un sistema en línea que nos permita manejar mejor el negocio.",
+    "segment_ids": [
+     9,
+     10
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "text": "Que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario, que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería.",
+    "segment_ids": [
+     13,
+     14,
+     15
+    ]
+   },
+   {
+    "text": "Que puedan hacer reservaciones sin estar mandando mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones.",
+    "segment_ids": [
+     15,
+     16,
+     17
+    ]
+   },
+   {
+    "text": "Cómo preparamos las pizzas y un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     18,
+     19,
+     20,
+     21
+    ]
+   }
+  ],
+  "constraints": [
+   {
+    "text": "No, porque la mayoría de nuestros clientes o son clientes frecuentes o es gente que nada más quiere probar cosas nuevas. Entonces, esa sección no nos serviría por el momento.",
+    "segment_ids": [
+     41,
+     42
+    ]
+   }
+  ],
+  "budget_or_deadlines": [],
+  "risks": [],
+  "open_questions": [
+   "¿Cuál es el presupuesto?",
+   "¿Hay algún plazo de entrega o fecha límite?"
+  ]
+ },
+ "ollama_ps": [
+  {
+   "name": "qwen3.5:4b",
+   "size": 3282944654,
+   "size_vram": 3282944654,
+   "context_length": 8192
+  }
+ ],
+ "proposal_s": 17.1,
+ "proposal_stats": [
+  {
+   "total_s": 17.08300425,
+   "load_s": 0.023184792,
+   "prompt_tokens": 1255,
+   "prompt_s": 2.431932,
+   "output_tokens": 531,
+   "output_s": 14.455366,
+   "done_reason": "stop"
+  }
+ ],
+ "proposal": {
+  "summary": "Propuesta para implementar un sistema en línea que reemplace las limitaciones actuales de Facebook y mejore la gestión del negocio de la pizzería Trevos.",
+  "problem_understanding": "La pizzería Trevos actualmente maneja sus operaciones a través de Facebook, el cual presenta limitaciones. El objetivo es eliminar estas restricciones mediante la implementación de un sistema en línea que permita una mejor gestión del negocio.",
+  "scope": [
+   {
+    "text": "Que al momento de que entre en la página tenga un menú más elegante, que sea bien para el usuario, que tenga una sección donde puedan ver los distintos tipos de menús que manejamos en la pizzería.",
+    "segment_ids": [
+     13,
+     14,
+     15
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Que puedan hacer reservaciones sin estar mandando mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones.",
+    "segment_ids": [
+     15,
+     16,
+     17
+    ],
+    "assumption": false
+   },
+   {
+    "text": "Cómo preparamos las pizzas y un sistema de facturación automático que eso viene al momento de que ellos hagan una reservación.",
+    "segment_ids": [
+     18,
+     19,
+     20,
+     21
+    ],
+    "assumption": false
+   }
+  ],
+  "deliverables": [],
+  "out_of_scope": [
+   {
+    "text": "Sección de recetas o procesos de preparación detallados para clientes no frecuentes.",
+    "segment_ids": [
+     41,
+     42
+    ],
+    "assumption": false
+   }
+  ],
+  "timeline": "La información sobre el plazo de entrega o fecha límite no se proporcionó en la llamada.",
+  "open_questions": [
+   "¿Cuál es el presupuesto?",
+   "¿Hay algún plazo de entrega o fecha límite?"
+  ],
+  "investment": "El proyecto puede cotizarse como un sitio web de hasta 5 secciones por 24,000 MXN, o mediante una tarifa horaria de 650 MXN por hora. Se requiere definir el alcance exacto para determinar la mejor opción.",
+  "terms": "50% de anticipo y 50% a la entrega. Pagos a 7 días."
+ },
+ "proposal_check": {
+  "summary_has_digit_or_currency": false,
+  "items_without_source_not_flagged": [],
+  "items_with_bad_ids": [],
+  "investment_numbers_not_in_profile": [],
+  "assumption_items": 0,
+  "total_items": 4
+ },
+ "trap_hits": [],
+ "wall_s": 41.9,
+ "notes_stats": [
+  {
+   "total_s": 24.680204333,
+   "load_s": 3.151892791,
+   "prompt_tokens": 2165,
+   "prompt_s": 4.450597,
+   "output_tokens": 588,
+   "output_s": 17.046944,
+   "done_reason": "stop"
+  }
+ ],
+ "trap_hits_notes": [],
+ "validation_errors": [],
+ "peak_ollama_rss_mb": 3764,
+ "peak_system_growth_mb": 5193
+}

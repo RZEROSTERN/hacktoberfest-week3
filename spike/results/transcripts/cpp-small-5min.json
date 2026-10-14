@@ -1,0 +1,107 @@
+[
+ {
+  "start": 0.0,
+  "end": 21.0,
+  "text": "Buenas tardes ingeniero Moisés. Nuestra siguiente aportación es una entrevista de lo que sería una simulación real a una entrevista que alguien que requiera un sistema para su negocio, para su empresa, para su organización, para cualquier cosa."
+ },
+ {
+  "start": 21.0,
+  "end": 48.0,
+  "text": "Y para poner un poco en contexto, en esta ocasión tenemos a mi compañero Kevin, las noches, que bueno, él tiene actualmente una pizzería que se llama Trevos y tiene actualmente maneja junto con dos socios, dos locales que se encuentran aquí en Gakun."
+ },
+ {
+  "start": 48.0,
+  "end": 75.0,
+  "text": "Y voy a empezar nuestra entrevista preguntándole a Kevin. Bueno, primero gracias por preferirnos para su sistema. La primera pregunta que le voy a hacer es ¿cuál es el problema o por qué usted requiere un sistema que se implemente en su negocio?"
+ },
+ {
+  "start": 75.0,
+  "end": 94.0,
+  "text": "Bueno, el problema que tenemos en la pizzería es que la manejamos mediante Facebook y Facebook tiene algunas limitaciones, entonces nos gustaría quitar esas limitaciones, implementando un sistema en línea que nos permita manejar mejor el negocio."
+ },
+ {
+  "start": 94.0,
+  "end": 105.0,
+  "text": "Ok, entonces ustedes tienen restricciones en Facebook, pero ¿cuáles son esas restricciones que quieren implementar en una página de línea?"
+ },
+ {
+  "start": 105.0,
+  "end": 124.0,
+  "text": "Bueno, lo que queremos implementar es que al momento de que entre en una página tenga algún menú más elegante que sea bien para el usuario, que tenga una sección donde puedan ver los distintos tipos de demos que manejamos en la pizzería, que puedan hacer reservaciones."
+ },
+ {
+  "start": 124.0,
+  "end": 138.0,
+  "text": "¿Qué es la necesidad de mandar mensajes por Facebook o mostrarles una galería en la cual les mostremos cómo son las instalaciones, nuestras diversas instalaciones, cómo preparamos las pizzas?"
+ },
+ {
+  "start": 138.0,
+  "end": 152.0,
+  "text": "Y un sistema de facturación automático, que eso viene al momento de que ellos hagan una reservación. Estas son las limitaciones que los hacen."
+ },
+ {
+  "start": 152.0,
+  "end": 160.0,
+  "text": "Me queda más o menos claro el sistema que tú quieres diseñar."
+ },
+ {
+  "start": 160.0,
+  "end": 180.0,
+  "text": "Ok, entonces ya más o menos me está quedando clara la idea del sistema que quieres desarrollar, o sea, quieres tener un menú de facturación, quieres tener una galería de tu pizzería de sus locales."
+ },
+ {
+  "start": 180.0,
+  "end": 208.0,
+  "text": "Bueno, también quieres reservas. Me acabas de decir, pero quieres que dentro de tu sistema se otorguen permisos especiales para tú o alguna persona especial para que puedan editar los clientes que tienen o su sistema de registros que tienen."
+ },
+ {
+  "start": 208.0,
+  "end": 213.0,
+  "text": "¿Quieren algún permiso especial? ¿Quieren editarlo?"
+ },
+ {
+  "start": 213.0,
+  "end": 227.0,
+  "text": "No, porque la mayoría de nuestros clientes son clientes frecuentes o es gente que nada más quiere probar cosas nuevas, entonces esa sección no serviría por el momento."
+ },
+ {
+  "start": 227.0,
+  "end": 240.0,
+  "text": "Ok, ¿actualmente no está en su localización de sus pizzerías?"
+ },
+ {
+  "start": 240.0,
+  "end": 258.0,
+  "text": "Bueno, como dijiste al principio, tenemos dos aquí en Calcún, una está ubicada en la secrensada 316 y la otra está ubicada en Bofi."
+ },
+ {
+  "start": 258.0,
+  "end": 278.0,
+  "text": "Bueno, más o menos yo me estoy imaginando, con todo lo que me acabas de decir, yo me estoy imaginando un menú en esta parte y todos los elementos que acabas de decir."
+ },
+ {
+  "start": 278.0,
+  "end": 298.0,
+  "text": "Y aquí abajo ponerle los contactos, las galerías, este nada más es el primer prototipo y voy a enviártelo durante las siguientes semanas para que me des un visto bueno o para que me des comentarios"
+ },
+ {
+  "start": 298.0,
+  "end": 311.0,
+  "text": "y medias que partes quieres modificar, para que a lo mejor nada más es de diseño, pero yo creo que eso sería todo."
+ },
+ {
+  "start": 311.0,
+  "end": 317.0,
+  "text": "Sí, me parece perfecto, seguro, avisa contigo."
+ },
+ {
+  "start": 317.0,
+  "end": 321.0,
+  "text": "Muchas gracias por la entrevista y voy a estar en contacto con ustedes."
+ },
+ {
+  "start": 321.0,
+  "end": 323.0,
+  "text": "Muchas gracias."
+ }
+]
