@@ -16,6 +16,7 @@ notes and drafts the proposal, everything runs on the user's machine.
   `make typecheck` (`make format` fixes ruff). Opt-in with real models: `make test-llm` (~4.6 GB), `make test-setup` (pulls ~270 MB)
 - Look at the real UI: `web/ui-check/README.md` (headless Chrome)
 - Desktop: `make desktop-setup`, `make desktop-dist` (everything + `.dmg`), `make desktop-dev`, `make desktop-check`
+- Linux packages (experimental, needs Docker): `make linux-packages` (`LINUX_ARCH=arm64|amd64`), `desktop/linux/verify.sh`
 
 ## Git: GitFlow, no stacked PRs
 - `master` is production. `develop` is integration. Never commit to either directly.

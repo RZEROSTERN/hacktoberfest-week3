@@ -1,6 +1,7 @@
-# Unsigned (ad-hoc signed) macOS arm64 build. Everything the app needs at run time is bundled:
-# the language engine (Ollama), the api (one PyInstaller program), the transcription engine
-# (whisper-cli) and the generated web app. `make desktop-resources` produces the inputs.
+# Everything the app needs at run time is bundled: the language engine (Ollama), the api (one
+# PyInstaller program), the transcription engine (whisper-cli) and the generated web app.
+# macOS: an unsigned (ad-hoc signed) arm64 .dmg, inputs from `make desktop-resources`.
+# Linux: experimental .deb and .rpm, built in a container by `make linux-packages` (see linux/).
 appId: mx.dev1.postcall
 productName: PostCall
 copyright: Copyright (c) 2026 Marco Ramírez. MIT License, with a Beerware thank-you.
@@ -49,3 +50,45 @@ mac:
 dmg:
   title: PostCall ${version}
   sign: false
+linux:
+  icon: assets/icon.png
+  category: Office
+  executableName: postcall
+  # Lets desktop environments tie the running window to the launcher entry (postcall.desktop).
+  syncDesktopName: true
+  maintainer: Marco Ramírez <marco.ramirez@rzerocorp.com>
+  synopsis: Turns a recorded client call into a draft proposal, entirely on this computer
+  target:
+    - deb
+    - rpm
+  # The audio converter: macOS has its own, Linux ships a small FFmpeg (built from source, LGPL only).
+  extraResources:
+    - from: build/ffmpeg
+      to: ffmpeg
+deb:
+  packageName: postcall
+  artifactName: postcall_${version}_${arch}.${ext}
+  compression: xz
+  # electron-builder's defaults, plus the sound library Chromium links against (its package name
+  # changed on Ubuntu 24.04, hence the alternative).
+  depends:
+    - libgtk-3-0 | libgtk-3-0t64
+    - libnotify4
+    - libnss3
+    - libxss1
+    - libxtst6
+    - xdg-utils
+    - libatspi2.0-0 | libatspi2.0-0t64
+    - libuuid1
+    - libsecret-1-0
+    - libasound2 | libasound2t64
+rpm:
+  packageName: postcall
+  artifactName: postcall-${version}.${arch}.${ext}
+  # electron-builder turns "xz" into multi-threaded "xzmt", which ran out of memory on a 7.7 GB machine with
+  # this payload (the Ollama GPU libraries). gzip passes through unchanged and costs little size, because
+  # those libraries barely compress anyway.
+  compression: gzip
+  # Fedora: without this every package that ships binaries claims the same /usr/lib/.build-id files.
+  fpm:
+    - --rpm-rpmbuild-define=_build_id_links none

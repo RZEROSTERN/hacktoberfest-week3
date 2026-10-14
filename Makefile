@@ -18,7 +18,8 @@ export ELECTRON_CACHE ?= $(CURDIR)/.dev/electron-cache
 export ELECTRON_BUILDER_CACHE ?= $(CURDIR)/.dev/electron-builder-cache
 
 .PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test test-llm test-setup lint typecheck format \
-	desktop-setup build-web build-api build-whisper fetch-ollama desktop-resources desktop-dev desktop-dist desktop-check
+	desktop-setup build-web build-api build-whisper fetch-ollama desktop-resources desktop-dev desktop-dist desktop-check \
+	linux-packages
 
 help:
 	@echo "make setup        install api + web dependencies and create .env"
@@ -38,6 +39,7 @@ help:
 	@echo "make desktop-dev        run the desktop shell from this repository (after desktop-resources)"
 	@echo "make desktop-dist       build the unsigned macOS arm64 .dmg into desktop/release/"
 	@echo "make desktop-check      start the desktop shell for real and check it (processes, ports, isolation)"
+	@echo "make linux-packages     build the experimental Linux .deb and .rpm in a container (LINUX_ARCH=arm64|amd64)"
 
 setup:
 	@test -f .env || cp .env.example .env
@@ -121,3 +123,11 @@ desktop-dist: desktop-resources
 
 desktop-check:
 	cd desktop && npm run build && node scripts/shell-check.mjs
+
+# -- Linux packages (experimental) ------------------------------------------------------------------
+# Built from source in a container (Docker needed), into desktop/release-linux/<arch>/. amd64 on an
+# Apple Silicon Mac runs emulated and takes much longer.
+LINUX_ARCH ?= arm64
+
+linux-packages:
+	sh desktop/linux/build.sh $(LINUX_ARCH)

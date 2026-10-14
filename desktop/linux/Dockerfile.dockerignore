@@ -1,0 +1,21 @@
+# The build context is the repository root. Keep out what is not source, and above all what was
+# built on the Mac (node_modules, .venv, desktop/build): none of it would run on Linux.
+.git
+.dev
+.claude
+spike
+samples
+docs
+**/node_modules
+**/.venv
+**/__pycache__
+**/.mypy_cache
+**/.ruff_cache
+**/.pytest_cache
+desktop/build
+desktop/dist
+desktop/release
+desktop/release-linux
+web/.nuxt
+web/.output
+web/.data
