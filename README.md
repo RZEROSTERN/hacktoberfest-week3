@@ -218,9 +218,20 @@ A **one-time license, no subscription.** Most AI products charge monthly because
 - **You pick the model.** The model in use is a setting, not a hardcoded dependency: the recommended Gemma 4 E4B, any model we tested, or any model in the Ollama library. When a better open model appears, you switch in Settings.
 - **A fully open stack can be shipped inside the app.** Ollama, whisper.cpp and the models can all be redistributed under permissive licenses, which is what makes a one-install app with no accounts and no servers possible.
 
+## Next steps
+
+PostCall is released today for macOS only. These are the versions being worked on, in this order, with no dates promised:
+
+- **Ubuntu and Debian (`.deb`), and Fedora (`.rpm`), on x86-64 and ARM64.** In progress. The packages are built from source inside containers, and the first ones will be published as an **experimental pre-release**, separate from the stable macOS release, and labelled with exactly what has and has not been tried on real machines. The transcription engine runs on the CPU on Linux, so it will be slower than on a Mac with Apple Silicon.
+- **Red Hat Enterprise Linux (and Rocky Linux, AlmaLinux).** Planned after Fedora. RHEL 9 ships an older C library than the one the Linux packages are being built against, so it needs its own build on a RHEL 9 base; this is not done yet.
+- **Windows.** Planned. It needs the process control, the audio conversion and the code signing worked out first, and a Windows computer without a graphics card may miss the speed targets in [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+- **Mac App Store.** Possible but the riskiest of these, because of Apple's sandbox and its rules on large downloads.
+
+The plan for each, what was checked in the documentation and what still has to be tested, is in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Known limits
 
-- Apple Silicon and macOS 14 or later only. The first release has been tried on macOS 27 only. Windows, Linux and the Mac App Store are planned, not built: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+- The released app (1.0.0) is for Apple Silicon and macOS 14 or later only, and has been tried on macOS 27 only. Other systems are in progress, see [Next steps](#next-steps).
 - Not tested on an 8 GB Mac, and not tested with calls longer than the 5-minute sample (the 32-minute file repeats it).
 - Tested on a Spanish call. English is covered by the built-in check; other languages depend on what Whisper and the chosen model can do.
 - PDF export uses a built-in font that covers Western European languages (English, Spanish, French, Portuguese, German, Italian). For proposals in Japanese, Chinese, Russian, Hindi or Arabic the PDF button is switched off and the Markdown export is the one to use.
