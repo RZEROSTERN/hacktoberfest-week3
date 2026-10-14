@@ -16,3 +16,10 @@ paths:
 - After UI changes, look at the real screens (`web/ui-check/`): typecheck and unit tests do not show layout.
 - A route guard holds every page behind `/setup` until the api says ready. After changing setup logic, rerun
   `web/ui-check/setup-flow.mjs`; the other ui-check flows need the setup completed once first.
+- Layout is responsive: pages fill the window up to the shell's 1400px limit. `.page-grid` gives two columns when
+  there is room and one when there is not (no breakpoints); a page that is one short column of text or one form
+  uses `.page-narrow` (centred, 760px). The call page puts the transcript beside the proposal from 1100px up
+  (`useWideScreen`). The footer stays at the bottom of the window.
+- After a layout change run `desktop/scripts/layout-check.mjs` against the packaged app (its header says how): it
+  opens every page at seven window sizes and fails on sideways scrolling, blank space, uncentred or unused width.
+
