@@ -15,9 +15,9 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true } },
 ])
 
-// The packaged app's data lives in "Scopewise"; running from the repository uses its own folder, so a
+// The packaged app's data lives in "PostCall"; running from the repository uses its own folder, so a
 // development shell never shares data, models or the single-instance lock with an installed app.
-if (!app.isPackaged) app.setPath('userData', path.join(app.getPath('appData'), 'Scopewise (development)'))
+if (!app.isPackaged) app.setPath('userData', path.join(app.getPath('appData'), 'PostCall (development)'))
 
 const OLLAMA_START_TIMEOUT_MS = 60_000
 const API_START_TIMEOUT_MS = 90_000 // the packaged api unpacks itself on a cold start
@@ -29,7 +29,7 @@ let reportedFatal = false
 
 const START_PAGE = `<!doctype html><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
-<title>Scopewise</title>
+<title>PostCall</title>
 <style>
   :root { color-scheme: light dark; }
   body { font: 16px -apple-system, system-ui, sans-serif; display: grid; place-items: center; height: 100vh; margin: 0; }
@@ -37,7 +37,7 @@ const START_PAGE = `<!doctype html><meta charset="utf-8">
   h1 { font-size: 1.4rem; margin: 0 0 .5rem; }
   p { margin: 0; opacity: .7; }
 </style>
-<main><h1>Starting Scopewise…</h1><p>Getting the local engines ready. This takes a few seconds.</p></main>`
+<main><h1>Starting PostCall…</h1><p>Getting the local engines ready. This takes a few seconds.</p></main>`
 
 function showFatal(title: string, detail: string, logs: string): void {
   if (reportedFatal) return
@@ -45,9 +45,9 @@ function showFatal(title: string, detail: string, logs: string): void {
   void dialog
     .showMessageBox({
       type: 'error',
-      title: 'Scopewise',
+      title: 'PostCall',
       message: title,
-      detail: `${detail}\n\nClose and reopen Scopewise. If it keeps happening, restart your computer.`,
+      detail: `${detail}\n\nClose and reopen PostCall. If it keeps happening, restart your computer.`,
       buttons: ['Quit', 'Show logs'],
       defaultId: 0,
     })
@@ -64,7 +64,7 @@ function createWindow(apiBase: string): BrowserWindow {
     minWidth: 900,
     minHeight: 600,
     show: false,
-    title: 'Scopewise',
+    title: 'PostCall',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -72,7 +72,7 @@ function createWindow(apiBase: string): BrowserWindow {
       sandbox: true,
       webSecurity: true,
       devTools: !app.isPackaged,
-      additionalArguments: [`--scopewise-api-base=${apiBase}`],
+      additionalArguments: [`--postcall-api-base=${apiBase}`],
     },
   })
   win.once('ready-to-show', () => win.show())
@@ -145,7 +145,7 @@ async function start(): Promise<void> {
     file => !fs.existsSync(file),
   )
   if (missing.length > 0) {
-    showFatal('Scopewise is incomplete', `These parts are missing: ${missing.join(', ')}`, dirs.logs)
+    showFatal('PostCall is incomplete', `These parts are missing: ${missing.join(', ')}`, dirs.logs)
     return
   }
 
@@ -153,7 +153,7 @@ async function start(): Promise<void> {
 
   const onFatal = (service: string, reason: string): void => {
     if (quitting) return
-    showFatal(`Scopewise stopped working (${service})`, reason, dirs.logs)
+    showFatal(`PostCall stopped working (${service})`, reason, dirs.logs)
   }
   const ollama = new Service(
     {
@@ -185,7 +185,7 @@ async function start(): Promise<void> {
     await supervisor.startAll([ollama, api]) // Ollama first: the api checks it on start
   } catch (error) {
     await supervisor.stopAll()
-    showFatal('Scopewise could not start', error instanceof Error ? error.message : String(error), dirs.logs)
+    showFatal('PostCall could not start', error instanceof Error ? error.message : String(error), dirs.logs)
     return
   }
   if (mainWindow) void mainWindow.loadURL(`${APP_ORIGIN}/`)
@@ -209,7 +209,7 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) process.on(signal, () => ap
 
 if (app.requestSingleInstanceLock()) {
   start().catch((error: unknown) => {
-    dialog.showErrorBox('Scopewise could not start', error instanceof Error ? error.message : String(error))
+    dialog.showErrorBox('PostCall could not start', error instanceof Error ? error.message : String(error))
     app.exit(1)
   })
 } else {

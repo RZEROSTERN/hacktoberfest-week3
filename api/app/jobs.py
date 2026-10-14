@@ -13,7 +13,7 @@ from app.storage import Storage
 from app.transcribe import Transcriber, TranscriptResult
 
 # Only ids and statuses are logged here, never file names, transcript text or notes.
-log = logging.getLogger("scopewise.jobs")
+log = logging.getLogger("postcall.jobs")
 
 
 class TranscriptionManager:

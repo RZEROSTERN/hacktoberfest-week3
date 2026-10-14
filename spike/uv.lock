@@ -647,7 +647,7 @@ wheels = [
 ]
 
 [[package]]
-name = "scopewise-spike"
+name = "postcall-spike"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

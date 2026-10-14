@@ -134,12 +134,12 @@ async function finish() {
       v-else-if="view === 'error' || view === 'engine'"
       role="alert"
     >
-      <h1>Scopewise can't start its AI engine</h1>
+      <h1>PostCall can't start its AI engine</h1>
       <p class="error">
         {{ loadError ?? status?.problem_message }}
       </p>
       <p class="muted">
-        Close and reopen Scopewise. If it keeps happening, restart your computer.
+        Close and reopen PostCall. If it keeps happening, restart your computer.
       </p>
       <button
         class="button"
@@ -150,9 +150,9 @@ async function finish() {
     </div>
 
     <div v-else-if="view === 'later'">
-      <h1>Scopewise needs its models</h1>
+      <h1>PostCall needs its models</h1>
       <p>
-        Nothing in Scopewise works until the AI models are on this computer. You will be asked again the next time you open it.
+        Nothing in PostCall works until the AI models are on this computer. You will be asked again the next time you open it.
       </p>
       <button
         class="button"

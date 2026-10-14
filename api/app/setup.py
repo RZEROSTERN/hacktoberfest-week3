@@ -28,7 +28,7 @@ from app.ollama import InstalledModel, ModelEngine, OllamaError
 from app.settings_store import LLM_MODEL, compat_key, delete_setting, get_setting, set_setting
 from app.system import free_disk_bytes
 
-log = logging.getLogger("scopewise.setup")
+log = logging.getLogger("postcall.setup")
 
 MARGIN_BYTES = 1 << 30  # working room kept free on top of the downloads
 ENGINE_WAIT_SECONDS = 30

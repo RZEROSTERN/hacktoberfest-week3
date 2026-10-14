@@ -186,6 +186,6 @@ profile's rates, and needed no repairs. The two Qwen and Mistral models were not
 cd spike
 export SPIKE_OUT=../.dev/out WHISPER_CLI=../.dev/whisper.cpp/build/bin/whisper-cli
 uv run python bench_whisper.py cpp <ggml-model.bin> <audio.wav> <label> 8 -mc 0
-SCOPEWISE_OLLAMA_URL=http://127.0.0.1:11434 \
+POSTCALL_OLLAMA_URL=http://127.0.0.1:11434 \
   uv run python bench_llm.py gemma4:e4b <transcript.json> <label> --no-quote
 ```

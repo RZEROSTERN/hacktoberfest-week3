@@ -5,13 +5,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """All configuration comes from SCOPEWISE_* environment variables.
+    """All configuration comes from POSTCALL_* environment variables.
 
     Nothing is defaulted except the loopback bind address: the desktop shell (or
     `make dev`) decides ports, directories and the Ollama URL.
     """
 
-    model_config = SettingsConfigDict(env_prefix="SCOPEWISE_")
+    model_config = SettingsConfigDict(env_prefix="POSTCALL_")
 
     host: str = "127.0.0.1"
     port: int = Field(ge=1, le=65535)

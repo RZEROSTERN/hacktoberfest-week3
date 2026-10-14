@@ -16,7 +16,7 @@ through `feature/*` PRs into `develop`.
 dependencies (Whisper engines, PyInstaller) are most likely to ship wheels for 3.12. Not yet
 verified for each one; revisit in the model spike.
 
-**API config: only `SCOPEWISE_*` environment variables, via pydantic-settings.** Port, data
+**API config: only `POSTCALL_*` environment variables, via pydantic-settings.** Port, data
 dir, models dir, Ollama URL and CORS origins have no defaults in code, so the app fails fast
 instead of silently assuming a port or the default Ollama URL (the packaged binary must not
 assume anything). The only default is the bind address, `127.0.0.1`. `make dev` supplies
@@ -26,7 +26,7 @@ dev values.
 and runs uvicorn on `settings.host:settings.port`, so PyInstaller can wrap the same module.
 
 **CORS is configurable, not open.** The Nuxt dev server (`localhost:3000`) calls the api on
-another port, so the allowed origins come from `SCOPEWISE_CORS_ORIGINS`. The desktop shell
+another port, so the allowed origins come from `POSTCALL_CORS_ORIGINS`. The desktop shell
 will set it for the packaged app.
 
 **API tooling: ruff (lint + format), mypy strict with the pydantic plugin, pytest.** Small
@@ -58,7 +58,7 @@ in development so it can use the Apple Silicon GPU; it is not run in Docker.
 
 **Dev api port is 8765, not 8000.** Docker Desktop listens on `*:8000` (IPv6) on the dev
 Mac, so `localhost:8000` could reach the wrong service. Everything uses `127.0.0.1`
-explicitly, and the port is only a dev default (`SCOPEWISE_PORT`); the packaged app picks a
+explicitly, and the port is only a dev default (`POSTCALL_PORT`); the packaged app picks a
 free port at runtime.
 
 **Ollama health check uses `GET /api/tags`.** It is documented in the official Ollama API
@@ -167,7 +167,7 @@ thing that works for one running job. Server-Sent Events stay reserved for model
 
 **One transcription at a time.** A single worker thread runs the queue. Whisper is heavy, a
 second parallel run would only slow both, and the owner asked to keep other jobs usable.
-whisper.cpp uses 4 threads by default (`SCOPEWISE_WHISPER_THREADS`).
+whisper.cpp uses 4 threads by default (`POSTCALL_WHISPER_THREADS`).
 
 **Uploads are streamed to disk and named by id.** Allowed extensions: mp3, m4a, wav, mp4. The
 file lands at `<data_dir>/audio/<id>/original.<ext>`; the user's file name is kept only as a
@@ -185,8 +185,8 @@ If the `-mc 0` re-run starts, the bar holds at its last value instead of restart
 two words or fewer is re-run once with `-mc 0`. Thresholds come from the spike: the broken run
 had 69% such segments, every healthy run 15% or less.
 
-**Whisper paths are plain optional env vars for now** (`SCOPEWISE_WHISPER_CLI`,
-`SCOPEWISE_WHISPER_MODEL`). The api starts without them and a job fails with "engine/model
+**Whisper paths are plain optional env vars for now** (`POSTCALL_WHISPER_CLI`,
+`POSTCALL_WHISPER_MODEL`). The api starts without them and a job fails with "engine/model
 missing". Step 8 replaces the model path with the model chosen in local settings.
 
 **Audio decoding verified for mp3, m4a, wav and audio-only mp4.** The integration test makes
@@ -254,7 +254,7 @@ for.
 **Profile and settings storage.** A single-row `profile` table (name, services, hourly rate,
 project rates, payment terms, preferred sections, tone), with `GET/PUT /profile`. The screen
 comes in the next step. A key/value `appsetting` table holds the language model in use
-(`llm_model`). `SCOPEWISE_LLM_MODEL` only seeds it when it is empty; the code reads the tag from
+(`llm_model`). `POSTCALL_LLM_MODEL` only seeds it when it is empty; the code reads the tag from
 the table on every request and contains no model tag. The Makefile seeds `gemma4:e4b` for
 development.
 
@@ -269,7 +269,7 @@ reject it), temperature 0, `num_ctx` 8192, and `keep_alive` 1 minute so the mode
 memory soon after a draft.
 
 **Prompts** are `api/prompts/notes_v3.md` and `proposal_v1.md`, mention no model, and are found
-next to the `app` package (override: `SCOPEWISE_PROMPTS_DIR`), so the packaged binary must bundle
+next to the `app` package (override: `POSTCALL_PROMPTS_DIR`), so the packaged binary must bundle
 the folder beside `app`. Lessons from three revisions on the sample call: asking for
 self-contained third-person statements fixed a misread "out of scope" item, and writing the
 proposal items "in the proposal's voice" stopped them reading like quotes. An English example
@@ -459,7 +459,7 @@ does. The web app falls back to polling every 2 s if the stream cannot open.
 
 **Development goes through the same setup.** `make dev` no longer points the app at a hand-made
 Whisper file: the speech model is downloaded once by the wizard into `<models_dir>/whisper/`
-(`SCOPEWISE_WHISPER_MODEL` remains an override for tests). `SCOPEWISE_LLM_MODEL` still seeds the
+(`POSTCALL_WHISPER_MODEL` remains an override for tests). `POSTCALL_LLM_MODEL` still seeds the
 selected model but a model is only "ready" once it has passed the check.
 
 **What was and was not verified.** Unit tests use a fake engine, a local range-capable HTTP server
@@ -508,16 +508,16 @@ warm and 6.7 s cold on this Mac). Each child leads its own process group, so sto
 crashed service is restarted once; a second crash shows a dialog with a button to the logs. Three more
 guards: a pid file in the data folder lets the next start stop an Ollama left behind by a force quit
 (only when the pid still runs the same program, so a recycled pid is never touched); the api watches the
-app's pid (`SCOPEWISE_PARENT_PID`) and stops itself within two seconds when it is gone; a single-instance
+app's pid (`POSTCALL_PARENT_PID`) and stops itself within two seconds when it is gone; a single-instance
 lock avoids two apps fighting over one data folder. Closing the window quits the app: a transcription in
 progress is then marked "interrupted" by the api's own recovery, and its audio is kept.
 
 **PyInstaller `--onefile`.** The brief asks for a single executable. The cost is the unpack on every
 start; `--onedir` would start faster but ship as a folder. Kept onefile; the few seconds hide behind a
-"Starting Scopewise" page. electron-builder re-signs it ad hoc with everything else and it still runs
+"Starting PostCall" page. electron-builder re-signs it ad hoc with everything else and it still runs
 (checked on the installed copy, not only on the build output).
 
-**Serving the web app: `app://scopewise`, not `file://`.** The generated pages use absolute asset
+**Serving the web app: `app://postcall`, not `file://`.** The generated pages use absolute asset
 paths and the api needs an explicit CORS origin, which `file://` pages do not have. A privileged custom
 scheme gives a normal origin without opening a port. `nuxt generate` writes no file for routes like
 `/calls/<id>`, so a request without a file extension falls back to `200.html`; a missing asset stays a
@@ -535,7 +535,7 @@ blocked, navigation away from the app is blocked, and the only address opened in
 `--inspect`, plus `onlyLoadAppFromAsar`. Ollama is reachable only by the api: a test shows the page
 cannot call it.
 
-**"Not now".** In the packaged app it shows the page "Scopewise needs its models" with a Download button,
+**"Not now".** In the packaged app it shows the page "PostCall needs its models" with a Download button,
 as in development; the app does not quit. The request returns on the next launch.
 
 **Signing.** No Apple Developer ID, so the build is ad-hoc signed (`identity: "-"`,
@@ -569,10 +569,10 @@ and Electron's Save dialog for exports (the check saved downloads without it).
 a 9.6 GB download; the download path itself was exercised with the tiny model and the speech model.
 
 **App name and data folder (found while writing the README).** The first build had no `productName`, so
-Electron named the app `scopewise-desktop`: the menu said "Quit scopewise-desktop" and data would have gone
-to `~/Library/Application Support/scopewise-desktop`. `package.json` now sets `productName: "Scopewise"`, so
-an installed app keeps everything in `~/Library/Application Support/Scopewise` (data, models, logs). Running
-the shell from the repository uses `Scopewise (development)` instead, so a development shell never shares
+Electron named the app `postcall-desktop`: the menu said "Quit postcall-desktop" and data would have gone
+to `~/Library/Application Support/postcall-desktop`. `package.json` now sets `productName: "PostCall"`, so
+an installed app keeps everything in `~/Library/Application Support/PostCall` (data, models, logs). Running
+the shell from the repository uses `PostCall (development)` instead, so a development shell never shares
 models, data or the single-instance lock with an installed copy. Checked on the rebuilt `.dmg`'s app (launched
 once, then the folder it created was removed again). Lesson: a test launch ignores a changed `HOME`, so
 tests must always pass `--user-data-dir`.
@@ -610,4 +610,31 @@ as a common workaround, not an Apple instruction. It has not been tried on a bro
 scope item is not an invention: the client asked for an automatic invoicing system (2:17) and the
 interviewer's recap says "un menú de facturación" (2:52), so the draft lists both. The README uses it as the
 example of why the source links and the editor exist.
+
+## 2026-10-13: The app is called PostCall, package id mx.dev1.postcall
+
+**Name.** The app was called "Scopewise" as a working title; it is now **PostCall**. It was renamed in one
+change, everywhere, so nothing is half-renamed: the visible text, `PostCall.app` and `PostCall-1.0.0-arm64.dmg`,
+the packages (`postcall-desktop`, `postcall-api`, `postcall-spike`), the packaged api program and its PyInstaller
+spec, the environment variable prefix (`SCOPEWISE_*` is now `POSTCALL_*`), the internal address
+(`app://postcall`), the api's title and log names, the SQLite file (`postcall.db`) and the data folder
+(`~/Library/Application Support/PostCall`). The older entries in this log were renamed too, so their text
+matches the code; the old name appears only in this paragraph.
+
+**Package id: `mx.dev1.postcall`.** This is the `appId` in `electron-builder.yml`, which becomes the macOS
+bundle identifier (`CFBundleIdentifier`). It is the reverse of the dev1.mx domain. Treat it as permanent:
+changing it later makes macOS see a different app (separate permissions and data), and a Mac App Store
+record is tied to its bundle id for good.
+
+**What was not migrated, on purpose.** Nothing was ever released or installed under the old name (no
+installed copy, no data folder in the real Library), so there is no migration code. The only leftover is an
+empty development database, `.dev/data/scopewise.db`. Anyone with a `.env` that uses `SCOPEWISE_*` must
+rename the variables: the api no longer reads them, so it stops at start with a "port field required" error
+instead of silently using a wrong setting. `.env.example` has the new names.
+
+**Two follow-ups from the rename.** `make build-api` now clears `desktop/build/api` first, because
+electron-builder copies that whole folder and would otherwise have shipped the stale `scopewise-api`
+program next to the new one. The README screenshots still show the old name; they are retaken in the next
+change, together with the layout work, so they are taken once from the final screens. The GitHub repository
+is still called `hacktoberfest-week3` (renaming it is the owner's call; the README links use that name).
 

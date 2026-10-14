@@ -11,7 +11,7 @@ import app.models  # noqa: F401  (registers the tables on SQLModel.metadata)
 def make_engine(data_dir: Path) -> Engine:
     """SQLite file in the data directory; tables are created on first use."""
     engine = create_engine(
-        f"sqlite:///{data_dir / 'scopewise.db'}",
+        f"sqlite:///{data_dir / 'postcall.db'}",
         connect_args={"check_same_thread": False},  # the job worker has its own sessions
     )
 

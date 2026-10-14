@@ -34,7 +34,7 @@ describe('pid file', () => {
   it('never touches a pid that now belongs to another program', async () => {
     const file = path.join(tempDir(), 'services.json')
     const pid = leftover()
-    recordService(file, 'ollama', pid, '/Applications/Scopewise.app/ollama')
+    recordService(file, 'ollama', pid, '/Applications/PostCall.app/ollama')
     expect(await reapOrphans(file, commandOf, 200)).toEqual([])
     expect(alive(pid)).toBe(true)
     process.kill(-pid, 'SIGKILL')

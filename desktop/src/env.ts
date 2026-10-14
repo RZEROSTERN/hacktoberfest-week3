@@ -1,6 +1,6 @@
 import type { DataDirs, Layout } from './layout'
 
-/** Only these variables are passed on, so a user's own OLLAMA_* or SCOPEWISE_* settings cannot leak in. */
+/** Only these variables are passed on, so a user's own OLLAMA_* or POSTCALL_* settings cannot leak in. */
 const PASS_THROUGH = ['PATH', 'TMPDIR', 'LANG', 'LC_ALL', 'USER', 'LOGNAME']
 
 function base(source: NodeJS.ProcessEnv): Record<string, string> {
@@ -18,7 +18,7 @@ export interface Ports {
 }
 
 export const APP_SCHEME = 'app'
-export const APP_HOST = 'scopewise'
+export const APP_HOST = 'postcall'
 export const APP_ORIGIN = `${APP_SCHEME}://${APP_HOST}`
 
 export function ollamaUrl(ports: Ports): string {
@@ -49,13 +49,13 @@ export function apiEnv(
 ): Record<string, string> {
   return {
     ...base(source),
-    SCOPEWISE_HOST: '127.0.0.1',
-    SCOPEWISE_PORT: String(ports.api),
-    SCOPEWISE_OLLAMA_URL: ollamaUrl(ports),
-    SCOPEWISE_DATA_DIR: dirs.data,
-    SCOPEWISE_MODELS_DIR: dirs.models,
-    SCOPEWISE_CORS_ORIGINS: JSON.stringify([APP_ORIGIN]),
-    SCOPEWISE_WHISPER_CLI: layout.whisperBinary,
-    SCOPEWISE_PARENT_PID: String(parentPid),
+    POSTCALL_HOST: '127.0.0.1',
+    POSTCALL_PORT: String(ports.api),
+    POSTCALL_OLLAMA_URL: ollamaUrl(ports),
+    POSTCALL_DATA_DIR: dirs.data,
+    POSTCALL_MODELS_DIR: dirs.models,
+    POSTCALL_CORS_ORIGINS: JSON.stringify([APP_ORIGIN]),
+    POSTCALL_WHISPER_CLI: layout.whisperBinary,
+    POSTCALL_PARENT_PID: String(parentPid),
   }
 }

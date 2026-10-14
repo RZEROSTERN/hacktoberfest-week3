@@ -5,7 +5,7 @@
         to="/"
         class="brand"
       >
-        Scopewise
+        PostCall
       </NuxtLink>
       <nav aria-label="Main">
         <NuxtLink to="/">

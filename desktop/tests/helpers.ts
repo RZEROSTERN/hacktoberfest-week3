@@ -7,7 +7,7 @@ import type { ServiceSpec } from '../src/supervisor'
 export const FIXTURE = path.join(__dirname, 'fixtures', 'service.mjs')
 
 export function tempDir(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'scopewise-desktop-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'postcall-desktop-'))
 }
 
 export function freePort(): Promise<number> {

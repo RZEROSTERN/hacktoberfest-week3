@@ -14,7 +14,7 @@ export function resolveLayout(opts: { packaged: boolean; resourcesPath: string; 
     const r = opts.resourcesPath
     return {
       ollamaBinary: path.join(r, 'ollama', 'ollama'),
-      apiBinary: path.join(r, 'api', 'scopewise-api'),
+      apiBinary: path.join(r, 'api', 'postcall-api'),
       whisperBinary: path.join(r, 'whisper', 'whisper-cli'),
       webRoot: path.join(r, 'web'),
       noticesFile: path.join(r, 'THIRD_PARTY_NOTICES.md'),
@@ -24,7 +24,7 @@ export function resolveLayout(opts: { packaged: boolean; resourcesPath: string; 
   const build = path.join(opts.appRoot, 'build')
   return {
     ollamaBinary: path.join(build, 'ollama', 'ollama'),
-    apiBinary: path.join(build, 'api', 'scopewise-api'),
+    apiBinary: path.join(build, 'api', 'postcall-api'),
     whisperBinary: path.join(build, 'whisper', 'whisper-cli'),
     webRoot: path.join(opts.appRoot, '..', 'web', '.output', 'public'),
     noticesFile: path.join(opts.appRoot, '..', 'THIRD_PARTY_NOTICES.md'),

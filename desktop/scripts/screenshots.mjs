@@ -1,6 +1,6 @@
 // Takes the README screenshots from the real packaged app, using a user-data folder that already went
 // through setup and holds a finished draft (the one left by scripts/full-flow.mjs).
-//   APP_BIN=/path/Scopewise.app/Contents/MacOS/Scopewise USER_DATA=/path/to/folder OUT=docs/screenshots \
+//   APP_BIN=/path/PostCall.app/Contents/MacOS/PostCall USER_DATA=/path/to/folder OUT=docs/screenshots \
 //     node scripts/screenshots.mjs
 // Optional: SUMMARY_TEXT puts that text back as the draft's summary first.
 import { spawn } from 'node:child_process'
@@ -31,7 +31,7 @@ try {
   const apiBase = JSON.parse(await page.eval('JSON.stringify(window.desktop)')).apiBase
   await page.resize(1000, 900)
   const shot = async (name) => { await sleep(500); await page.shot(path.join(OUT, `${name}.png`)); console.log('saved', name) }
-  const open = async (route, ready) => page.goto(`app://scopewise${route}`, `location.pathname === ${JSON.stringify(route.split('?')[0])} && (${ready})`)
+  const open = async (route, ready) => page.goto(`app://postcall${route}`, `location.pathname === ${JSON.stringify(route.split('?')[0])} && (${ready})`)
   const calls = await (await fetch(`${apiBase}/calls`)).json()
   const callId = calls[0].id
   if (process.env.SUMMARY_TEXT) { // put back the model's own summary after a test edit

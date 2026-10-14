@@ -24,7 +24,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name="scopewise-api",
+    name="postcall-api",
     console=True,
     upx=False,
 )

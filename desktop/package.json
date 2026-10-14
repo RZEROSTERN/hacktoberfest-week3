@@ -1,9 +1,9 @@
 {
-  "name": "scopewise-desktop",
-  "productName": "Scopewise",
+  "name": "postcall-desktop",
+  "productName": "PostCall",
   "version": "1.0.0",
   "private": true,
-  "description": "Scopewise: turns a recorded client call into a draft proposal, entirely on this computer.",
+  "description": "PostCall: turns a recorded client call into a draft proposal, entirely on this computer.",
   "author": "Marco Ramírez",
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/main.js",

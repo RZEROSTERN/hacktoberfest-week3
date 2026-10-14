@@ -9,7 +9,7 @@ const sections = parseNotices(raw)
   <section class="notices">
     <h1>Third-party notices</h1>
     <p class="muted">
-      Scopewise is made of open-source parts that run on your computer. Here is what is inside and under which license.
+      PostCall is made of open-source parts that run on your computer. Here is what is inside and under which license.
     </p>
     <section
       v-for="section in sections"

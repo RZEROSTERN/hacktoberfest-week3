@@ -33,7 +33,7 @@ ERROR_MESSAGES = {
     "invalid_model_name": "That is not a valid model name. Use name:tag, for example gemma4:e4b.",
     "cloud_model": (
         "Cloud models send your calls to a server. "
-        "Scopewise only uses models that run on this computer."
+        "PostCall only uses models that run on this computer."
     ),
     "network_error": (
         "The download stopped because the network connection was lost. "

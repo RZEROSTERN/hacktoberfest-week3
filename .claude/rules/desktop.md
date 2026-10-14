@@ -7,7 +7,7 @@ paths:
 
 - Security stays as is: `contextIsolation` on, `nodeIntegration` off, `sandbox` on, devTools only when
   unpackaged, one preload value (`apiBase`) through `contextBridge`. Never load remote content: pages come
-  from `app://scopewise`, requests are limited to it and the local api, the CSP allows inline scripts only by
+  from `app://postcall`, requests are limited to it and the local api, the CSP allows inline scripts only by
   hash, and only `https://ollama.com` may be opened in the user's browser.
 - Always the bundled Ollama, started with a whitelisted environment (`env.ts`), `OLLAMA_HOST` on 127.0.0.1,
   its own `HOME` and models folder, `OLLAMA_NO_CLOUD=1`. Never read or start a system-wide one.
@@ -34,4 +34,4 @@ paths:
 - To signal the app, kill the real Electron binary, not `node_modules/.bin/electron` (a Node wrapper).
 - The build is ad-hoc signed (`identity: "-"`, no hardened runtime): Apple Silicon refuses unsigned code.
 - Always start the app with `--user-data-dir=<scratch folder>` when testing: it ignores a changed `HOME` and
-  otherwise writes into `~/Library/Application Support/Scopewise`, the real data folder of an installed app.
+  otherwise writes into `~/Library/Application Support/PostCall`, the real data folder of an installed app.

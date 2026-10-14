@@ -1,7 +1,7 @@
 // Starts the desktop shell for real (bundled Ollama + packaged api + generated web app) in a throwaway
 // user-data folder and checks it from the outside over the DevTools protocol and with ps/lsof.
 //   node scripts/shell-check.mjs                       the shell from this repository (npm run build first)
-//   APP_BIN=/path/Scopewise.app/Contents/MacOS/Scopewise node scripts/shell-check.mjs   the packaged app
+//   APP_BIN=/path/PostCall.app/Contents/MacOS/PostCall node scripts/shell-check.mjs   the packaged app
 // Needs: `make desktop-resources` (or the individual build scripts) and `npm run build` in desktop/.
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs'
@@ -14,7 +14,7 @@ const here = path.dirname(fileURLToPath(import.meta.url))
 const desktop = path.resolve(here, '..')
 const out = process.env.UI_OUT ?? path.join(desktop, '..', '.dev', 'shell-check')
 mkdirSync(out, { recursive: true })
-const userData = mkdtempSync(path.join(process.env.SCRATCH ?? tmpdir(), 'scopewise-shell-'))
+const userData = mkdtempSync(path.join(process.env.SCRATCH ?? tmpdir(), 'postcall-shell-'))
 const CDP_PORT = 9340
 const appBin = process.env.APP_BIN
 const sleep = ms => new Promise(r => setTimeout(r, ms))
@@ -83,9 +83,9 @@ try {
   await sleep(500)
 
   // 2. Both services run, loopback only, started in order (Ollama is the older process).
-  const kids = tree(shell.pid).filter(p => /\/ollama serve|ollama\/ollama|scopewise-api|llama-server/.test(p.command))
+  const kids = tree(shell.pid).filter(p => /\/ollama serve|ollama\/ollama|postcall-api|llama-server/.test(p.command))
   const ollama = kids.find(p => /ollama\/ollama serve|ollama serve/.test(p.command))
-  const api = kids.find(p => p.command.includes('scopewise-api'))
+  const api = kids.find(p => p.command.includes('postcall-api'))
   check('the bundled Ollama and the packaged api are both running', !!ollama && !!api, kids.map(k => path.basename(k.command.split(' ')[0])).join(', '))
   const opened = listenPorts(tree(shell.pid).map(p => p.pid)).filter(l => l.port !== CDP_PORT)
   check('every port the app opens is loopback-only', opened.length >= 2 && opened.every(l => l.address === '127.0.0.1'), opened.map(l => `${l.address}:${l.port}`).join(' '))
@@ -117,11 +117,11 @@ try {
   await page.shot(path.join(out, 'shell-setup.png'))
 
   // 5. Third-party notices.
-  await page.goto('app://scopewise/notices', "location.pathname === '/notices' && document.querySelector('main h1')")
+  await page.goto('app://postcall/notices', "location.pathname === '/notices' && document.querySelector('main h1')")
   const notices = await page.text()
   check('the notices screen lists the engines and their licenses', ['Ollama', 'whisper.cpp', 'Gemma 4', 'Apache License 2.0', 'Electron'].every(w => notices.includes(w)))
   await page.shot(path.join(out, 'shell-notices.png'))
-  await page.goto('app://scopewise/calls/does-not-exist', "location.pathname.startsWith('/calls') || location.pathname === '/setup'")
+  await page.goto('app://postcall/calls/does-not-exist', "location.pathname.startsWith('/calls') || location.pathname === '/setup'")
   check('a deep link that is not a pre-rendered page still loads the app', (await page.text()).length > 0)
 
   // 6. A crashed service is restarted once and the page keeps working.
@@ -129,7 +129,7 @@ try {
   process.kill(apiPid, 'SIGKILL')
   await sleep(500)
   await page.waitFor(`fetch(${JSON.stringify(apiBase + '/health')}).then(r => r.ok, () => false)`, 60000, 'the api to come back')
-  const newApi = tree(shell.pid).find(p => p.command.includes('scopewise-api') && p.pid !== apiPid)
+  const newApi = tree(shell.pid).find(p => p.command.includes('postcall-api') && p.pid !== apiPid)
   check('a crashed api is restarted on the same address', !!newApi && !alive(apiPid), `old ${apiPid}, new ${newApi?.pid}`)
 
   // 7. Quitting stops everything.
@@ -145,9 +145,9 @@ try {
   shell = startShell()
   page = await connect()
   await page.waitFor("location.protocol === 'app:' && document.querySelector('main h1')", 120000, 'the app to load again')
-  const group = tree(shell.pid).filter(p => /ollama serve|ollama\/ollama|scopewise-api/.test(p.command))
+  const group = tree(shell.pid).filter(p => /ollama serve|ollama\/ollama|postcall-api/.test(p.command))
   const oldOllama = group.find(p => /ollama/.test(p.command) && !p.command.includes('api'))
-  const oldApi = group.find(p => p.command.includes('scopewise-api'))
+  const oldApi = group.find(p => p.command.includes('postcall-api'))
   shell.kill('SIGKILL')
   const apiGone = await (async () => { for (let i = 0; i < 40; i++) { if (!alive(oldApi.pid)) return true; await sleep(250) } return false })()
   check('after a force quit the api stops by itself within seconds', apiGone, `api pid ${oldApi.pid}`)

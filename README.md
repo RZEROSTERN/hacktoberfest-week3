@@ -1,8 +1,8 @@
-# Scopewise
+# PostCall
 
 **Turn a recorded client discovery call into a draft proposal in minutes. On your own Mac, with open-source AI, without sending the call to anyone's server.**
 
-Scopewise (working title) is a macOS app for freelancers and small agencies. You upload the recording of a call, and it transcribes it, pulls out what the client actually said, and drafts a proposal from those notes and your own rates. Everything runs on your computer: the speech model, the language model and the data. After a one-time model download it works fully offline.
+PostCall is a macOS app for freelancers and small agencies. You upload the recording of a call, and it transcribes it, pulls out what the client actually said, and drafts a proposal from those notes and your own rates. Everything runs on your computer: the speech model, the language model and the data. After a one-time model download it works fully offline.
 
 Built for the DEV Open-Source AI Challenge, Week 2: "Side Hustle". Source code: MIT with a Beerware thank-you (see [License](#license)).
 
@@ -46,15 +46,15 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 
 **Requirements:** a Mac with Apple Silicon (M1 or newer) and macOS 14 or later. Intel Macs are not supported.
 
-1. Download `Scopewise-1.0.0-arm64.dmg` (306 MB) from the [Releases page](https://github.com/RZEROSTERN/hacktoberfest-week3/releases).
-2. Open it and drag **Scopewise** into **Applications**.
+1. Download `PostCall-1.0.0-arm64.dmg` (306 MB) from the [Releases page](https://github.com/RZEROSTERN/hacktoberfest-week3/releases).
+2. Open it and drag **PostCall** into **Applications**.
 3. **Open the app for the first time.** The app is not signed with an Apple Developer certificate (that costs money and this is a free project), so macOS blocks it the first time. Following [Apple's own instructions](https://support.apple.com/en-us/102445):
-   1. Try to open Scopewise, so macOS shows its warning, then close the warning.
+   1. Try to open PostCall, so macOS shows its warning, then close the warning.
    2. Open **System Settings → Privacy & Security** and scroll down.
-   3. Click **Open Anyway** next to the message about Scopewise, and confirm.
-   4. The warning appears once more; click **Open**. Scopewise opens normally from then on.
+   3. Click **Open Anyway** next to the message about PostCall, and confirm.
+   4. The warning appears once more; click **Open**. PostCall opens normally from then on.
 
-   If you prefer the Terminal, `xattr -dr com.apple.quarantine /Applications/Scopewise.app` removes the "downloaded from the internet" flag so the warning never appears. This is a widely used workaround, not part of Apple's instructions.
+   If you prefer the Terminal, `xattr -dr com.apple.quarantine /Applications/PostCall.app` removes the "downloaded from the internet" flag so the warning never appears. This is a widely used workaround, not part of Apple's instructions.
 4. **First launch: the model download.** The request screen shows what will be downloaded:
 
    | | Size |
@@ -66,7 +66,7 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 
    Use Wi-Fi. The app then prepares its local AI engine, downloads both models, verifies them (the speech model against a fixed checksum), and runs a short built-in sample through the language model to confirm it can produce the structured notes the app needs. Downloads can be paused and resumed, survive closing the app, and offer a retry if the network drops. This is the only time the app uses the internet.
 
-Scopewise keeps its data, models and logs in `~/Library/Application Support/Scopewise`. To remove everything, delete the app and that folder (about 7.2 GB once the models are downloaded).
+PostCall keeps its data, models and logs in `~/Library/Application Support/PostCall`. To remove everything, delete the app and that folder (about 7.2 GB once the models are downloaded).
 
 ## Choosing and switching models
 
@@ -120,9 +120,9 @@ Transcription: whisper.cpp with `large-v3-turbo` (q5_0, MIT) beat faster-whisper
 
 ```mermaid
 flowchart LR
-  subgraph app["Scopewise.app (Electron)"]
+  subgraph app["PostCall.app (Electron)"]
     shell["Main process<br/>starts, watches and stops the services"]
-    window["Window<br/>Nuxt app served from app://scopewise"]
+    window["Window<br/>Nuxt app served from app://postcall"]
   end
   shell -->|"starts first"| ollama["Bundled Ollama<br/>127.0.0.1, own port"]
   shell -->|"starts second"| api["API (FastAPI, one PyInstaller program)<br/>127.0.0.1, own port"]
@@ -135,7 +135,7 @@ flowchart LR
 
 | Part | What it is |
 | --- | --- |
-| `api/` | FastAPI (Python 3.12, uv, SQLModel/SQLite). Transcription and drafting run as background jobs with progress. Prompts live in versioned files in `api/prompts/`. Every model output is validated with Pydantic, retried once, then reported as a clear error. Configured only through `SCOPEWISE_*` environment variables. |
+| `api/` | FastAPI (Python 3.12, uv, SQLModel/SQLite). Transcription and drafting run as background jobs with progress. Prompts live in versioned files in `api/prompts/`. Every model output is validated with Pydantic, retried once, then reported as a clear error. Configured only through `POSTCALL_*` environment variables. |
 | `web/` | Nuxt 4 in SPA mode (TypeScript strict), generated as static files. Composables call the API; components only present. |
 | `desktop/` | Electron shell (TypeScript). Picks two free loopback ports, starts the bundled Ollama and then the API, waits for both health checks, serves the web app from its own `app://` address with a strict content security policy, restarts a crashed service once, and stops everything on quit. Sandboxed window, one value exposed to the page. |
 | `samples/` | Role-played, consented sample calls and their expected key facts. |
@@ -195,7 +195,7 @@ hotfix/<name> (from master) --PR--> master, then merged back into develop
 
 ## Third-party licenses
 
-Scopewise is made of open-source parts: Ollama (MIT) with llama.cpp and MLX (MIT), whisper.cpp (MIT), the Whisper model (MIT), the Gemma 4 language model (Apache 2.0) and the other models we tested (Apache 2.0), Electron and Chromium, Python and its libraries, and Nuxt and Vue (MIT). The full list, with versions and where each license text ships in the app, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The same text is inside the app, under **Third-party notices** at the bottom of every screen.
+PostCall is made of open-source parts: Ollama (MIT) with llama.cpp and MLX (MIT), whisper.cpp (MIT), the Whisper model (MIT), the Gemma 4 language model (Apache 2.0) and the other models we tested (Apache 2.0), Electron and Chromium, Python and its libraries, and Nuxt and Vue (MIT). The full list, with versions and where each license text ships in the app, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The same text is inside the app, under **Third-party notices** at the bottom of every screen.
 
 ## Pricing idea
 
@@ -219,4 +219,4 @@ A **one-time license, no subscription.** Most AI products charge monthly because
 
 ## License
 
-MIT, plus a Beerware thank-you: if we meet some day and you think this is worth it, you can buy me a beer. See [LICENSE](LICENSE). The models and engines Scopewise uses keep their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT, plus a Beerware thank-you: if we meet some day and you think this is worth it, you can buy me a beer. See [LICENSE](LICENSE). The models and engines PostCall uses keep their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

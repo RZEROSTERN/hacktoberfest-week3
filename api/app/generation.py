@@ -25,7 +25,7 @@ from app.models import ACTIVE_DRAFT_STATUSES, Draft, DraftStatus, Profile, Segme
 from app.notes import Line, Notes, Problem
 
 # Only ids, statuses and counts are logged, never transcript, notes or proposal content.
-log = logging.getLogger("scopewise.generation")
+log = logging.getLogger("postcall.generation")
 
 NOTES_PROMPT = "notes_v3.md"
 PROPOSAL_PROMPT = "proposal_v1.md"

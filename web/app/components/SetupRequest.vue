@@ -20,9 +20,9 @@ const chosen = computed(() => effectiveModel(selection.value))
 
 <template>
   <section>
-    <h1>Welcome to Scopewise</h1>
+    <h1>Welcome to PostCall</h1>
     <p>
-      Scopewise works fully offline and keeps your client calls private. For that, the AI models it needs
+      PostCall works fully offline and keeps your client calls private. For that, the AI models it needs
       are downloaded once to this computer. After this, nothing about your calls ever leaves it.
     </p>
 

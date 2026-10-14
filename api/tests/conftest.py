@@ -15,7 +15,7 @@ from tests.helpers import add_done_call, app_of
 def isolated_environment(monkeypatch: pytest.MonkeyPatch) -> None:
     """`make` exports development values (model seed, engine paths). Tests must not inherit them:
     each test gives its `Settings` exactly what it needs (opt-in tests read theirs at import)."""
-    for name in [n for n in os.environ if n.startswith("SCOPEWISE_")]:
+    for name in [n for n in os.environ if n.startswith("POSTCALL_")]:
         monkeypatch.delenv(name)
 
 

@@ -22,9 +22,9 @@ from app.config import Settings
 from app.main import create_app
 from tests.fakes import FakeDecoder, FakeTranscriber, wait_until
 
-OLLAMA = os.environ.get("SCOPEWISE_OLLAMA_URL", "")
-TINY = os.environ.get("SCOPEWISE_SETUP_TEST_MODEL", "smollm2:135m")
-GOOD = os.environ.get("SCOPEWISE_LLM_MODEL", "")
+OLLAMA = os.environ.get("POSTCALL_OLLAMA_URL", "")
+TINY = os.environ.get("POSTCALL_SETUP_TEST_MODEL", "smollm2:135m")
+GOOD = os.environ.get("POSTCALL_LLM_MODEL", "")
 
 
 def ollama_up() -> bool:
@@ -37,8 +37,8 @@ def ollama_up() -> bool:
 pytestmark = [
     pytest.mark.integration,
     pytest.mark.skipif(
-        os.environ.get("SCOPEWISE_RUN_SETUP_TESTS") != "1" or not OLLAMA or not ollama_up(),
-        reason="opt-in: needs SCOPEWISE_RUN_SETUP_TESTS=1 and a running Ollama (make test-setup)",
+        os.environ.get("POSTCALL_RUN_SETUP_TESTS") != "1" or not OLLAMA or not ollama_up(),
+        reason="opt-in: needs POSTCALL_RUN_SETUP_TESTS=1 and a running Ollama (make test-setup)",
     ),
 ]
 
@@ -189,7 +189,7 @@ def test_a_model_too_small_for_the_task_fails_the_real_compatibility_check(tmp_p
 
 
 @pytest.mark.skipif(
-    not GOOD, reason="needs SCOPEWISE_LLM_MODEL (the recommended model, already installed)"
+    not GOOD, reason="needs POSTCALL_LLM_MODEL (the recommended model, already installed)"
 )
 def test_the_recommended_model_passes_the_real_compatibility_check(tmp_path: Path) -> None:
     if not installed(GOOD):
