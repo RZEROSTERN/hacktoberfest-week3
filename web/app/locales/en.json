@@ -302,7 +302,7 @@
   "apiErrors": {
     "engine_missing": "The transcription engine is not available.",
     "model_missing": "The speech model has not been downloaded yet.",
-    "decoder_missing": "The macOS audio converter is missing, so audio files cannot be read.",
+    "decoder_missing": "The audio converter is missing, so audio files cannot be read.",
     "decode_failed": "The audio file could not be read. Try exporting it again as mp3, m4a or wav.",
     "transcribe_failed": "Something went wrong while transcribing. You can try again.",
     "interrupted": "The app was closed while transcribing. You can try again.",

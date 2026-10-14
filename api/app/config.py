@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     ollama_url: str
     cors_origins: list[str] = []
 
+    # Audio converter. macOS uses its own `afconvert`; this is the FFmpeg program to use instead
+    # (the desktop app sets it on Linux, where it ships with the app). Unset: `afconvert` on macOS,
+    # else `ffmpeg` from the PATH.
+    ffmpeg: Path | None = None
+
     # Transcription engine. Both are optional so the api still starts before the models are
     # downloaded; a transcription then fails with a clear "engine/model missing" error.
     whisper_cli: Path | None = None

@@ -302,7 +302,7 @@
   "apiErrors": {
     "engine_missing": "Die Transkriptions-Engine ist nicht verfügbar.",
     "model_missing": "Das Spracherkennungsmodell wurde noch nicht heruntergeladen.",
-    "decoder_missing": "Der Audiokonverter von macOS fehlt, daher können Audiodateien nicht gelesen werden.",
+    "decoder_missing": "Der Audiokonverter fehlt, daher können Audiodateien nicht gelesen werden.",
     "decode_failed": "Die Audiodatei konnte nicht gelesen werden. Exportieren Sie sie erneut als mp3, m4a oder wav.",
     "transcribe_failed": "Bei der Transkription ist etwas schiefgelaufen. Sie können es erneut versuchen.",
     "interrupted": "Die App wurde während der Transkription geschlossen. Sie können es erneut versuchen.",
