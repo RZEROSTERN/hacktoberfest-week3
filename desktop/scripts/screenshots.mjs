@@ -15,7 +15,7 @@ mkdirSync(OUT, { recursive: true })
 const CDP_PORT = 9343
 // VS Code-based terminals set ELECTRON_RUN_AS_NODE, which would make Electron behave as plain Node.
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => key !== 'ELECTRON_RUN_AS_NODE'))
-const app = spawn(APP_BIN, [`--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${USER_DATA}`], { stdio: 'ignore', env })
+const app = spawn(APP_BIN, [`--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${USER_DATA}`, '--lang=en-US'], { stdio: 'ignore', env })
 let page = null
 
 try {
