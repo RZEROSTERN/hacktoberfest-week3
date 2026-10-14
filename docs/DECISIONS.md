@@ -812,3 +812,36 @@ freelancer using it (planned for the day after the release); native-speaker revi
 render). Update `full-flow.mjs`: it looked for curly quote characters in the source quote's text, but the quote is now
 drawn with `<q>` so the marks are CSS, not text. Decide what to do about the unexplained edit-step failure above.
 
+
+## 2026-10-14: The audio converter is no longer macOS-only (first step towards Linux packages)
+
+Until now the only way to turn an mp3, m4a, wav or mp4 into the 16 kHz mono WAV that whisper.cpp reads was macOS's
+`afconvert`. A Linux package needs something that runs there, and the decoder is the one place the api still assumed
+macOS.
+
+**FFmpeg, run as a separate program.** `FfmpegDecoder` runs `ffmpeg -nostdin -hide_banner -loglevel error -y -i SRC
+-map 0:a:0 -ac 1 -ar 16000 -c:a pcm_s16le -f wav DEST`. `-nostdin` keeps it from waiting for a key inside a background
+job, and `-map 0:a:0` takes the first audio stream, so the video track of an mp4 is ignored and a file with no audio
+fails instead of producing silence. A file FFmpeg rejects becomes `decode_failed`; a missing program becomes
+`decoder_missing`, the same two codes `afconvert` already used, so the web app needs no new message.
+
+**Why a separate program and not a Python library.** PyAV would have kept everything in one process, but its wheels
+bundle FFmpeg built with libx264 and libx265, which are GPL: shipping them inside a package would change the licence of
+what we distribute. A separate FFmpeg binary, built by us with only the LGPL parts we need (decoders for mp3, aac and
+PCM; the mp3, mov and wav demuxers; the wav muxer), keeps PostCall's MIT terms and keeps the source offer simple. That
+build comes with the Linux packaging step; this step only teaches the api to use whatever FFmpeg it is pointed at.
+
+**Which decoder is used.** `default_decoder(ffmpeg)`: an explicit `POSTCALL_FFMPEG` path always wins (the Linux desktop
+app sets it to the FFmpeg it ships); otherwise macOS keeps `afconvert` (nothing changes for the macOS app, which has no
+FFmpeg), and anything else, or a Mac where `afconvert` is somehow missing, looks for `ffmpeg` on the PATH.
+
+**The message** for `decoder_missing` said "The macOS audio converter is missing". It now says "The audio converter is
+missing" in all eleven languages, since it can be either program.
+
+**Tests.** The command each decoder builds and the two failure mappings are tested with `subprocess.run` replaced (no
+program needed), and so is the choice of decoder. Three-second clips of the sample call (mp3, m4a, mp4, wav at 8 kHz
+stereo, to force the downmix and resample) in `api/tests/data/` run through the real program wherever it exists:
+`afconvert` here, FFmpeg in a Debian container (FFmpeg 7.1.5 from apt: it checks our command line, not the LGPL build,
+which is tested with the packages). All four formats come out as 16 kHz mono 16-bit WAV of the right length, and a file
+that is not audio is refused. Not covered: an mp4 that really has a video track (no way to make one without FFmpeg on
+this Mac).

@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.audio import AfconvertDecoder, Decoder
+from app.audio import Decoder, default_decoder
 from app.catalog import Catalog, load_catalog
 from app.compat import CompatChecker, OllamaCompatChecker
 from app.config import Settings
@@ -60,7 +60,7 @@ def create_app(
             (lambda: override) if override else (lambda: whisper.path),
             settings.whisper_threads,
         ),
-        decoder or AfconvertDecoder(),
+        decoder or default_decoder(settings.ffmpeg),
         executor,
     )
     manager.recover()
