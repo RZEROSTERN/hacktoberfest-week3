@@ -53,6 +53,7 @@ notes and drafts the proposal, everything runs on the user's machine.
 - Docker holds port 8000 on the dev Mac: the api uses `127.0.0.1:8765`. Nuxt dev listens on
   `localhost:3000` (IPv6 only). The static build needs an SPA fallback to `200.html` on deep links.
 - `nuxt prepare` must have run before eslint works (`npm install` does it via postinstall).
+- UI text lives in `web/app/locales/*.json` (11 languages, `en.json` is the source); no raw text in templates (a test enforces it). API refusals carry a `code`.
 - Prompt examples must not be in a specific language: an English one made Spanish calls come back in English.
 - Hard-killing the api leaves `whisper-cli` running: stop the process tree.
 - PDF export uses ReportLab's built-in font: Western European text only (others are refused, use Markdown).

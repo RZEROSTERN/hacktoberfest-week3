@@ -45,7 +45,7 @@ The Python runtime is under the PSF License. The libraries inside it:
 
 ## Interface: Nuxt and Vue (MIT)
 
-The screens are built with Nuxt, Vue and Vue Router, all licensed under the MIT License. https://nuxt.com
+The screens are built with Nuxt, Vue, Vue Router and Vue I18n (which translates them), all licensed under the MIT License. https://nuxt.com
 
 ## Provided by your Mac
 

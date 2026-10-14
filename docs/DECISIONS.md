@@ -268,7 +268,7 @@ minutes). Settings: JSON schema as `format`, `think: false` (retried without it 
 reject it), temperature 0, `num_ctx` 8192, and `keep_alive` 1 minute so the model frees its
 memory soon after a draft.
 
-**Prompts** are `api/prompts/notes_v3.md` and `proposal_v1.md`, mention no model, and are found
+**Prompts** are `api/prompts/notes_v3.md` and `proposal_v2.md`, mention no model, and are found
 next to the `app` package (override: `POSTCALL_PROMPTS_DIR`), so the packaged binary must bundle
 the folder beside `app`. Lessons from three revisions on the sample call: asking for
 self-contained third-person statements fixed a misread "out of scope" item, and writing the
@@ -699,4 +699,81 @@ code against the documentation found problems worth knowing before any port star
 
 The effort figures in the guide's summary are my estimates, labelled as such, and the open decisions (platforms and
 order, certificates, GPU libraries, a store edition with bundled models, updates) are listed for the owner.
+
+## 2026-10-13: Eleven languages for the interface and for proposals
+
+**Scope.** English, Spanish, French, Portuguese, Japanese, German, Russian, Italian, Hindi, Chinese
+(Simplified) and Arabic, for three things that are separate: the interface, the proposal's language, and the few
+strings the desktop shell shows before the interface loads.
+
+**Library and shape.** Plain `vue-i18n` 11 through one Nuxt plugin, not the `@nuxtjs/i18n` module: the app is a
+single-page app loaded from `app://`, so there is no URL per language to route, prerender or translate. English is
+always loaded (it is the fallback), the other ten load when chosen. The language is the system's on first launch
+(`navigator.languages`, matched by main part: `pt-BR` is Portuguese, `zh-TW` is the one Chinese we have, anything
+else English), changed with a list in the header and remembered in `localStorage`, which survives restarts in the
+packaged app. Verified in the real app under seven system languages, and a picked language wins over the system's
+after a restart.
+
+**No plural forms, on purpose.** Russian has three plural forms and Arabic six; instead of writing rules for them,
+no message depends on a count. Sizes, speeds, durations and times are produced by `Intl` (a "gigabyte" unit, a
+"minute" unit), which also writes them the way each language does. Messages around them take the finished text as a
+value, and the translators were told to keep the grammar correct whatever it holds.
+
+**Right to left.** Arabic sets `<html dir="rtl">`; the CSS uses logical properties (`margin-inline-start`...),
+the play marker flips, and every piece of text that comes from a call or a proposal has `dir="auto"`, so a Spanish
+proposal reads left to right inside an Arabic window. Found by running it: the header (brand, three pages, language
+list) was wider than a phone-width window and, in right-to-left, overflowed off the left edge where nothing can
+scroll to it, which my sideways-scroll check could not see. The header now wraps, and the check looks for content
+past either edge.
+
+**API errors by code.** Every refusal is now `ApiError(status, code, **values)`, answered as `{detail, code,
+params}`; `detail` stays the English text, so nothing that read it breaks. The web app translates by `code`
+(`apiErrors.<code>`) with the values filled in, shows the API's English text for a code it does not know, and the
+same rule covers failed jobs (`error_code`). A test scans the source for every code raised and requires its English
+message, and another requires the web app to have a message for each. Model descriptions are translated by model
+name, and a test requires the English file to equal the API catalogue's text, so the two cannot drift.
+
+**The translations.** Written by ten parallel AI translators from the English file, with these rules: keep
+placeholders and product names, no `|` or `@` (vue-i18n syntax), and use exactly the section names the API already
+uses in proposals for that language, so the interface and a generated proposal call things the same. Tests require
+every language to have every key with the same values to fill in. **No native speaker has reviewed them**; the
+README says so and tells people how to correct a file. The translators' own doubts (for example whether to call an
+assumption "Hypothèse" or "Suposición", or "Spracherkennungsmodell" against "Sprachmodell", which already means the
+language model) were read and left as written.
+
+**Proposal languages are now all eleven**, the fixed wording (titles, the price sentence, the budget and deadline
+questions) in `api/app/i18n.py` for the five new ones written by hand. The PDF export's built-in font draws Western
+European text only, so for Japanese, Chinese, Russian, Hindi and Arabic proposals the PDF button is switched off with
+a note and Markdown is the way out. Embedding fonts (and, for Arabic, text shaping) is left out on purpose.
+
+**A real defect, found by trying the real model.** `gemma4:e4b` on the sample call, once per new language: Japanese,
+Chinese, Russian and Hindi came out in their language (86 to 97% of the letters in the right script, every item
+sourced or flagged). **Arabic did not: the section titles were Arabic but the whole body was Spanish** (0% Arabic
+script): the model copied the notes' language. The prompt asked for the language once, at the top. `proposal_v2.md`
+says it again at the end, says the notes may be in another language, and the API passes the language's own name too
+("Arabic (العربية)"). Rerun: Arabic 100%, Japanese 90%, Spanish unchanged. The opt-in `make test-llm` now has a
+test per script (Arabic, Japanese, Russian) so a later prompt edit cannot bring it back; it took two attempts
+because my first Japanese check counted only ideographs and ignored hiragana and katakana.
+
+**The check that did not check.** The first version of the leftover-English detector in `layout-check.mjs` reported
+"all pass" and could not fail: its regular expressions sat inside a JavaScript template literal, where `\b` becomes
+a backspace and `\s` becomes the letter `s`. Pointing it at English pages (where it must find plenty) exposed it;
+the matching moved out into Node. Lesson in the desktop rules.
+
+**What was checked, and how.** 95 web tests (every language has every message, no template contains raw text, every
+key the code uses exists, every API error code and model note is covered), 49 desktop tests, API tests for the codes
+and the wording. In the packaged app: 222 page and window combinations across all eleven languages (page language and
+direction, layout, no content off either edge, no leftover English on the non-Latin languages), the first-launch
+screen in all eleven on a fresh install, the language list used for real, and the system-language defaults. I looked
+at the Arabic, Japanese and German screens.
+
+**What was not.** The full upload-to-export flow was not repeated in each language (the code path is the same; only
+the words differ). No native-speaker review. Chinese is Simplified only, so a Traditional-Chinese reader gets
+Simplified. License texts, model and engine names, and API messages for a code the app has no translation for stay
+in English. Third-party licenses are legal text: the page says in each language that they are in English.
+
+**Timing, an environment note.** During this work the real-model tests ran on a Mac with a load average of 20 to
+29: three Vitest workers from an unrelated project at about 70% CPU each for hours, and a busy Docker VM. The
+Spanish test's 180 s timing assertion passed warm (104 s), and failed once at 207 s with every accuracy assertion
+before it passing. It was left as it is, not loosened.
 
