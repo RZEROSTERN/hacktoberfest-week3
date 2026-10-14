@@ -104,7 +104,7 @@ function lockDownSession(apiOrigin: string): void {
 
 function buildMenu(): void {
   const template: Electron.MenuItemConstructorOptions[] = [
-    { role: 'appMenu' },
+    process.platform === 'darwin' ? { role: 'appMenu' } : { role: 'fileMenu' },
     { role: 'editMenu' }, // without it copy and paste do not work in text fields on macOS
     ...(app.isPackaged ? [] : [{ role: 'viewMenu' } as const]),
     { role: 'windowMenu' },
@@ -135,9 +135,13 @@ async function start(): Promise<void> {
   mainWindow = createWindow(apiUrl(ports))
   void mainWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(startPage(systemLocale()))}`)
 
-  const missing = [layout.ollamaBinary, layout.apiBinary, layout.whisperBinary, layout.webRoot].filter(
-    file => !fs.existsSync(file),
-  )
+  const missing = [
+    layout.ollamaBinary,
+    layout.apiBinary,
+    layout.whisperBinary,
+    layout.ffmpegBinary,
+    layout.webRoot,
+  ].filter((file): file is string => file !== null && !fs.existsSync(file))
   if (missing.length > 0) {
     showFatal(
       say(systemLocale(), 'dialog.incomplete'),

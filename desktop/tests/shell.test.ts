@@ -6,7 +6,12 @@ import { twoFreePorts } from '../src/ports'
 import { isAllowedExternal, isAllowedRequest, isAppUrl } from '../src/security'
 
 const dirs = dataDirs('/u/PostCall')
-const layout = resolveLayout({ packaged: true, resourcesPath: '/App/Contents/Resources', appRoot: '/ignored' })
+const layout = resolveLayout({
+  packaged: true,
+  resourcesPath: '/App/Contents/Resources',
+  appRoot: '/ignored',
+  platform: 'darwin',
+})
 const ports = { ollama: 41000, api: 41001 }
 
 describe('layout', () => {
@@ -17,8 +22,23 @@ describe('layout', () => {
     expect(layout.webRoot).toBe('/App/Contents/Resources/web')
   })
 
+  it('has no audio converter to start on macOS, which brings its own', () => {
+    expect(layout.ffmpegBinary).toBeNull()
+  })
+
+  it('finds the Linux layout: Ollama keeps its bin and lib folders, and FFmpeg is bundled', () => {
+    const linux = resolveLayout({ packaged: true, resourcesPath: '/opt/PostCall/resources', appRoot: '/ignored', platform: 'linux' })
+    expect(linux.ollamaBinary).toBe('/opt/PostCall/resources/ollama/bin/ollama')
+    expect(linux.ffmpegBinary).toBe('/opt/PostCall/resources/ffmpeg/ffmpeg')
+    expect(linux.apiBinary).toBe('/opt/PostCall/resources/api/postcall-api')
+    expect(linux.whisperBinary).toBe('/opt/PostCall/resources/whisper/whisper-cli')
+    const dev = resolveLayout({ packaged: false, resourcesPath: '/x', appRoot: '/repo/desktop', platform: 'linux' })
+    expect(dev.ollamaBinary).toBe('/repo/desktop/build/ollama/bin/ollama')
+    expect(dev.ffmpegBinary).toBe('/repo/desktop/build/ffmpeg/ffmpeg')
+  })
+
   it('uses the build folders when run from the repository', () => {
-    const dev = resolveLayout({ packaged: false, resourcesPath: '/x', appRoot: '/repo/desktop' })
+    const dev = resolveLayout({ packaged: false, resourcesPath: '/x', appRoot: '/repo/desktop', platform: 'darwin' })
     expect(dev.ollamaBinary).toBe('/repo/desktop/build/ollama/ollama')
     expect(dev.webRoot).toBe(path.join('/repo', 'web', '.output', 'public'))
   })
@@ -64,6 +84,12 @@ describe('service environments', () => {
     })
     expect(env).not.toHaveProperty('POSTCALL_LLM_MODEL') // the model always comes from the settings
     expect(env.HOME).toBeUndefined()
+  })
+
+  it('tells the api where the bundled FFmpeg is, only where there is one', () => {
+    expect(apiEnv(ports, dirs, layout, 777, {})).not.toHaveProperty('POSTCALL_FFMPEG')
+    const linux = resolveLayout({ packaged: true, resourcesPath: '/opt/PostCall/resources', appRoot: '/x', platform: 'linux' })
+    expect(apiEnv(ports, dirs, linux, 777, {}).POSTCALL_FFMPEG).toBe('/opt/PostCall/resources/ffmpeg/ffmpeg')
   })
 })
 

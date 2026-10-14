@@ -2,6 +2,7 @@
 // user-data folder and checks it from the outside over the DevTools protocol and with ps/lsof.
 //   node scripts/shell-check.mjs                       the shell from this repository (npm run build first)
 //   APP_BIN=/path/PostCall.app/Contents/MacOS/PostCall node scripts/shell-check.mjs   the packaged app
+//   APP_BIN=/opt/PostCall/postcall node scripts/shell-check.mjs                        the Linux package (needs ps and lsof)
 // Needs: `make desktop-resources` (or the individual build scripts) and `npm run build` in desktop/.
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs'
@@ -48,9 +49,11 @@ const alive = (pid) => { try { process.kill(pid, 0); return true } catch { retur
 
 // The real Electron binary, not node_modules/.bin/electron: that is a Node wrapper, and killing the
 // wrapper would not kill the app.
-const electronBinary = path.join(desktop, 'node_modules', 'electron', 'dist', readFileSync(path.join(desktop, 'node_modules', 'electron', 'path.txt'), 'utf8').trim())
+const electronBinary = appBin ? null : path.join(desktop, 'node_modules', 'electron', 'dist', readFileSync(path.join(desktop, 'node_modules', 'electron', 'path.txt'), 'utf8').trim())
 const command = appBin ?? electronBinary
-const args = [...(appBin ? [] : ['.']), `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${userData}`, '--lang=en-US']
+// APP_ARGS adds switches for the packaged app (a Linux container test may need `--no-sandbox`; say so when it does).
+const extraArgs = (process.env.APP_ARGS ?? '').split(' ').filter(Boolean)
+const args = [...(appBin ? [] : ['.']), `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${userData}`, '--lang=en-US', ...extraArgs]
 function startShell() {
   // VS Code-based terminals set ELECTRON_RUN_AS_NODE, which would make Electron behave as plain Node.
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => key !== 'ELECTRON_RUN_AS_NODE'))

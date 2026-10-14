@@ -56,6 +56,7 @@ export function apiEnv(
     POSTCALL_MODELS_DIR: dirs.models,
     POSTCALL_CORS_ORIGINS: JSON.stringify([APP_ORIGIN]),
     POSTCALL_WHISPER_CLI: layout.whisperBinary,
+    ...(layout.ffmpegBinary ? { POSTCALL_FFMPEG: layout.ffmpegBinary } : {}),
     POSTCALL_PARENT_PID: String(parentPid),
   }
 }
