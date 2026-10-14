@@ -98,7 +98,7 @@ try {
   check('the system Ollama is not running during this check', await fetch('http://127.0.0.1:11434/api/version', { signal: AbortSignal.timeout(1500) }).then(() => false, () => true))
   const downloads = path.join(out, 'downloads')
   await page.allowDownloads(downloads).catch(() => {})
-  await page.resize(1000, 900).catch(() => {})
+  await page.resize(1100, 720).catch(() => {})
   await sleep(500)
 
   // ---- 1. First launch: the request, with a real download of the speech model and a tiny language model
@@ -106,7 +106,7 @@ try {
   let t = await page.text()
   check('first launch asks to download the models before anything else', (await page.eval('location.pathname')) === '/setup' && /fully offline/.test(t) && /Download now/.test(t) && /Not now/.test(t))
   check('the recommended Gemma 4 model is preselected, with size and license', await page.eval(`document.querySelector('input[type=radio][value="${GOOD}"]').checked`) && /6\.6 GB download/.test(t) && /Apache 2\.0/.test(t))
-  await page.shot(path.join(out, '01-request.png'))
+  await page.viewportShot(path.join(out, '01-request.png'))
 
   await page.eval("document.querySelector('input[type=radio][value=__custom__]').click()")
   await page.fill('input[aria-label="Ollama model name and tag"]', TINY)
@@ -126,7 +126,7 @@ try {
       await sleep(1500)
       const text = await page.eval("document.querySelector('[data-step=whisper] .progress span')?.textContent ?? ''")
       check('a download shows percentage, size, speed and time left', /\d+%/.test(text) && /MB of 574 MB/.test(text) && /MB\/s/.test(text) && /left/.test(text), text)
-      await page.shot(path.join(out, '02-downloading.png'))
+      await page.viewportShot(path.join(out, '02-downloading.png'))
       shown = true
     }
     if (['done', 'compat_failed', 'failed'].includes(p.state)) break
@@ -135,7 +135,7 @@ try {
   }
   const afterTiny = await apiJson('/setup/progress')
   check('the tiny model is refused by the compatibility check, in plain language', afterTiny.state === 'compat_failed' && /too small|structured notes|writing tasks/.test(afterTiny.error_message ?? ''), afterTiny.error_message)
-  await page.shot(path.join(out, '03-compat-failed.png'))
+  await page.viewportShot(path.join(out, '03-compat-failed.png'))
   check('the app stays locked until a model passes', (await apiJson('/setup/status')).ready === false)
 
   // ---- 2. The recommended model: made available without the 9.6 GB download, then really checked
@@ -144,7 +144,7 @@ try {
   await page.waitFor("document.body.innerText.includes('Everything is ready')", 360000, 'the recommended model to pass its check')
   const ready = await apiJson('/setup/progress')
   check('Gemma 4 E4B passes the real compatibility check inside the app', ready.state === 'done' && (await apiJson('/setup/status')).ready === true)
-  await page.shot(path.join(out, '04-ready.png'))
+  await page.viewportShot(path.join(out, '04-ready.png'))
   await page.click('Start using PostCall', 'button')
   await page.waitFor("document.querySelector('main h1')?.textContent.includes('Your calls')", 10000, 'home')
 
@@ -176,7 +176,7 @@ try {
   const callId = await page.eval('location.pathname.split("/").pop()')
   await page.waitFor("document.querySelector('.progress progress')", 15000, 'transcription progress')
   check('transcription shows progress and can be cancelled', /Cancel/.test(await page.text()))
-  await page.shot(path.join(out, '05-transcribing.png'))
+  await page.viewportShot(path.join(out, '05-transcribing.png'))
   await page.waitFor("document.body.innerText.includes('Proposal draft')", 600000, 'the transcript')
   const transcribeSeconds = Math.round((Date.now() - transcribeStart) / 1000)
   const call = await apiJson(`/calls/${callId}`)
@@ -187,7 +187,7 @@ try {
   const draftStart = Date.now()
   await page.click('Draft proposal', 'button')
   await page.waitFor("document.querySelector('.progress progress')", 10000, 'draft progress')
-  await page.shot(path.join(out, '06-drafting.png'))
+  await page.viewportShot(path.join(out, '06-drafting.png'))
   await page.waitFor("document.querySelector('[data-section=scope]')", 420000, 'the draft')
   const draftSeconds = Math.round((Date.now() - draftStart) / 1000)
   await sleep(500)
@@ -203,7 +203,7 @@ try {
   await page.waitFor("document.querySelector('[data-section=scope] .quote')", 3000, 'quote')
   const quote = await page.eval("document.querySelector('[data-section=scope] .quote').innerText")
   check('clicking a source shows the quote and its time', /\d+:\d{2}/.test(quote) && quote.includes('“'), quote)
-  await page.shot(path.join(out, '07-draft.png'))
+  await page.viewportShot(path.join(out, '07-draft.png'))
 
   // ---- 6. Edit and export
   await page.click('Edit proposal', 'button')
@@ -220,7 +220,7 @@ try {
   await sleep(2500)
   const saved = existsSync(downloads) ? readdirSync(downloads) : []
   log(`download button clicked; files in the download folder: ${saved.join(', ') || 'none (Electron shows its own Save dialog)'}`)
-  await page.shot(path.join(out, '08-edited.png'))
+  await page.viewportShot(path.join(out, '08-edited.png'))
 
   // ---- 7. Privacy: after setup, the app holds only loopback connections
   const mine = tree(shell.pid).map(p => p.pid)
