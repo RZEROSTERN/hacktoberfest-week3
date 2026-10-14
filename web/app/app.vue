@@ -23,5 +23,10 @@
     <main>
       <NuxtPage />
     </main>
+    <footer>
+      <NuxtLink to="/notices">
+        Third-party notices
+      </NuxtLink>
+    </footer>
   </div>
 </template>
