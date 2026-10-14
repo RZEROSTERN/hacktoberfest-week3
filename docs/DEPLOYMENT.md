@@ -264,6 +264,30 @@ test the signed app with the same real-app checks (**unverified** here: it needs
 Test on Windows 10 22H2 and Windows 11, with and without an NVIDIA GPU, on a clean user profile, with a long path in the
 user name, and with a corporate antivirus if you can. The real-app checks need the changes in section 2, row 12.
 
+### 5.4 Why not a hosted Linux server for Windows users
+
+Since there is no Windows version yet, the question came up whether Windows users could use PostCall running on a
+dedicated Linux server. **Decision (2026-10-14): no, that is not the plan for Windows.**
+
+- **It breaks the promise the product is built on.** The README's Privacy section says everything runs on the user's
+  own computer and the only traffic is the model download they approve. On a shared server the recordings, transcripts
+  and proposals of clients under NDA would sit on someone else's machine, even if it is the freelancer's own server.
+- **The app assumes one person on one computer** (from reading the code, not measured). The api listens on
+  `127.0.0.1` only and accepts only the desktop window's own origin; it has no accounts or login, no encryption, one
+  SQLite data folder and one Ollama. Serving several people would need authentication, HTTPS, separate data per user, a
+  browser client instead of the Electron window, uploads of long recordings over a network, and a queue for transcription
+  and generation on a shared CPU or GPU. That is a second product, not a packaging step.
+- **It would not remove the Windows work.** The api and `whisper-cli` still have to be built on Windows
+  (PyInstaller cannot cross-build, section 2, row 10), so the Windows build host is needed either way.
+
+What to do instead, in this order: (1) the native Windows version in this section; (2) as a stopgap for technical
+users, the Linux `.deb` inside WSL2 on Windows. That is **unverified** and not an install path: it needs a terminal,
+Linux graphics support (WSLg) and the 7 GB of models inside the Linux side; (3) a self-hosted team mode only if
+agencies ask for it, as an explicit opt-in with its own design and security review, and with the README's Privacy
+section rewritten to say that the data then leaves the user's computer.
+
+A Linux server is still useful as a **build host** for the Linux packages (section 6.1).
+
 ## 6. Build and release pipeline
 
 There is no CI in the repository yet. Everything below is a proposal.

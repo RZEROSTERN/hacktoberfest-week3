@@ -845,3 +845,13 @@ stereo, to force the downmix and resample) in `api/tests/data/` run through the 
 which is tested with the packages). All four formats come out as 16 kHz mono 16-bit WAV of the right length, and a file
 that is not audio is refused. Not covered: an mp4 that really has a video track (no way to make one without FFmpeg on
 this Mac).
+
+## 2026-10-14: No hosted server mode for Windows users
+
+Asked whether Windows users, who have no PostCall version yet, should be served from a dedicated Linux server. No.
+A shared server moves clients' confidential calls off the user's computer, which is the thing the product exists to
+avoid; the api and the app are written for one person on one machine (loopback only, no accounts, no encryption), so a
+server mode would be a second product; and the Windows api and transcription programs have to be built on Windows
+either way. The plan stays a native Windows version, with the Linux package under WSL2 as an untested stopgap for
+technical users and a self-hosted team mode only if asked for, as an explicit opt-in. Reasoning in
+[DEPLOYMENT.md](DEPLOYMENT.md) section 5.4.
