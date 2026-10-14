@@ -103,6 +103,12 @@ export class Page {
     writeFileSync(path, Buffer.from(r.data, 'base64'))
   }
 
+  // Just what the window shows without scrolling, which is what a person sees.
+  async viewportShot(path) {
+    const r = await this.send('Page.captureScreenshot', { format: 'png' })
+    writeFileSync(path, Buffer.from(r.data, 'base64'))
+  }
+
   // Vue's v-model listens to `input`, so set the value natively and dispatch the event.
   fill(selector, value) {
     return this.eval(`(() => {

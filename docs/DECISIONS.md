@@ -638,3 +638,39 @@ program next to the new one. The README screenshots still show the old name; the
 change, together with the layout work, so they are taken once from the final screens. The GitHub repository
 is still called `hacktoberfest-week3` (renaming it is the owner's call; the README links use that name).
 
+## 2026-10-13: Responsive layout
+
+**The problem, measured.** The report was "blank spaces". Opening the installed app at seven window sizes
+(`desktop/scripts/layout-check.mjs`) showed it: every page lived in a fixed 760 px column, so the default
+1200 px window used 63% of its width, a 1512 px screen 50% and a 2560 px one 30%. Short pages also left the
+footer floating mid-window with up to 1000 px of empty space below it. Nothing scrolled sideways.
+
+**What changed.** The page shell is wider (up to 1400 px, with padding that scales) and fills the window's
+height, so the footer sits at the bottom. Two columns appear where there is something for the second column
+and fold into one by themselves when there is not enough room (a CSS grid with `auto-fit`, so there are no
+breakpoints to keep in step): Settings, the profile form, and the first-launch request, whose "Download now"
+button now fits in the default window without scrolling. On the call page the transcript becomes a panel beside
+the proposal from 1100 px up (a media query read by `useWideScreen`), so "Show in transcript" has somewhere
+visible to land; below that it is the collapsible section it was. Home shows call cards (with language and
+length) in a grid. Pages that are one short column of text or one form (upload, notices, the setup progress)
+stay a centred 760 px column, because very long lines are harder to read than margins. Running text is capped
+at 75 characters wherever it is.
+
+**The check is part of the repository.** `layout-check.mjs` opens every page at 900x600, 1200x800, 1512x982,
+1920x1080, 2560x1440, 600x800 and 390x844 in the real packaged app and fails on: sideways scrolling, more
+than 40 px under the footer, a wide page using less than 85% of the window (or 1300 px), a single column that
+is not centred or is over 760 px, two columns that are missing with room or present without it, and the
+transcript panel missing or taller than the window. 42 combinations pass, and 7 more on a fresh install for
+the first-launch request. Two of my own first rules were wrong and were corrected: the 32 px under the footer
+is the page's own padding, and a sticky panel is judged by its height, not by where it starts at the top.
+The panel itself had a real flaw (border and padding added about 10 px to its height), fixed with
+`box-sizing: border-box`.
+
+**What it does not claim.** Ultra-wide screens still have margins (the shell stops at 1400 px: 52% used at
+2560 px), and Home looks sparse with one call. The check measures space and overflow; it does not judge beauty,
+which was done by looking at the pictures.
+
+**Timing, with the idle Mac.** The end-to-end run on the renamed, re-laid-out app on a quiet Mac took 29 s to
+transcribe the 5-minute call and 52 s for notes and proposal, against 74 s and 140 s in the earlier run on a
+busy one. Same code, same models; the README gives both, as a range.
+

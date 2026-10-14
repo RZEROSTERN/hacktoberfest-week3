@@ -74,6 +74,10 @@ onMounted(async () => {
           {{ call.title }}
         </NuxtLink>
         <span class="muted">{{ statusLabel(call) }}</span>
+        <span
+          v-if="call.language || call.duration_s"
+          class="muted facts"
+        >{{ [languageLabel(call.language), formatDuration(call.duration_s)].filter(Boolean).join(' · ') }}</span>
       </li>
     </ul>
   </section>

@@ -6,10 +6,7 @@ PostCall is a macOS app for freelancers and small agencies. You upload the recor
 
 Built for the DEV Open-Source AI Challenge, Week 2: "Side Hustle". Source code: MIT with a Beerware thank-you (see [License](#license)).
 
-<p>
-  <img src="docs/screenshots/draft.png" alt="A proposal draft in Spanish, with a source quote open under the first scope item" width="420">
-  <img src="docs/screenshots/editor.png" alt="The proposal editor, with source links and assumption checkboxes on every item" width="420">
-</p>
+<img src="docs/screenshots/draft.png" alt="A proposal draft in Spanish: the first scope item with its source quote open, and the cited moment highlighted in the transcript beside it" width="860">
 
 ## The problem
 
@@ -29,10 +26,9 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 6. **Draft.** The model writes the proposal from the notes. Your rates and terms are inserted by code, never invented by the model.
 7. **Edit and export.** Fix anything in the app, then export Markdown or PDF.
 
-<p>
-  <img src="docs/screenshots/setup-request.png" alt="The first-launch request: Gemma 4 E4B preselected and marked Recommended, the speech model, total download, disk space, Download now and Not now" width="420">
-  <img src="docs/screenshots/setup-progress.png" alt="The installer-style progress screen with six steps and a download line showing percentage, size, speed and time left" width="420">
-</p>
+<img src="docs/screenshots/setup-request.png" alt="The first-launch request: Gemma 4 E4B preselected and marked Recommended, the speech model, total download, disk space, Download now and Not now" width="860">
+
+<img src="docs/screenshots/setup-progress.png" alt="The installer-style progress screen with six steps and a download line showing percentage, size, speed and time left" width="860">
 
 ### What keeps the draft honest
 
@@ -41,6 +37,8 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 - **Prices come only from your profile.** A budget the client mentioned is shown as a labelled note, never used as a price. The summary never contains a price, and pricing always comes after the scope.
 - **If the call did not cover something, the draft says so** and adds it to the open questions (for example, when nobody mentioned a budget or a deadline).
 - **You stay in charge.** The model still makes mistakes. In the included sample the client asks for an automatic invoicing system, and the interviewer's recap says "un menú de facturación", so the draft lists both. The source links make that easy to spot and the editor lets you remove it. Read the draft before you send it.
+
+<img src="docs/screenshots/editor.png" alt="The proposal editor: every item is editable and keeps its source links and an assumption checkbox, with the transcript beside it" width="860">
 
 ## Install
 
@@ -76,10 +74,9 @@ Every model, including the one you type, goes through the same compatibility che
 
 Later, in **Settings**, you can switch to another downloaded model ("Check and use"), download a new one with the same flow, or delete models to free disk space.
 
-<p>
-  <img src="docs/screenshots/settings.png" alt="Settings: the models on this computer with Gemma 4 E4B in use, a download section, the speech model and this computer's memory and free disk" width="420">
-  <img src="docs/screenshots/setup-model-check.png" alt="A model that failed the compatibility check: a plain explanation and a button to use the recommended model" width="420">
-</p>
+<img src="docs/screenshots/settings.png" alt="Settings in two columns: the models on this computer with Gemma 4 E4B in use and the speech model on the left, downloading another model on the right" width="860">
+
+<img src="docs/screenshots/setup-model-check.png" alt="A model that failed the compatibility check: a plain explanation and a button to use the recommended model" width="860">
 
 ## Hardware
 
@@ -98,7 +95,7 @@ What was measured with the default models:
 | Transcription (whisper.cpp, Metal) | 17.7 s | 88 s |
 | Notes plus proposal (Gemma 4 E4B) | 64 s | 160 s |
 
-Memory while working: about 1 GB for transcription and 4.6 GB for Gemma 4 E4B. The 8 GB minimum is the figure the app shows for the default model; it was **not** tested on an 8 GB Mac. The 32-minute file is the 5-minute call repeated six times, so it measures speed, not quality. Timings on a busy Mac can be several times slower: one run inside the packaged app took 74 s for the 5-minute call.
+Memory while working: about 1 GB for transcription and 4.6 GB for Gemma 4 E4B. The 8 GB minimum is the figure the app shows for the default model; it was **not** tested on an 8 GB Mac. The 32-minute file is the 5-minute call repeated six times, so it measures speed, not quality. Inside the packaged app, on a quiet Mac, the 5-minute call took 29 s to transcribe and 52 s for notes and proposal. On a busy Mac (browser, IDE, Docker, a model already loaded) the same call took 74 s and 140 s, so expect a range.
 
 ## The models we tested
 
