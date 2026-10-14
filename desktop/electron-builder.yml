@@ -3,7 +3,7 @@
 # (whisper-cli) and the generated web app. `make desktop-resources` produces the inputs.
 appId: dev.scopewise.desktop
 productName: Scopewise
-copyright: Copyright (c) 2026 Marco Ramírez. MIT License.
+copyright: Copyright (c) 2026 Marco Ramírez. MIT License, with a Beerware thank-you.
 directories:
   output: release
   buildResources: assets

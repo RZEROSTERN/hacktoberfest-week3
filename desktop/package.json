@@ -5,7 +5,7 @@
   "private": true,
   "description": "Scopewise: turns a recorded client call into a draft proposal, entirely on this computer.",
   "author": "Marco Ramírez",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
