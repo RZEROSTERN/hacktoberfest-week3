@@ -42,6 +42,15 @@ export function tarProgram() {
   return path.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'tar.exe')
 }
 
+/** The resources folder inside the app electron-builder leaves unpacked, per system (what CI smoke-tests). */
+export function packagedResources(id = platformId()) {
+  return {
+    'darwin-arm64': 'desktop/release/mac-arm64/PostCall.app/Contents/Resources',
+    'win32-x64': 'desktop/release/win-unpacked/resources',
+    'linux-x64': 'desktop/release/linux-unpacked/resources',
+  }[id]
+}
+
 export function formatBytes(bytes) {
   if (bytes >= 1e9) return `${(bytes / 1e9).toFixed(2)} GB`
   if (bytes >= 1e6) return `${(bytes / 1e6).toFixed(1)} MB`
