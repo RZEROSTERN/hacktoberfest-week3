@@ -987,3 +987,35 @@ Windows 11 test PC. Times are with warm caches for the downloads; the compiled p
 **Not proven by CI, and left to the real-hardware checklist:** that the installers install and open on a desktop
 (CI has no display), Gatekeeper and SmartScreen behaviour, the Vulkan backend on a real graphics card, the AVX2 build on
 the Intel MacBook, the Chromium sandbox and AppArmor on Linux Mint, and the 7 GB model download.
+
+## 2026-10-19: Releases are built by a tag and created only as drafts
+
+Pushing a version tag (`v1.2.3`, or `v1.2.3-rc.1`) on `master` runs `.github/workflows/release.yml`, which builds the
+three installers, writes `SHA256SUMS` and the release notes and creates a **draft** GitHub Release with the four
+installers and the checksums attached. Nothing is published by CI: the owner publishes by hand after trying the
+installers on the three real machines.
+
+- **One build definition.** `build.yml` is now also a reusable workflow (`workflow_call`, input `release`), and
+  `release.yml` calls it, so a release is built by exactly the steps that were tested on pull requests. Its concurrency
+  group includes the workflow name, so a release build and a labelled pull-request build do not cancel each other.
+- **Guards before anything is built** (job `verify`): the tag must look like a version; it must equal the version in
+  `desktop/package.json` and `api/pyproject.toml` (the installers are named from them, so a mismatch would publish a
+  `1.0.0` installer under a `v1.1.0` tag); and the tagged commit must be reachable from `master`
+  (`git merge-base --is-ancestor`). Any failure stops the run with an error naming the cause.
+- **Least privilege.** The workflow has `contents: read`. Only the last job, `release`, has `contents: write`, and it
+  can only do what it is written to do: create a draft. It refuses to touch a release that is already published
+  (an earlier **draft** of the same tag is replaced, which is what makes a re-run safe), uses `--verify-tag` so the
+  tag must already exist, marks a tag with a suffix (`-rc.1`) as a pre-release, and then checks through the API that
+  the result `draft == true` and has exactly five files (four installers and `SHA256SUMS`). There is no step that
+  publishes, and no `--latest`.
+- **`SHA256SUMS`** is in `sha256sum` format (`<hash>  <file>`, sorted), so it works with `sha256sum -c` on Linux and
+  `shasum -a 256 -c` on macOS; the notes also show a PowerShell line for Windows. The per-installer `.sha256` files
+  made by the build are not attached.
+- **Release notes** are generated (`scripts/release.mjs`, unit-tested) with the files and sizes, how to open an unsigned
+  app on each system, the first-launch download, and how to check the download. They are a starting point for the
+  owner to edit before publishing.
+- **Rehearsal.** A tag can only be pushed on `master`, which GitFlow reaches only through a release, so the workflow
+  could never be tried first. A pull request into `develop` carrying the label `ci-release-rehearsal` runs the same
+  steps with a pseudo tag `v<version>-rehearsal.<run>`: it builds, creates a real **draft** (a draft does not create a git
+  tag), checks it, and deletes it, even if an earlier step failed. What a rehearsal cannot prove is the tag guard
+  on a real tag (covered by unit tests of the check, and `--verify-tag`).
