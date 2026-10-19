@@ -6,6 +6,9 @@ paths:
 # API rules
 
 - Configuration only through pydantic-settings and environment variables. Bind to 127.0.0.1.
+- Runs on macOS, Windows and Linux: no `os.kill`, `killpg`, `sysconf`, `getpgid` or `fork` (a test enforces it; use
+  `psutil`), shut down with `server.should_exit`, start programs with `creationflags=NO_WINDOW` (`app/proc.py`), and
+  build paths with `pathlib` (SQLite via `URL.create`, never an f-string URL).
 - Every model output is validated with Pydantic. On invalid output retry once, then return a
   clear error.
 - Every extracted fact keeps its transcript source (segment id + timestamp).
