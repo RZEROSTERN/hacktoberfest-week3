@@ -8,6 +8,7 @@
 # Runs on: pull requests from release/* into master, and by hand (workflow_dispatch). GitHub only accepts a manual
 # run once the workflow file is on master, so a pull request into develop can ask for a build by carrying the
 # `ci-build` label (used while this file itself is being developed, and any time a change needs a full build).
+# release.yml calls this workflow for a tagged release (`release: true`) and then attaches the installers to a DRAFT.
 name: Build installers
 
 on:
@@ -15,18 +16,25 @@ on:
     branches: [master, develop]
     types: [opened, synchronize, reopened, labeled]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      release:
+        description: Build because release.yml asked for it (a version tag, or a rehearsal)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: build-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     name: ${{ matrix.name }}
     if: >-
+      inputs.release ||
       github.event_name == 'workflow_dispatch' ||
       (github.base_ref == 'master' && startsWith(github.head_ref, 'release/')) ||
       (github.base_ref == 'develop' && contains(github.event.pull_request.labels.*.name, 'ci-build'))
