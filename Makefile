@@ -18,7 +18,7 @@ export ELECTRON_CACHE ?= $(CURDIR)/.dev/electron-cache
 export ELECTRON_BUILDER_CACHE ?= $(CURDIR)/.dev/electron-builder-cache
 
 .PHONY: help setup whisper-dev dev dev-api dev-web ollama-check test test-llm test-setup lint typecheck format \
-	desktop-setup build-web build-api build-whisper fetch-ollama desktop-resources desktop-dev desktop-dist desktop-check
+	desktop-setup build-web build-api build-whisper build-ffmpeg fetch-ollama smoke desktop-resources desktop-dev desktop-dist desktop-check
 
 help:
 	@echo "make setup        install api + web dependencies and create .env"
@@ -34,7 +34,8 @@ help:
 	@echo "make typecheck    mypy + nuxt typecheck + tsc (desktop)"
 	@echo "make format       ruff format"
 	@echo "make desktop-setup      install the desktop shell dependencies (downloads Electron into .dev/)"
-	@echo "make desktop-resources  build everything the app bundles: web, api, whisper-cli, Ollama"
+	@echo "make desktop-resources  build everything the app bundles: web, api, whisper-cli, FFmpeg (not on macOS), Ollama"
+	@echo "make smoke              start the built programs and transcribe a short clip through the api (scripts/smoke.mjs)"
 	@echo "make desktop-dev        run the desktop shell from this repository (after desktop-resources)"
 	@echo "make desktop-dist       build the unsigned macOS arm64 .dmg into desktop/release/"
 	@echo "make desktop-check      start the desktop shell for real and check it (processes, ports, isolation)"
@@ -72,6 +73,7 @@ test:
 	cd api && uv run pytest
 	cd web && npm test
 	cd desktop && npm test
+	node --test "scripts/*.test.mjs"
 
 test-llm:
 	cd api && POSTCALL_RUN_LLM_TESTS=1 uv run pytest tests/test_integration_llm.py -s -q
@@ -98,26 +100,33 @@ format:
 desktop-setup:
 	cd desktop && npm install && node node_modules/electron/install.js
 
+# These call the same Node scripts as CI (scripts/), which also run on Windows and Linux.
 build-web:
-	cd web && npm run generate
+	node scripts/build-web.mjs
 
 build-api:
-	rm -rf desktop/build/api
-	cd api && uv run pyinstaller --noconfirm --clean --distpath ../desktop/build/api --workpath ../.dev/pyinstaller postcall-api.spec
+	node scripts/build-api.mjs
 
 build-whisper:
-	sh desktop/scripts/build-whisper.sh
+	node scripts/build-whisper.mjs
+
+build-ffmpeg:
+	node scripts/build-ffmpeg.mjs
 
 fetch-ollama:
-	sh desktop/scripts/fetch-ollama.sh
+	node scripts/fetch-ollama.mjs
 
-desktop-resources: build-web build-api build-whisper fetch-ollama
+desktop-resources: build-web build-api build-whisper build-ffmpeg fetch-ollama
 
 desktop-dev:
 	cd desktop && npm run start
 
 desktop-dist: desktop-resources
-	cd desktop && npm run dist
+	node scripts/package.mjs
+	node scripts/installer-sizes.mjs
+
+smoke:
+	node scripts/smoke.mjs
 
 desktop-check:
 	cd desktop && npm run build && node scripts/shell-check.mjs

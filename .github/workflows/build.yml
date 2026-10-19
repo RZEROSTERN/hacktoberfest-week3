@@ -1,0 +1,164 @@
+# Builds the PostCall installers on real runners of each system and checks that what is inside them works:
+#   macOS    .dmg, Apple Silicon (arm64)
+#   Windows  NSIS .exe installer, x64
+#   Linux    AppImage and .deb, x64
+# The steps are the repository's own Node scripts (scripts/), which also run on a developer's machine, so CI and a
+# local build cannot drift apart. Versions and checksums of everything bundled are in scripts/versions.json.
+#
+# Runs on: pull requests from release/* into master, and by hand (workflow_dispatch). GitHub only accepts a manual
+# run once the workflow file is on master, so a pull request into develop can ask for a build by carrying the
+# `ci-build` label (used while this file itself is being developed, and any time a change needs a full build).
+name: Build installers
+
+on:
+  pull_request:
+    branches: [master, develop]
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.base_ref == 'master' && startsWith(github.head_ref, 'release/')) ||
+      (github.base_ref == 'develop' && contains(github.event.pull_request.labels.*.name, 'ci-build'))
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false # one system failing must not hide how the others do
+      matrix:
+        include:
+          # arm64 macOS runner, built on macOS 14 so the toolchain is not newer than the oldest macOS supported (14).
+          - name: macos-arm64
+            runner: macos-14
+            resources: desktop/release/mac-arm64/PostCall.app/Contents/Resources
+          # Windows Server 2022 with Visual Studio 2022.
+          - name: windows-x64
+            runner: windows-2022
+            resources: desktop/release/win-unpacked/resources
+          # Ubuntu 22.04 has glibc 2.35, the oldest C library among current Linux Mint releases (Mint 21 is built on
+          # Ubuntu 22.04, Mint 22 on 24.04). Programs built here run on both; building on 24.04 would not run on 21.
+          - name: linux-x64
+            runner: ubuntu-22.04
+            resources: desktop/release/linux-unpacked/resources
+    defaults:
+      run:
+        shell: bash
+    env:
+      ELECTRON_CACHE: ${{ github.workspace }}/.dev/electron-cache
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.dev/electron-builder-cache
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.21.0 # exact, so npm (11.19) and the lockfiles behave the same on every run
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            desktop/package-lock.json
+
+      - name: Set up Python (uv)
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: api/uv.lock
+
+      - name: Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends nasm zstd
+
+      - name: Windows build tools (MSYS2 for FFmpeg)
+        id: msys2
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
+        with:
+          msystem: UCRT64
+          update: false
+          path-type: inherit
+          install: >-
+            make diffutils xz curl
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-nasm
+
+      # Downloads (Ollama, the small test model) are checked against pinned checksums, so a cache can only speed up.
+      - name: Cache downloads
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .dev/downloads
+          key: downloads-${{ matrix.name }}-${{ hashFiles('scripts/versions.json') }}
+
+      # whisper-cli and FFmpeg take minutes to compile; they are rebuilt only when their pinned inputs or recipe change.
+      # save-always keeps them even when a later step fails.
+      - name: Cache compiled programs
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            desktop/build/whisper
+            desktop/build/ffmpeg
+          key: programs-${{ matrix.name }}-${{ hashFiles('scripts/versions.json', 'scripts/build-whisper.mjs', 'scripts/build-ffmpeg.*', 'scripts/windows-utf8.manifest') }}
+          save-always: true
+
+      - name: Cache Electron
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .dev/electron-cache
+            .dev/electron-builder-cache
+          key: electron-${{ matrix.name }}-${{ hashFiles('desktop/package-lock.json') }}
+
+      - name: Ollama (official release, CPU and Vulkan on Windows and Linux)
+        run: node scripts/fetch-ollama.mjs
+
+      - name: whisper-cli
+        run: node scripts/build-whisper.mjs
+
+      # The action installs MSYS2 (with the compiler) into its own folder, not the preinstalled C:\msys64.
+      - name: FFmpeg (Windows and Linux)
+        env:
+          MSYS2_ROOT: ${{ steps.msys2.outputs.msys2-location }}
+        run: node scripts/build-ffmpeg.mjs
+
+      - name: Web app
+        run: node scripts/build-web.mjs
+
+      - name: Api (PyInstaller)
+        run: node scripts/build-api.mjs
+
+      # The built programs before they are packed: a failure here is cheaper to read than one inside an installer.
+      - name: Smoke test the built programs
+        run: node scripts/smoke.mjs
+
+      - name: Installer
+        run: node scripts/package.mjs
+
+      # The same checks on the copies that were packed into the app, which is what a user runs.
+      - name: Smoke test the packaged programs
+        run: node scripts/smoke.mjs --resources "${{ matrix.resources }}"
+
+      - name: Installer sizes
+        run: node scripts/installer-sizes.mjs
+
+      - name: Upload installers
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: installers-${{ matrix.name }}
+          path: |
+            desktop/release/*.dmg
+            desktop/release/*.exe
+            desktop/release/*.AppImage
+            desktop/release/*.deb
+            desktop/release/*.sha256
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0 # installers are already compressed
