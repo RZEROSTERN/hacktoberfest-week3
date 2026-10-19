@@ -20,7 +20,9 @@ paths:
   every system's behaviour is unit-tested from any host. No bare `process.kill(-pid)`, `ps` or POSIX path literal
   elsewhere, and bundled programs always sit in `extraResources`, never inside the asar.
 - The api, Ollama and whisper-cli binaries are inputs from `make desktop-resources`, never committed.
-- Pin versions and checksums of what is downloaded for bundling (`scripts/fetch-ollama.sh`, `build-whisper.sh`).
+- Pin versions and checksums of what is downloaded for bundling in `scripts/versions.json` (read by `scripts/*.mjs`, the
+  same scripts CI and `make` run on macOS, Windows and Linux). Windows and Linux bundle Ollama's CPU and Vulkan
+  backends only, never the CUDA folders (the installer would pass 1.5 GB; `scripts/installer-sizes.mjs` fails above it).
 - Changing the packaged app: run `make desktop-dist`, then `desktop/scripts/shell-check.mjs` with `APP_BIN`
   pointing at an installed copy. Unit tests do not show whether the signed bundle still launches.
 
