@@ -1019,3 +1019,27 @@ installers on the three real machines.
   steps with a pseudo tag `v<version>-rehearsal.<run>`: it builds, creates a real **draft** (a draft does not create a git
   tag), checks it, and deletes it, even if an earlier step failed. What a rehearsal cannot prove is the tag guard
   on a real tag (covered by unit tests of the check, and `--verify-tag`).
+
+## 2026-10-19: `npm run dist` is the local fallback, and it cannot drift from CI
+
+If CI is not available on a release day, `npm run dist` at the repository root builds the installer for the system it
+runs on: macOS arm64 `.dmg`, Windows x64 NSIS `.exe`, Linux x64 AppImage and `.deb`. No `make`, no dependencies to
+install first (the root `package.json` has none); it needs Node 22 or newer and runs `scripts/dist.mjs`.
+
+- **Same steps, enforced.** The nine steps are defined once (`scripts/steps.mjs`) and `.github/workflows/build.yml` runs
+  the same scripts in the same order. A test (`scripts/dist.test.mjs`) reads the workflow and fails if the two differ,
+  and also checks that the packaged-program smoke test looks in the same folder in both. `make desktop-dist` now calls
+  the same command.
+- **A check of the computer first** (`scripts/preflight.mjs`). A 20-minute build that stops at "gcc: command not found"
+  wastes the morning of a release, so the command lists what is missing with how to get it before building: Node 22+,
+  git, uv, 12 GB of free disk, and per system the compiler for whisper.cpp (Xcode command line tools and cmake on a Mac;
+  `build-essential cmake nasm zstd binutils` on Linux; CMake, Visual Studio Build Tools 2022 with the C++ workload, MSYS2
+  with the UCRT64 compiler and nasm, and Windows' own `tar.exe` on Windows). The checks are tested for each system with
+  the computer injected.
+- **Resumable.** A failing step prints how to continue (`npm run dist -- --from build-api`). `--only`, `--skip-smoke`,
+  `--list`, `--dry-run` and `--no-preflight` exist for the same days.
+- **Proven on real runners, not only on a Mac.** `.github/workflows/dist-check.yml` runs `npm run dist` on a macOS,
+  Windows and Linux runner. It is expensive, so it runs only by hand or on a `develop` pull request labelled
+  `ci-dist-check`; the label exists so the fallback is exercised whenever the build changes and does not rot unseen.
+- **Not covered:** a developer's own computer will differ from a runner (an older Visual Studio, a different MSYS2 root:
+  `MSYS2_ROOT` moves it). The README lists the one-time setup per system (step 5).
