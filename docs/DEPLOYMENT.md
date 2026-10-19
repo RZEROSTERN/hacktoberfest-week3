@@ -1,9 +1,19 @@
 # Deployment guide: Linux, Mac App Store and Windows
 
-PostCall (package id `mx.dev1.postcall`) ships today as one build: an ad-hoc signed macOS Apple Silicon `.dmg`
-(`make desktop-dist`, see [README.md](../README.md)). This guide is the plan for three more ways to deploy it. **None
-of them has been built or run.** Everything here comes from reading the code, the official documentation and
-Apple's, Ollama's and Microsoft-side sources listed at the end. Each claim is marked:
+> **Status, 2026-10-19.** Most of what this guide planned for **Windows and Linux (`.deb`, AppImage)** has since been built
+> and is described in [DECISIONS.md](DECISIONS.md) (the cross-platform audit, the CI builds, the release workflow): NSIS
+> `.exe`, AppImage and `.deb` are built by GitHub Actions on real runners and smoke-tested, and `npm run dist` builds
+> them locally. They have **not been tried on real hardware yet** ([RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) is that
+> test). Where this guide and DECISIONS.md differ, DECISIONS.md is right: the bundled Ollama is the CPU and Vulkan parts
+> only (no CUDA, no ROCm, installers about 170 to 310 MB), `.rpm` and arm64 Linux are not built, FFmpeg is built from
+> source for Windows and Linux, and the work in section 2 below is done. **Still not done:** the Mac App Store (section 4),
+> signed installers, an optional CUDA download for NVIDIA, and RHEL-family Linux (see 3.3b). The text below is the
+> original plan, kept for the reasoning and the sources.
+
+PostCall (package id `mx.dev1.postcall`) shipped as one build: an ad-hoc signed macOS Apple Silicon `.dmg`
+(see [README.md](../README.md)). This guide was the plan for three more ways to deploy it. Everything here comes from
+reading the code, the official documentation and Apple's, Ollama's and Microsoft-side sources listed at the end.
+Each claim is marked:
 
 - **Verified**: read in the cited source, or measured in this repository.
 - **Unverified**: reasoning or common practice that must be tested before relying on it.
@@ -101,6 +111,14 @@ tracker, linked below): Ubuntu 24.04 restricts unprivileged user namespaces thro
 fail at start with a SUID sandbox helper error. The proper fix is an AppArmor profile that allows the app's namespaces
 (shipped by the `.deb` through `appArmorProfile`); the workarounds `--no-sandbox` and a system-wide sysctl weaken
 security and are not acceptable here. For AppImage users, document the symptom and point them to the `.deb`.
+
+### 3.3b RHEL family (AlmaLinux, Rocky, RHEL)
+
+Checked on 2026-10-14 in the `almalinux:9` (9.8) and `almalinux:10` (10.2) images (**verified**): glibc is 2.34 on 9 and
+2.39 on 10. The Linux builds run on Ubuntu 22.04 (glibc 2.35). On 10, `libXScrnSaver` (in electron-builder's default RPM
+dependency list) is not in BaseOS, AppStream, CRB or extras, so `dnf` would refuse an `.rpm`; the Xorg server (and so
+`Xvfb`) is not there either. On 9 every dependency exists, but a program built against glibc 2.35 may not start. There is
+no `.rpm` today; RHEL-family support needs a build on a RHEL 9 base and a decision on those dependencies.
 
 ### 3.4 Sketch of the configuration (option names verified in the installed electron-builder 26.15.3)
 
@@ -254,6 +272,16 @@ test the signed app with the same real-app checks (**unverified** here: it needs
 
 Test on Windows 10 22H2 and Windows 11, with and without an NVIDIA GPU, on a clean user profile, with a long path in the
 user name, and with a corporate antivirus if you can. The real-app checks need the changes in section 2, row 12.
+
+### 5.4 Why not a hosted Linux server for Windows users
+
+Asked whether Windows users, who had no version yet, could use PostCall running on a dedicated Linux server.
+**Decision (2026-10-14): no.** A shared server moves clients' confidential recordings off the user's computer, which is
+what the product exists to avoid; the app assumes one person on one machine (the api listens on `127.0.0.1`, accepts
+only the desktop window's origin, has no accounts or encryption, one SQLite folder and one Ollama), so a server mode would
+be a second product (authentication, HTTPS, per-user data, a browser client, a job queue); and the Windows programs have
+to be built on Windows anyway. A Windows version now exists (built on a Windows runner). A self-hosted team mode is only
+worth designing if agencies ask for it, as an explicit opt-in with the README's Privacy section rewritten to say that.
 
 ## 6. Build and release pipeline
 
