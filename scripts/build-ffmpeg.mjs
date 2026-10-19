@@ -33,11 +33,11 @@ const env = {
 fs.rmSync(out, { recursive: true, force: true })
 const fixtures = path.join(root, 'api', 'tests', 'data')
 if (id === 'win32-x64') {
-  const msys = process.env.MSYS2_ROOT ?? 'C:\\msys64'
+  const msys = process.env.MSYS2_ROOT || 'C:\\msys64'
   const bash = path.join(msys, 'usr', 'bin', 'bash.exe')
   if (!fs.existsSync(bash)) throw new Error(`MSYS2 was not found at ${msys}. Install it from https://www.msys2.org/ (or set MSYS2_ROOT).`)
   // MSYS2 wants /c/... paths; `cygpath -u` converts them inside its own shell.
-  // The compiler is in /ucrt64/bin. The login profile is not relied on to put it on the PATH: that was missing in CI.
+  // The UCRT64 compiler lives in /ucrt64/bin; it is put on the PATH explicitly rather than left to the login profile.
   const script = `export PATH=/ucrt64/bin:/usr/bin:$PATH && cd "$(cygpath -u '${root}')" && FIXTURES="$(cygpath -u '${fixtures}')" ./scripts/build-ffmpeg.sh "$(cygpath -u '${out}')"`
   run(bash, ['-lc', script], { env: { ...env, MSYSTEM: 'UCRT64', CHERE_INVOKING: '1' } })
 } else {

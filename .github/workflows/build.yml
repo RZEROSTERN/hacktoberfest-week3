@@ -80,6 +80,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends nasm zstd
 
       - name: Windows build tools (MSYS2 for FFmpeg)
+        id: msys2
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
         with:
@@ -122,7 +123,10 @@ jobs:
       - name: whisper-cli
         run: node scripts/build-whisper.mjs
 
+      # The action installs MSYS2 (with the compiler) into its own folder, not the preinstalled C:\msys64.
       - name: FFmpeg (Windows and Linux)
+        env:
+          MSYS2_ROOT: ${{ steps.msys2.outputs.msys2-location }}
         run: node scripts/build-ffmpeg.mjs
 
       - name: Web app
