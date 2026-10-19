@@ -16,8 +16,8 @@ WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
 case "$(uname -s)" in
-  MINGW*|MSYS*|CYGWIN*) EXE=.exe; WINDOWS=1 ;;
-  *) EXE=""; WINDOWS="" ;;
+  MINGW*|MSYS*|CYGWIN*) EXE=.exe; WINDOWS=1; EXTRA_LD="-static" ;;   # no MinGW runtime DLLs to ship
+  *) EXE=""; WINDOWS=""; EXTRA_LD="" ;;
 esac
 
 curl -fsSL --retry 3 -o "$WORK/ffmpeg.tar.xz" "$FFMPEG_URL"
@@ -35,6 +35,7 @@ if ! ./configure \
   --enable-decoder=mp3,mp3float,aac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,pcm_u8,pcm_alaw,pcm_mulaw \
   --enable-encoder=pcm_s16le \
   --enable-muxer=wav \
+  ${EXTRA_LD:+--extra-ldflags="$EXTRA_LD"} \
   --enable-filter=abuffer,abuffersink,aresample,aformat,anull; then
   echo "---- configure failed; the end of ffbuild/config.log:" >&2
   tail -n 60 ffbuild/config.log >&2 || true
