@@ -46,7 +46,7 @@ if (id === 'darwin-arm64') {
 } else if (id === 'linux-x64') {
   flags = [...common, ...x86, '-DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc']
 } else {
-  const manifest = path.join(root, 'scripts', 'windows-utf8.manifest')
+  const manifest = path.join(root, 'scripts', 'windows-utf8.manifest').replaceAll('\\', '/') // CMake and the linker both accept /
   flags = [
     ...common,
     ...x86,

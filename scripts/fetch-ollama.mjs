@@ -10,7 +10,7 @@
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { buildDir, download, downloadsDir, endGroup, formatBytes, group, mkdirp, platformId, programPaths, rmrf, run, sizeOf, versions } from './lib.mjs'
+import { buildDir, download, downloadsDir, endGroup, formatBytes, group, mkdirp, platformId, programPaths, rmrf, run, sizeOf, tarProgram, versions } from './lib.mjs'
 
 const id = platformId()
 const { version, assets, licenseSha256 } = versions.ollama
@@ -36,7 +36,7 @@ mkdirp(out)
 if (id === 'darwin-arm64') {
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'postcall-ollama-'))
   try {
-    run('tar', ['-xzf', archive, '-C', work])
+    run(tarProgram(), ['-xzf', archive, '-C', work])
     for (const name of ['ollama', 'llama-server']) fs.copyFileSync(path.join(work, name), path.join(out, name))
     for (const dir of ['mlx_metal_v3', 'mlx_metal_v4']) fs.cpSync(path.join(work, dir), path.join(out, dir), { recursive: true })
     for (const name of fs.readdirSync(work)) {
@@ -49,7 +49,7 @@ if (id === 'darwin-arm64') {
   // GNU tar (Linux) and bsdtar (Windows 10 and later) both take --exclude with a pattern; `*` crosses folders.
   const leave = ['--exclude', 'lib/ollama/cuda_*', '--exclude', 'lib/ollama/rocm*']
   const flags = asset.file.endsWith('.tar.zst') ? ['--zstd', '-xf'] : ['-xf']
-  run('tar', [...flags, archive, '-C', out, ...leave])
+  run(tarProgram(), [...flags, archive, '-C', out, ...leave])
 }
 fs.copyFileSync(license, path.join(out, 'LICENSE'))
 fs.writeFileSync(path.join(out, 'VERSION'), `${version}\n`)

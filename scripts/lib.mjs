@@ -33,6 +33,15 @@ export function programPaths(id = platformId()) {
   }
 }
 
+/**
+ * The tar to use. On Windows, Git Bash puts GNU tar first on the PATH; it reads `D:\\file` as a file on a host
+ * called D and cannot open zip files. Windows 10 and later ship bsdtar, which does both.
+ */
+export function tarProgram() {
+  if (process.platform !== 'win32') return 'tar'
+  return path.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'tar.exe')
+}
+
 export function formatBytes(bytes) {
   if (bytes >= 1e9) return `${(bytes / 1e9).toFixed(2)} GB`
   if (bytes >= 1e6) return `${(bytes / 1e6).toFixed(1)} MB`
