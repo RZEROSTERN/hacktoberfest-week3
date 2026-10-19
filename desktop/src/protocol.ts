@@ -40,7 +40,9 @@ export function resolveAsset(root: string, pathname: string): string | null {
   } catch {
     return null
   }
-  if (decoded.includes('\0')) return null
+  // No asset of the web app has these in its name. On Windows a backslash separates folders (`..\\` climbs
+  // out of the root) and `:` opens drive letters and NTFS streams, so they are refused on every system.
+  if (/[\0\\:]/.test(decoded)) return null
   const base = path.resolve(root)
   const target = path.resolve(base, `.${path.posix.normalize(`/${decoded}`)}`)
   if (target !== base && !target.startsWith(base + path.sep)) return null

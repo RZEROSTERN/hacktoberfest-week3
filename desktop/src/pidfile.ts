@@ -1,5 +1,5 @@
-import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
+import { killTree, programOf, sameProgram } from './processes'
 
 type Entries = Record<string, { pid: number; command: string }>
 
@@ -26,23 +26,6 @@ export function forgetService(file: string, name: string): void {
   write(file, entries)
 }
 
-/** The command line of a running process, or null when there is none with that pid. */
-export function commandOf(pid: number): string | null {
-  try {
-    return execFileSync('ps', ['-p', String(pid), '-o', 'command='], { encoding: 'utf8' }).trim() || null
-  } catch {
-    return null
-  }
-}
-
-function killGroup(pid: number, signal: NodeJS.Signals): void {
-  try {
-    process.kill(-pid, signal)
-  } catch {
-    // the group is already gone
-  }
-}
-
 /**
  * After a hard kill of the app (power loss, force quit) the services it started can still be running.
  * Stop the ones left in the pid file, but only when the pid still belongs to the same program, so a
@@ -50,14 +33,15 @@ function killGroup(pid: number, signal: NodeJS.Signals): void {
  */
 export async function reapOrphans(
   file: string,
-  lookup: (pid: number) => string | null = commandOf,
+  lookup: (pid: number) => string | null = programOf,
   graceMs = 2000,
+  platform: NodeJS.Platform = process.platform,
 ): Promise<string[]> {
   const entries = read(file)
   const reaped: string[] = []
   for (const [name, { pid, command }] of Object.entries(entries)) {
-    if (lookup(pid)?.includes(command)) {
-      killGroup(pid, 'SIGTERM')
+    if (sameProgram(lookup(pid), command, platform)) {
+      killTree(pid, 'SIGTERM', platform)
       reaped.push(name)
     }
   }
@@ -65,7 +49,7 @@ export async function reapOrphans(
     await new Promise(resolve => setTimeout(resolve, graceMs))
     for (const name of reaped) {
       const entry = entries[name]
-      if (entry && lookup(entry.pid)?.includes(entry.command)) killGroup(entry.pid, 'SIGKILL')
+      if (entry && sameProgram(lookup(entry.pid), entry.command, platform)) killTree(entry.pid, 'SIGKILL', platform)
     }
   }
   fs.rmSync(file, { force: true })

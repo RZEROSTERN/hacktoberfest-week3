@@ -6,6 +6,7 @@ import { dataDirs, resolveLayout, type DataDirs, type Layout } from './layout'
 import { resolveLocale, say, type Locale } from './locale'
 import { reapOrphans } from './pidfile'
 import { twoFreePorts } from './ports'
+import { sweepPrograms } from './processes'
 import { serve } from './protocol'
 import { startPage } from './startPage'
 import { isAllowedExternal, isAllowedRequest, isAppUrl } from './security'
@@ -24,7 +25,11 @@ if (!app.isPackaged) app.setPath('userData', path.join(app.getPath('appData'), '
 const OLLAMA_START_TIMEOUT_MS = 60_000
 const API_START_TIMEOUT_MS = 90_000 // the packaged api unpacks itself on a cold start
 
+// Windows groups notifications, the taskbar and the jump list by this id, and it matches the installer's.
+if (process.platform === 'win32') app.setAppUserModelId('mx.dev1.postcall')
+
 const supervisor = new Supervisor()
+let programsDir = ''
 let mainWindow: BrowserWindow | null = null
 let quitting = false
 let reportedFatal = false
@@ -104,7 +109,7 @@ function lockDownSession(apiOrigin: string): void {
 
 function buildMenu(): void {
   const template: Electron.MenuItemConstructorOptions[] = [
-    { role: 'appMenu' },
+    process.platform === 'darwin' ? { role: 'appMenu' } : { role: 'fileMenu' },
     { role: 'editMenu' }, // without it copy and paste do not work in text fields on macOS
     ...(app.isPackaged ? [] : [{ role: 'viewMenu' } as const]),
     { role: 'windowMenu' },
@@ -122,6 +127,7 @@ async function start(): Promise<void> {
     appRoot: path.resolve(__dirname, '..'),
   })
   webRoot = layout.webRoot
+  programsDir = layout.programsDir
   const dirs: DataDirs = dataDirs(app.getPath('userData'))
   for (const dir of [dirs.data, dirs.models, dirs.ollamaModels, dirs.ollamaHome, dirs.logs]) {
     fs.mkdirSync(dir, { recursive: true })
@@ -135,9 +141,13 @@ async function start(): Promise<void> {
   mainWindow = createWindow(apiUrl(ports))
   void mainWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(startPage(systemLocale()))}`)
 
-  const missing = [layout.ollamaBinary, layout.apiBinary, layout.whisperBinary, layout.webRoot].filter(
-    file => !fs.existsSync(file),
-  )
+  const missing = [
+    layout.ollamaBinary,
+    layout.apiBinary,
+    layout.whisperBinary,
+    layout.ffmpegBinary,
+    layout.webRoot,
+  ].filter((file): file is string => file !== null && !fs.existsSync(file))
   if (missing.length > 0) {
     showFatal(
       say(systemLocale(), 'dialog.incomplete'),
@@ -147,7 +157,11 @@ async function start(): Promise<void> {
     return
   }
 
+  // A pid file that is still here means the last run did not end cleanly. On Windows, helpers that outlived
+  // their parent cannot be found through it, so the folder the programs run from is swept as well.
+  const uncleanLastRun = fs.existsSync(dirs.pidFile)
   await reapOrphans(dirs.pidFile)
+  if (uncleanLastRun) sweepPrograms(layout.programsDir)
 
   const onFatal = (service: string, reason: string): void => {
     if (quitting) return
@@ -199,7 +213,12 @@ app.on('before-quit', (event) => {
   if (quitting) return
   quitting = true
   event.preventDefault()
-  void supervisor.stopAll().finally(() => app.exit(0))
+  void supervisor
+    .stopAll()
+    .then((crashed) => {
+      if (crashed && programsDir) sweepPrograms(programsDir) // helpers a crashed program left behind
+    })
+    .finally(() => app.exit(0))
 })
 
 app.on('second-instance', () => {

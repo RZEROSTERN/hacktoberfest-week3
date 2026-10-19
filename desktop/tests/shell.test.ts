@@ -6,7 +6,12 @@ import { twoFreePorts } from '../src/ports'
 import { isAllowedExternal, isAllowedRequest, isAppUrl } from '../src/security'
 
 const dirs = dataDirs('/u/PostCall')
-const layout = resolveLayout({ packaged: true, resourcesPath: '/App/Contents/Resources', appRoot: '/ignored' })
+const layout = resolveLayout({
+  packaged: true,
+  resourcesPath: '/App/Contents/Resources',
+  appRoot: '/ignored',
+  platform: 'darwin',
+})
 const ports = { ollama: 41000, api: 41001 }
 
 describe('layout', () => {
@@ -17,8 +22,38 @@ describe('layout', () => {
     expect(layout.webRoot).toBe('/App/Contents/Resources/web')
   })
 
+  it('has no audio converter to start on macOS, which brings its own', () => {
+    expect(layout.ffmpegBinary).toBeNull()
+    expect(layout.programsDir).toBe('/App/Contents/Resources')
+  })
+
+  it('finds the Linux layout: Ollama keeps its bin and lib folders, and FFmpeg is bundled', () => {
+    const linux = resolveLayout({ packaged: true, resourcesPath: '/opt/PostCall/resources', appRoot: '/x', platform: 'linux' })
+    expect(linux.ollamaBinary).toBe('/opt/PostCall/resources/ollama/bin/ollama')
+    expect(linux.ffmpegBinary).toBe('/opt/PostCall/resources/ffmpeg/ffmpeg')
+    expect(linux.apiBinary).toBe('/opt/PostCall/resources/api/postcall-api')
+    expect(linux.whisperBinary).toBe('/opt/PostCall/resources/whisper/whisper-cli')
+    const dev = resolveLayout({ packaged: false, resourcesPath: '/x', appRoot: '/repo/desktop', platform: 'linux' })
+    expect(dev.ollamaBinary).toBe('/repo/desktop/build/ollama/bin/ollama')
+  })
+
+  it('finds the Windows layout: every program ends in .exe and paths use backslashes', () => {
+    const win = resolveLayout({
+      packaged: true,
+      resourcesPath: 'C:\\Users\\Marco\\AppData\\Local\\Programs\\PostCall\\resources',
+      appRoot: 'C:\\ignored',
+      platform: 'win32',
+    })
+    const root = 'C:\\Users\\Marco\\AppData\\Local\\Programs\\PostCall\\resources'
+    expect(win.ollamaBinary).toBe(`${root}\\ollama\\ollama.exe`)
+    expect(win.apiBinary).toBe(`${root}\\api\\postcall-api.exe`)
+    expect(win.whisperBinary).toBe(`${root}\\whisper\\whisper-cli.exe`)
+    expect(win.ffmpegBinary).toBe(`${root}\\ffmpeg\\ffmpeg.exe`)
+    expect(win.programsDir).toBe(root)
+  })
+
   it('uses the build folders when run from the repository', () => {
-    const dev = resolveLayout({ packaged: false, resourcesPath: '/x', appRoot: '/repo/desktop' })
+    const dev = resolveLayout({ packaged: false, resourcesPath: '/x', appRoot: '/repo/desktop', platform: 'darwin' })
     expect(dev.ollamaBinary).toBe('/repo/desktop/build/ollama/ollama')
     expect(dev.webRoot).toBe(path.join('/repo', 'web', '.output', 'public'))
   })
@@ -64,6 +99,36 @@ describe('service environments', () => {
     })
     expect(env).not.toHaveProperty('POSTCALL_LLM_MODEL') // the model always comes from the settings
     expect(env.HOME).toBeUndefined()
+  })
+
+  it('tells the api where the bundled FFmpeg is, only where there is one', () => {
+    expect(apiEnv(ports, dirs, layout, 777, {})).not.toHaveProperty('POSTCALL_FFMPEG')
+    const linux = resolveLayout({ packaged: true, resourcesPath: '/opt/PostCall/resources', appRoot: '/x', platform: 'linux' })
+    expect(apiEnv(ports, dirs, linux, 777, {}).POSTCALL_FFMPEG).toBe('/opt/PostCall/resources/ffmpeg/ffmpeg')
+  })
+
+  it('passes Windows programs what they cannot start without, and nothing of the user', () => {
+    const source = {
+      PATH: 'C:\\Windows\\System32',
+      SystemRoot: 'C:\\Windows',
+      TEMP: 'C:\\Temp',
+      TMP: 'C:\\Temp',
+      PATHEXT: '.EXE;.CMD',
+      OLLAMA_HOST: '0.0.0.0:11434',
+      OPENAI_API_KEY: 'sk-secret',
+      USERPROFILE: 'C:\\Users\\Marco',
+    }
+    const env = ollamaEnv(ports, dirs, source, 'win32')
+    expect(env).toMatchObject({ SystemRoot: 'C:\\Windows', TEMP: 'C:\\Temp', PATHEXT: '.EXE;.CMD', OLLAMA_HOST: '127.0.0.1:41000' })
+    expect(env).not.toHaveProperty('OPENAI_API_KEY')
+    expect(env.USERPROFILE).toBe(dirs.ollamaHome) // Ollama's home on Windows, kept inside the app's folder
+    const apiEnvironment = apiEnv(ports, dirs, layout, 777, source, 'win32')
+    expect(apiEnvironment.SystemRoot).toBe('C:\\Windows')
+    expect(apiEnvironment).not.toHaveProperty('USERPROFILE')
+  })
+
+  it('does not pass Windows variables on other systems', () => {
+    expect(ollamaEnv(ports, dirs, { SystemRoot: 'C:\\Windows', PATH: '/usr/bin' }, 'darwin')).not.toHaveProperty('SystemRoot')
   })
 })
 

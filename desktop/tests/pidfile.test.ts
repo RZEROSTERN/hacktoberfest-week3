@@ -2,7 +2,8 @@ import { spawn } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { commandOf, forgetService, reapOrphans, recordService } from '../src/pidfile'
+import { forgetService, reapOrphans, recordService } from '../src/pidfile'
+import { programOf } from '../src/processes'
 import { alive, tempDir, until } from './helpers'
 
 function leftover(): number {
@@ -26,7 +27,7 @@ describe('pid file', () => {
     const file = path.join(tempDir(), 'services.json')
     const pid = leftover()
     recordService(file, 'ollama', pid, process.execPath)
-    expect(await reapOrphans(file, commandOf, 200)).toEqual(['ollama'])
+    expect(await reapOrphans(file, programOf, 200)).toEqual(['ollama'])
     await until(() => !alive(pid))
     expect(fs.existsSync(file)).toBe(false)
   })
@@ -35,7 +36,7 @@ describe('pid file', () => {
     const file = path.join(tempDir(), 'services.json')
     const pid = leftover()
     recordService(file, 'ollama', pid, '/Applications/PostCall.app/ollama')
-    expect(await reapOrphans(file, commandOf, 200)).toEqual([])
+    expect(await reapOrphans(file, programOf, 200)).toEqual([])
     expect(alive(pid)).toBe(true)
     process.kill(-pid, 'SIGKILL')
   })
