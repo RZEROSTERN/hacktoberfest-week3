@@ -1043,3 +1043,28 @@ install first (the root `package.json` has none); it needs Node 22 or newer and 
   `ci-dist-check`; the label exists so the fallback is exercised whenever the build changes and does not rot unseen.
 - **Not covered:** a developer's own computer will differ from a runner (an older Visual Studio, a different MSYS2 root:
   `MSYS2_ROOT` moves it). The README lists the one-time setup per system (step 5).
+
+## 2026-10-19: Release process, checklist and docs for three systems
+
+- **Release checklist** (`docs/RELEASE_CHECKLIST.md`): the manual part CI cannot do, on the three real machines (the M2 Pro
+  Mac, the Windows 11 Ryzen 9 PC with an NVIDIA card, the Intel MacBook with Linux Mint). It tests the draft release's own files
+  after checking their SHA-256 (builds are not bit-for-bit reproducible, so a build tested earlier is not the one that is
+  published). Per system: install and get past the warning (Gatekeeper's *Open Anyway*, SmartScreen's *More info, Run
+  anyway*, `chmod +x` and FUSE 2 for the AppImage), the first-launch download, the whole flow from upload to export,
+  quitting and force quitting with a check that no `ollama`, `postcall-api`, `whisper-cli` or `ffmpeg` is left, and
+  uninstalling (the data folder is kept on purpose: it holds 7.2 GB of models). It adds the two checks only real hardware
+  can do: a Windows user with an accent in the name, and whether the NVIDIA card is used through Vulkan.
+- **README**: per-system install instructions and requirements, the data folder of each system, the Windows/Linux hardware
+  note (CPU or Vulkan, nothing timed yet), how to build an installer locally, the release process (release PR, tag on
+  `master`, draft, checklist, publish by hand, merge back), what to do if CI is down, and honest limits: the Windows
+  and Linux installers have not been installed on real hardware.
+- **CLAUDE.md** gets the condensed commands and a Windows/Linux gotcha; **`.claude/rules/ci.md`** (scoped to `.github/**`)
+  records the rules for workflows: actions pinned to a full SHA, minimal permissions, draft-only releases, no
+  branch named "main", workflows call the repository's scripts, labels to ask for a build on a `develop` pull request.
+- **`docs/DEPLOYMENT.md`** keeps its original plan but now opens with the current status (most of Windows and Linux is
+  built; Mac App Store, signing, CUDA and RHEL are not) and says DECISIONS.md wins where they differ.
+- **Recorded from the earlier Linux work** (the branch that was not merged): RHEL-family Linux is not supported today
+  (checked in AlmaLinux 9 and 10 images, 2026-10-14: glibc 2.34 on 9, below the 2.35 the builds need; no `libXScrnSaver`
+  on 10), and **Windows users are not served from a hosted Linux server** (2026-10-14): a shared server moves clients'
+  calls off their computer, the app is written for one user on one machine, and the Windows programs must be built on
+  Windows anyway. See DEPLOYMENT.md sections 3.3b and 5.4.

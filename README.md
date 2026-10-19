@@ -2,7 +2,7 @@
 
 **Turn a recorded client discovery call into a draft proposal in minutes. On your own Mac, with open-source AI, without sending the call to anyone's server.**
 
-PostCall is a macOS app for freelancers and small agencies. You upload the recording of a call, and it transcribes it, pulls out what the client actually said, and drafts a proposal from those notes and your own rates. Everything runs on your computer: the speech model, the language model and the data. After a one-time model download it works fully offline.
+PostCall is a desktop app for freelancers and small agencies, for macOS, Windows and Linux. You upload the recording of a call, and it transcribes it, pulls out what the client actually said, and drafts a proposal from those notes and your own rates. Everything runs on your computer: the speech model, the language model and the data. After a one-time model download it works fully offline.
 
 Built for the DEV Open-Source AI Challenge, Week 2: "Side Hustle". Source code: MIT with a Beerware thank-you (see [License](#license)).
 
@@ -42,9 +42,17 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 
 ## Install
 
-**Requirements:** a Mac with Apple Silicon (M1 or newer) and macOS 14 or later. Intel Macs are not supported.
+| System | Installer | Needs |
+| --- | --- | --- |
+| **macOS** | `PostCall-<version>-arm64.dmg` | Apple Silicon (M1 or newer), macOS 14 or later. Intel Macs are not supported. |
+| **Windows** | `PostCall-<version>-x64-setup.exe` | Windows 11 on a 64-bit PC (Windows 10 22H2 should work, untested), a CPU with AVX2 (Intel since 2013, AMD since 2015). |
+| **Linux** | `postcall_<version>_amd64.deb` or `PostCall-<version>-x86_64.AppImage` | A 64-bit distribution with glibc 2.35 or newer (Ubuntu 22.04, Linux Mint 21, Debian 12, Fedora 36 or newer), a CPU with AVX2. The AppImage also needs FUSE 2. |
 
-1. Download `PostCall-1.0.0-arm64.dmg` (306 MB) from the [Releases page](https://github.com/RZEROSTERN/hacktoberfest-week3/releases).
+Download the file for your system from the [Releases page](https://github.com/RZEROSTERN/hacktoberfest-week3/releases) and check it against `SHA256SUMS` there. **The installers are not signed** (certificates cost money and this is a free project), so each system warns the first time; the steps are below. Release 1.0.0 contains the macOS installer only; the Windows and Linux installers are built by CI (see [Releases](#releases)) and are attached starting with the next release. They have been built and smoke-tested on CI runners of each system, but not yet tried on real hardware (see [Known limits](#known-limits)).
+
+### macOS
+
+1. Download `PostCall-1.0.0-arm64.dmg` (306 MB).
 2. Open it and drag **PostCall** into **Applications**.
 3. **Open the app for the first time.** The app is not signed with an Apple Developer certificate (that costs money and this is a free project), so macOS blocks it the first time. Following [Apple's own instructions](https://support.apple.com/en-us/102445):
    1. Try to open PostCall, so macOS shows its warning, then close the warning.
@@ -53,7 +61,19 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
    4. The warning appears once more; click **Open**. PostCall opens normally from then on.
 
    If you prefer the Terminal, `xattr -dr com.apple.quarantine /Applications/PostCall.app` removes the "downloaded from the internet" flag so the warning never appears. This is a widely used workaround, not part of Apple's instructions.
-4. **First launch: the model download.** The request screen shows what will be downloaded:
+### Windows
+
+1. Run `PostCall-<version>-x64-setup.exe` (about 170 MB). Windows shows **"Windows protected your PC"** because the installer is not signed: click **More info**, then **Run anyway**.
+2. Choose the folder (it installs for your user and does not need administrator rights) and finish. Open PostCall from the Start menu.
+
+### Linux
+
+- **`.deb`** (Linux Mint, Ubuntu, Debian; about 170 MB): `sudo apt install ./postcall_<version>_amd64.deb`, then open PostCall from the menu or run `postcall`.
+- **AppImage** (about 210 MB): make it executable with `chmod +x PostCall-<version>-x86_64.AppImage` (or in the file manager: Properties, *Allow executing*) and run it. If it complains about `libfuse.so.2`, install FUSE 2 (`sudo apt install libfuse2`, or `libfuse2t64` on Ubuntu 24.04 and Mint 22). If it stops with a sandbox error, use the `.deb`.
+
+### First launch: the model download (all systems)
+
+4. The request screen shows what will be downloaded:
 
    | | Size |
    | --- | --- |
@@ -64,7 +84,7 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 
    Use Wi-Fi. The app then prepares its local AI engine, downloads both models, verifies them (the speech model against a fixed checksum), and runs a short built-in sample through the language model to confirm it can produce the structured notes the app needs. Downloads can be paused and resumed, survive closing the app, and offer a retry if the network drops. This is the only time the app uses the internet.
 
-PostCall keeps its data, models and logs in `~/Library/Application Support/PostCall`. To remove everything, delete the app and that folder (about 7.2 GB once the models are downloaded).
+PostCall keeps its data, models and logs in one folder: `~/Library/Application Support/PostCall` on macOS, `%APPDATA%\PostCall` on Windows and `~/.config/PostCall` on Linux. The uninstallers leave it alone on purpose (it holds the models, about 7.2 GB); to remove everything, uninstall the app and delete that folder.
 
 ## Languages
 
@@ -91,6 +111,8 @@ Later, in **Settings**, you can switch to another downloaded model ("Check and u
 <img src="docs/screenshots/setup-model-check.png" alt="A model that failed the compatibility check: a plain explanation and a button to use the recommended model" width="860">
 
 ## Hardware
+
+**Windows and Linux** run the speech model and the language model on the **CPU**, or on a graphics card through Vulkan when its driver supports it (AMD, Intel and NVIDIA); NVIDIA's CUDA libraries are not included, to keep the installers small. Nothing has been timed on these systems yet: the speed targets below were measured on a Mac with Metal, and a CPU-only computer will be slower, perhaps much slower on an older laptop. [The release checklist](docs/RELEASE_CHECKLIST.md) records the first Windows and Linux numbers.
 
 The numbers come from [docs/BENCHMARKS.md](docs/BENCHMARKS.md), measured on a MacBook with an M2 Pro and 16 GB of memory, on a busy desktop (browser, IDE, Docker).
 
@@ -149,13 +171,13 @@ flowchart LR
 | `desktop/` | Electron shell (TypeScript). Picks two free loopback ports, starts the bundled Ollama and then the API, waits for both health checks, serves the web app from its own `app://` address with a strict content security policy, restarts a crashed service once, and stops everything on quit. Sandboxed window, one value exposed to the page. |
 | `samples/` | Role-played, consented sample calls and their expected key facts. |
 | `spike/` | The model benchmark scripts (not shipped). |
-| `docs/` | [DECISIONS.md](docs/DECISIONS.md) (every technical decision and why), [BENCHMARKS.md](docs/BENCHMARKS.md), and [DEPLOYMENT.md](docs/DEPLOYMENT.md) (the plan for Linux, Windows and the Mac App Store). |
+| `docs/` | [DECISIONS.md](docs/DECISIONS.md) (every technical decision and why), [BENCHMARKS.md](docs/BENCHMARKS.md), [RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) (the manual test before each release), and [DEPLOYMENT.md](docs/DEPLOYMENT.md) (the plan for the Mac App Store and what is left for Windows and Linux). |
 
-The packaged app contains the Ollama standalone build (v0.35.1), the API as one program, a static `whisper-cli` built from a pinned whisper.cpp revision, and the generated web app. The `.dmg` is 306 MB (about 800 MB installed).
+The packaged app contains the Ollama standalone build (v0.35.1; on Windows and Linux its CPU and Vulkan backends, without the CUDA libraries), the API as one program, a static `whisper-cli` built from a pinned whisper.cpp revision, on Windows and Linux a small LGPL-only FFmpeg for reading audio (macOS has its own converter), and the generated web app. The macOS `.dmg` is 308 MB (about 800 MB installed); the Windows installer is 170 MB, the Linux `.deb` 170 MB and the AppImage 210 MB.
 
 ## Privacy
 
-- Everything runs on your Mac. The API and the bundled Ollama listen on `127.0.0.1` only. The app always uses its own Ollama, never one installed on your system.
+- Everything runs on your computer. The API and the bundled Ollama listen on `127.0.0.1` only. The app always uses its own Ollama, never one installed on your system.
 - The only network traffic is the model download you approve: the language model from the Ollama library, and the speech model from Hugging Face.
 - Audio is deleted after transcription unless you keep it. Transcripts, notes and proposals are stored in a local SQLite database.
 - No analytics, no telemetry, and the app never logs transcript or proposal content.
@@ -185,6 +207,38 @@ make desktop-check           # start the shell for real and check processes, por
 
 `make help` lists everything. `web/ui-check/README.md` explains how the real screens are checked with a headless browser.
 
+### Build the installer on your own computer
+
+`npm run dist` builds the installer for the system you run it on, with the same steps as CI (a test fails if they differ). It needs Node 22 or newer ([nodejs.org](https://nodejs.org)) and checks the rest first, telling you how to install anything missing. No `make` is needed.
+
+| System | Install once |
+| --- | --- |
+| macOS | [uv](https://docs.astral.sh/uv/), the Xcode command-line tools (`xcode-select --install`), `brew install cmake` |
+| Windows | [uv](https://docs.astral.sh/uv/), [CMake](https://cmake.org/download/), Visual Studio Build Tools 2022 with "Desktop development with C++", and [MSYS2](https://www.msys2.org/) with `pacman -S --needed make diffutils xz curl mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-nasm` run in its UCRT64 shell (if MSYS2 is not in `C:\msys64`, set `MSYS2_ROOT`) |
+| Linux | [uv](https://docs.astral.sh/uv/), `sudo apt install build-essential cmake nasm zstd binutils` |
+
+```sh
+npm run dist                          # everything; the installer ends up in desktop/release/
+npm run dist -- --from build-api      # continue at a step after fixing what stopped it
+npm run dist -- --list                # the steps (also --only <step>, --skip-smoke, --dry-run)
+```
+
+On Windows and Linux it downloads Ollama's 1.4 GB archive and keeps only the CPU and Vulkan parts; a whole build takes 3 to 9 minutes on a hosted CI runner. The macOS-only `make` targets (`make desktop-dist`, `make desktop-resources`) call the same scripts.
+
+## Releases
+
+Installers are built by GitHub Actions, never by hand, unless CI is down.
+
+1. Create `release/<version>` from `develop`, set the version in `desktop/package.json` and `api/pyproject.toml`, and open a pull request into `master`. The `Build installers` workflow runs on it and attaches the three installers (macOS, Windows, Linux) to the run as artifacts: an early signal that everything builds.
+2. Merge it, then tag the merge commit on `master`: `git tag -a v<version> <commit> -m "<version>"` and `git push origin v<version>`.
+3. The `Release (draft)` workflow checks that the tag matches the app versions and is on `master`, rebuilds the three installers, writes `SHA256SUMS` and release notes, and creates a **draft** GitHub Release with everything attached. **It never publishes.**
+4. Follow [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) on the three test machines with the files of the draft. Edit the notes, then publish the draft by hand.
+5. Merge `master` back into `develop` through a pull request.
+
+**If CI is down:** run `npm run dist` on each machine and copy the four installers into one folder. Then `node scripts/release.mjs prepare <folder> <version>` writes `SHA256SUMS` and `RELEASE_NOTES.md` there, and `gh release create v<version> --draft --verify-tag --notes-file <folder>/RELEASE_NOTES.md <folder>/PostCall-* <folder>/postcall_* <folder>/SHA256SUMS` creates the draft (do not attach the per-file `.sha256` files). Publish it by hand after the checklist, as always.
+
+More about the CI: the workflows are in `.github/workflows/`; a pull request into `develop` can ask for a build with the label `ci-build`, a release rehearsal with `ci-release-rehearsal`, and a check of `npm run dist` with `ci-dist-check`.
+
 ## Branching model
 
 GitFlow, with one rule that keeps the history simple: **no stacked pull requests**.
@@ -204,7 +258,7 @@ hotfix/<name> (from master) --PR--> master, then merged back into develop
 
 ## Third-party licenses
 
-PostCall is made of open-source parts: Ollama (MIT) with llama.cpp and MLX (MIT), whisper.cpp (MIT), the Whisper model (MIT), the Gemma 4 language model (Apache 2.0) and the other models we tested (Apache 2.0), Electron and Chromium, Python and its libraries, and Nuxt and Vue (MIT). The full list, with versions and where each license text ships in the app, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The same text is inside the app, under **Third-party notices** at the bottom of every screen.
+PostCall is made of open-source parts: Ollama (MIT) with llama.cpp and MLX (MIT), whisper.cpp (MIT), FFmpeg on Windows and Linux (LGPL-2.1-or-later, built without any GPL part and run as a separate program), the Whisper model (MIT), the Gemma 4 language model (Apache 2.0) and the other models we tested (Apache 2.0), Electron and Chromium, Python and its libraries, and Nuxt and Vue (MIT). The full list, with versions and where each license text ships in the app, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The same text is inside the app, under **Third-party notices** at the bottom of every screen.
 
 ## Pricing idea
 
@@ -220,12 +274,14 @@ A **one-time license, no subscription.** Most AI products charge monthly because
 
 ## Known limits
 
-- Apple Silicon and macOS 14 or later only. The first release has been tried on macOS 27 only. Windows, Linux and the Mac App Store are planned, not built: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+- macOS: Apple Silicon and macOS 14 or later only; the first release has been tried on macOS 27 only.
+- Windows and Linux: the installers are built and smoke-tested on CI runners (the packaged programs start, and a short Spanish call is uploaded, converted and transcribed through the packaged app, in a folder with an accent in its name), but they have **not been installed on real hardware yet**. Nobody has yet seen the window on a real Windows or Linux desktop, timed a transcription there, or checked the Vulkan backend on a graphics card; [the release checklist](docs/RELEASE_CHECKLIST.md) is how that gets done. A CPU without AVX2 (before 2013) stops the speech engine, and a distribution older than glibc 2.35 (Debian 11, RHEL 9 and clones) cannot run the Linux build.
+- The Mac App Store, signed installers, an optional NVIDIA CUDA download for the Windows PC and RHEL-family Linux are not done: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Not tested on an 8 GB Mac, and not tested with calls longer than the 5-minute sample (the 32-minute file repeats it).
 - Tested on a Spanish call. English is covered by the built-in check; other languages depend on what Whisper and the chosen model can do.
 - PDF export uses a built-in font that covers Western European languages (English, Spanish, French, Portuguese, German, Italian). For proposals in Japanese, Chinese, Russian, Hindi or Arabic the PDF button is switched off and the Markdown export is the one to use.
 - The translations of the interface were drafted with AI assistance and have not been reviewed by native speakers (see [Languages](#languages)). Proposals in the five newest languages were checked on one sample call only.
-- The app is not signed or notarized, so the first launch needs the steps above.
+- The installers are not signed or notarized, so the first launch needs the steps above on every system.
 
 ## License
 

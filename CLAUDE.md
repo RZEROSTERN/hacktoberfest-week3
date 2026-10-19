@@ -6,7 +6,7 @@ notes and drafts the proposal, everything runs on the user's machine.
 
 - `api/` FastAPI (Python 3.12, uv, SQLModel/SQLite), `prompts/` for versioned prompts
 - `web/` Nuxt 4 SPA (`ssr: false`), `desktop/` Electron shell that bundles Ollama, the api and whisper-cli
-- `docs/` DECISIONS.md, BENCHMARKS.md and DEPLOYMENT.md (plan for Linux, Windows, Mac App Store; not built), `samples/` consented call recordings with key facts,
+- `docs/` DECISIONS.md, BENCHMARKS.md, RELEASE_CHECKLIST.md and DEPLOYMENT.md (Mac App Store plan; Windows/Linux left-overs), `samples/` consented call recordings with key facts,
   `spike/` model benchmark scripts (not shipped; see docs/BENCHMARKS.md)
 
 ## Commands (from repo root)
@@ -15,7 +15,12 @@ notes and drafts the proposal, everything runs on the user's machine.
 - Check Ollama: `make ollama-check`. Test / lint / typecheck: `make test`, `make lint`,
   `make typecheck` (`make format` fixes ruff). Opt-in with real models: `make test-llm` (~4.6 GB), `make test-setup` (pulls ~270 MB)
 - Look at the real UI: `web/ui-check/README.md` (headless Chrome)
-- Desktop: `make desktop-setup`, `make desktop-dist` (everything + `.dmg`), `make desktop-dev`, `make desktop-check`
+- Desktop: `make desktop-setup`, `make desktop-dev`, `make desktop-check`
+- Installer for this OS, no make needed: `npm run dist` (same steps as CI; `-- --from <step>` resumes, `--list` shows
+  them); `make desktop-dist` is the same command. Steps live in `scripts/*.mjs`, versions in `scripts/versions.json`
+- CI (`.github/workflows/`): `build.yml` (release PRs into master, manual, or a develop PR labelled `ci-build`),
+  `release.yml` (tag `vX.Y.Z` on master -> DRAFT release; rehearse with label `ci-release-rehearsal`), `dist-check.yml`
+  (label `ci-dist-check`). Releasing and the manual test: README "Releases", `docs/RELEASE_CHECKLIST.md`
 
 ## Git: GitFlow, no stacked PRs
 - `master` is production. `develop` is integration. Never commit to either directly.
@@ -56,6 +61,8 @@ notes and drafts the proposal, everything runs on the user's machine.
 - UI text lives in `web/app/locales/*.json` (11 languages, `en.json` is the source); no raw text in templates (a test enforces it). API refusals carry a `code`.
 - Prompt examples must not be in a specific language: an English one made Spanish calls come back in English.
 - Hard-killing the api leaves `whisper-cli` running: stop the process tree.
+- Windows/Linux installers bundle Ollama's CPU + Vulkan backends only (CUDA would pass the 1.5 GB limit); `whisper-cli`
+  there needs AVX2 and, on Windows, a UTF-8 manifest (accented user names). Installers are unsigned on every OS.
 - PDF export uses ReportLab's built-in font: Western European text only (others are refused, use Markdown).
 - whisper.cpp reads only 16-bit WAV: convert with `afconvert -f WAVE -d LEI16@16000 -c 1`. On long
   audio, if the output is a flood of tiny segments, re-run with `-mc 0` (see docs/BENCHMARKS.md).
