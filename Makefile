@@ -37,7 +37,7 @@ help:
 	@echo "make desktop-resources  build everything the app bundles: web, api, whisper-cli, FFmpeg (not on macOS), Ollama"
 	@echo "make smoke              start the built programs and transcribe a short clip through the api (scripts/smoke.mjs)"
 	@echo "make desktop-dev        run the desktop shell from this repository (after desktop-resources)"
-	@echo "make desktop-dist       build the unsigned macOS arm64 .dmg into desktop/release/"
+	@echo "make desktop-dist       build the installer for this system into desktop/release/ (same as npm run dist)"
 	@echo "make desktop-check      start the desktop shell for real and check it (processes, ports, isolation)"
 
 setup:
@@ -121,9 +121,8 @@ desktop-resources: build-web build-api build-whisper build-ffmpeg fetch-ollama
 desktop-dev:
 	cd desktop && npm run start
 
-desktop-dist: desktop-resources
-	node scripts/package.mjs
-	node scripts/installer-sizes.mjs
+desktop-dist:
+	node scripts/dist.mjs
 
 smoke:
 	node scripts/smoke.mjs
