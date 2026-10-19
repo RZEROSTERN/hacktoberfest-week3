@@ -89,7 +89,8 @@ try {
   check('the bundled Ollama and the packaged api are both running', !!ollama && !!api, kids.map(k => path.basename(k.command.split(' ')[0])).join(', '))
   const opened = listenPorts(tree(shell.pid).map(p => p.pid)).filter(l => l.port !== CDP_PORT)
   check('every port the app opens is loopback-only', opened.length >= 2 && opened.every(l => l.address === '127.0.0.1'), opened.map(l => `${l.address}:${l.port}`).join(' '))
-  check('the pid file lists both services', existsSync(pidFile) && Object.keys(JSON.parse(readFileSync(pidFile, 'utf8'))).sort().join() === 'api,ollama')
+  if (appBin) check('the pid file lists both services', existsSync(pidFile) && Object.keys(JSON.parse(readFileSync(pidFile, 'utf8'))).sort().join() === 'api,ollama')
+  else results.push(['SKIP', 'the pid file lists both services', 'the unpackaged shell keeps its data in "PostCall (development)", not the scratch folder; run with APP_BIN to check it'])
 
   // 3. The window is sandboxed and knows only where the api is.
   const bridge = await page.eval('JSON.stringify(window.desktop)')

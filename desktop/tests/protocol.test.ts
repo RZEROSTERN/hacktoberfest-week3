@@ -43,7 +43,7 @@ describe('resolveAsset', () => {
   })
 
   it('refuses to leave the web folder', () => {
-    for (const evil of ['/../secret.txt', '/%2e%2e/secret.txt', '/..%2fsecret.txt', '/_nuxt/../../secret.txt', '/a%00b']) {
+    for (const evil of ['/../secret.txt', '/%2e%2e/secret.txt', '/..%2fsecret.txt', '/_nuxt/../../secret.txt', '/a%00b', '/..%5Csecret.txt', '/_nuxt/..%5C..%5Csecret.txt', '/C:/Windows/win.ini', '/index.html:stream']) {
       const found = resolveAsset(root, evil)
       expect(found === null || found.startsWith(root + path.sep), evil).toBe(true)
       expect(found, evil).not.toBe(path.join(path.dirname(root), 'secret.txt'))

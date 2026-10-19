@@ -845,3 +845,75 @@ stereo, to force the downmix and resample) in `api/tests/data/` run through the 
 which is tested with the packages). All four formats come out as 16 kHz mono 16-bit WAV of the right length, and a file
 that is not audio is refused. Not covered: an mp4 that really has a video track (no way to make one without FFmpeg on
 this Mac).
+
+## 2026-10-19: Cross-platform audit (macOS, Windows 11 and Linux)
+
+The new goal is installers built by GitHub Actions for macOS arm64 (`.dmg`), Windows 11 x64 (NSIS `.exe`) and Linux
+x64 (AppImage and `.deb`, to run on Linux Mint), with the app working on all three. The owner's test machines are an
+M2 Pro Mac, a Windows 11 PC with a Ryzen 9 and an NVIDIA GeForce, and an Intel MacBook running Linux Mint with no
+dedicated GPU. This entry is the audit of everything that only worked on macOS or on POSIX, and what was done.
+
+**Decisions taken with the owner before any code changed**
+- **Engine size.** Ollama's official Windows zip and Linux archive are 1.4 GiB each (1.85 GiB unpacked on Windows),
+  almost all NVIDIA CUDA libraries (`cuda_v12` about 870 MiB zipped, `cuda_v13` about 500 MiB on Windows), so a
+  bundled installer would be about 1.7 GB, over the 1.5 GB limit set for this work. Chosen: **bundle the CPU backends
+  and the Vulkan backend, drop `cuda_v12`, `cuda_v13` and ROCm.** Ollama's GPU documentation says "Vulkan is enabled by
+  default when the backend is installed" and that most Windows vendor drivers include Vulkan, so AMD, Intel and NVIDIA
+  cards with Vulkan drivers can still be used (about 12 MiB zipped). The Windows zip's CPU backends carry their own
+  LLVM runtime and the Vulkan folder its own MSVC runtime, so removing the CUDA folders leaves nothing missing.
+  Costs, not yet measured: NVIDIA owners lose CUDA speed. The Windows test PC has an NVIDIA GeForce, so the first
+  real-hardware question is how Vulkan compares with the CPU there; an optional CUDA download in the first-launch wizard
+  is the follow-up if it matters. Mac is unaffected (Metal, 152 MiB archive).
+- **The earlier `feature/linux-packaging` branch** (Docker `.deb`/`.rpm` build) is not merged. The useful app-level parts
+  are ported into the new step branches from `develop`; the Docker pipeline and the `.rpm` target are left out because
+  native CI replaces them. The old branch is left untouched.
+
+**What was wrong, and what was done** (all fixed in this step unless it says otherwise)
+
+| # | Where | Problem | Done |
+| --- | --- | --- | --- |
+| 1 | `api/app/lifecycle.py` | `os.kill(pid, 0)` tests for a process on Unix, but on Windows any signal other than the two console ones **terminates** the target, so the parent watcher would have killed the desktop app every two seconds. | `psutil.pid_exists`. |
+| 2 | `api/app/__main__.py` | The api stopped itself by sending itself `SIGTERM`, which on Windows ends it abruptly instead of letting uvicorn shut down (running transcriptions were not stopped cleanly). | Builds a `uvicorn.Server` and sets `should_exit`. |
+| 3 | `api/app/system.py` | `os.sysconf("SC_PHYS_PAGES")` does not exist on Windows, so the model screen would have failed. | `psutil.virtual_memory().total`. |
+| 4 | `desktop/src/supervisor.ts`, `pidfile.ts` | Each program led its own process group and was stopped with `process.kill(-pid)`. Windows has no process groups, and `detached` there opens a console window. | New `processes.ts`: no `detached` on Windows, `taskkill /PID n /T /F` ends the whole tree (documented: `/T` includes children, `/F` is forceful; there is no polite signal for a console program). |
+| 5 | `desktop/src/pidfile.ts` | The leftover-process check used `ps`. | `tasklist` on Windows, matching the program's file name (the most it shows). |
+| 6 | `desktop/src/processes.ts` | Windows does not re-parent children, so helpers of a program that **crashed** (`llama-server`, `whisper-cli`) cannot be reached through it. | After an unclean last run, and at quit when a program crashed during the session, PowerShell lists the processes whose executable lives under the app's resources folder and ends them. It matches the folder, never a name, so a system-wide Ollama is never touched. Single-instance lock (already present) keeps two copies from sweeping each other. |
+| 7 | `desktop/src/layout.ts` | Program names without `.exe`; one Ollama layout. | Per system: `.exe` on Windows; Ollama is `ollama/ollama.exe` (flat) on Windows, `ollama/bin/ollama` plus `lib/ollama/` on Linux (it finds its libraries relative to itself) and `ollama/ollama` on macOS; FFmpeg is bundled on Windows and Linux (macOS has `afconvert`) and passed to the api as `POSTCALL_FFMPEG`. |
+| 8 | `desktop/src/env.ts` | The environment whitelist lacked what Windows programs need to start (`SystemRoot`, `TEMP`, `PATHEXT`, ...), and Ollama finds its home through `USERPROFILE`, not `HOME`. | Windows-only whitelist; `USERPROFILE` redirected to the app's folder like `HOME`. Nothing of the user's own environment is passed. |
+| 9 | `api/app/audio.py`, `transcribe.py` | Programs started by the api would open a visible console window on Windows (the api itself has none). | `creationflags=CREATE_NO_WINDOW` on Windows, zero elsewhere (`app/proc.py`). |
+| 10 | `api/app/db.py` | The SQLite URL was a string; a Windows path has backslashes and a user name can hold spaces, `#` or `%`. | `URL.create("sqlite", database=...)`; tested with an awkward folder. |
+| 11 | `desktop/src/protocol.ts` | On Windows `\` also separates folders and `:` opens drive letters and NTFS streams. | Requests containing either are refused on every system (no web asset has them). |
+| 12 | `desktop/src/main.ts` | The macOS app menu; no Windows app id. | File menu on Windows and Linux; `setAppUserModelId('mx.dev1.postcall')` on Windows. |
+
+**Already fine, checked and left alone:** `userData` comes from `app.getPath`, the api uses `pathlib`, both services bind
+`127.0.0.1` only (so Windows Firewall does not ask), the web app is served from `app://postcall` with no ports or
+`file://`, all bundled programs sit in `extraResources` beside the asar (never inside it, so they can run), and
+`os.replace` and `shutil.rmtree` behave on Windows.
+
+**Native libraries: the list, and why no replacement is needed.** The api's wheels all exist for Windows, macOS and
+Linux: pydantic-core, httptools, watchfiles, websockets, PyYAML, SQLAlchemy, Pillow (bundles its own libraries) and the
+new `psutil`; `uvloop` is POSIX-only and its marker in `uvicorn[standard]` already skips it on Windows. PDF export is
+ReportLab, which is pure Python with an optional accelerator, so **no GTK or Pango is needed anywhere**. SQLite comes
+with the Python build. The Electron app has no native Node modules. The programs that must be provided per system are
+Ollama (official release per system, trimmed as above), `whisper-cli` (built from the pinned whisper.cpp revision on each
+system's runner) and FFmpeg on Windows and Linux (the same minimal LGPL-only configuration used for the Linux work). On
+Linux the window needs the system's GTK 3, NSS and related libraries (declared by the `.deb`), and an AppImage needs
+FUSE 2. No dependency needs replacing, so there was no stop on that account.
+
+**Found but belongs to later steps**
+- **Non-ASCII user names on Windows** (for example "Ramírez"): `whisper-cli` opens files with the ANSI code page, so a
+  model or audio path under `C:\Users\Marco Ramírez\...` would fail. The Windows build embeds a UTF-8 application
+  manifest (`activeCodePage`), and the release checklist tests a user with an accent. This is the likeliest real-world
+  Windows bug for this app's audience, and it cannot be seen on the CI runner.
+- `whisper_threads` stays at 4 (the macOS value); a CPU-only machine (the Linux Mint laptop) may want more. To be
+  measured on that machine, not guessed.
+- The `.sh` build scripts, the `Makefile` and `shell-check.mjs` (`ps`, `lsof`) are macOS/Linux only. The build moves to
+  Node scripts (steps 2 and 4); checking a running Windows app is manual, from the release checklist (step 5).
+- The desktop unit tests spell paths with `/`; they run on macOS and Linux only for now.
+- Whisper large-v3-turbo on CPU only has not been timed on Linux or Windows; the 30-minute target in
+  `BENCHMARKS.md` was measured on Metal.
+
+**Tests added:** a guard that fails if any api module calls `os.kill`, `killpg`, `sysconf`, `getpgid` or `fork`; the
+shutdown flag instead of a signal; the database in a folder with spaces, `#`, `%` and an accent; layouts, environments,
+`taskkill`, `tasklist` and the PowerShell sweep for each system with the system injected (so they run on any host);
+the Windows reaper; and the refused request paths. The Windows-only branches themselves can only be run on Windows.
