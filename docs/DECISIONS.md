@@ -955,3 +955,35 @@ artifacts.
 - **Linux.** whisper-cli needs a CPU with AVX2 (Intel since Haswell, 2013; AMD since 2015): it would stop with "illegal
   instruction" on an older one, which the Mint laptop test will show. AppImage needs FUSE 2 on the user's system, and on
   Ubuntu 24.04 and its derivatives the Chromium sandbox may need the `.deb` (its AppArmor profile) instead.
+
+**What the first full runs showed (run 39329201325, all three systems green after five fix rounds).** Nothing in this
+pipeline had run on Windows or Linux before; each failure was real and is now covered:
+- *Windows, tar.* Git Bash puts GNU tar first on the PATH; it read `D:\file` as a file on a host called D and cannot
+  open zip files. The scripts call `C:\Windows\System32\tar.exe` (bsdtar) on Windows.
+- *All systems, npm.* The lockfiles had been written by npm 11.6 (Node 24.13); Node 24.21's npm 11.19 refused them
+  (`@emnapi/core` and `@emnapi/runtime` missing). Both lockfiles were regenerated with 11.19 and install with either
+  version; CI pins Node to the exact `24.21.0`.
+- *Windows, FFmpeg.* `setup-msys2` installs MSYS2 (with the compiler) into its own folder, not the preinstalled
+  `C:\msys64`, so the compiler was "not found" three times in a row. The step now receives the action's
+  `msys2-location`. Then the new DLL check did its job: `ffmpeg.exe` linked `libwinpthread-1.dll`, a MinGW runtime that
+  a user's PC would not have, so it is linked statically (`-static`). Its remaining DLLs are Windows' own: `KERNEL32`,
+  `SHELL32`, `bcrypt` and the `api-ms-win-crt-*` set of the Universal C Runtime.
+
+**Measured:**
+
+| System | Installer | Size | Smoke checks (built, then packaged) | Job time |
+| --- | --- | ---: | --- | ---: |
+| macOS arm64 (`macos-14`) | `PostCall-1.0.0-arm64.dmg` | 308.4 MB | 9 and 9 | 5.5 min |
+| Windows x64 (`windows-2022`) | `PostCall-1.0.0-x64-setup.exe` | 170.0 MB | 12 and 12 | 8.9 min |
+| Linux x64 (`ubuntu-22.04`) | `PostCall-1.0.0-x86_64.AppImage` and `postcall_1.0.0_amd64.deb` | 209.9 MB and 170.4 MB | 12 and 12 | 6.2 min |
+
+All are far below the 1.5 GB limit, which confirms the CPU + Vulkan choice (full CUDA would have been about 1.7 GB).
+In every smoke test a short Spanish call is uploaded to the packaged api, converted, and transcribed by the packaged
+whisper-cli in a folder named `postcall smoke Ramírez`, giving the same text on all three systems
+("Tiene actualmente manejada junto con dos socios", from the 3-second clip). That passing on Windows is the first
+evidence that the UTF-8 manifest works, **on a CI runner**: it still has to be tried with an accented user name on the
+Windows 11 test PC. Times are with warm caches for the downloads; the compiled programs were cached after the first run.
+
+**Not proven by CI, and left to the real-hardware checklist:** that the installers install and open on a desktop
+(CI has no display), Gatekeeper and SmartScreen behaviour, the Vulkan backend on a real graphics card, the AVX2 build on
+the Intel MacBook, the Chromium sandbox and AppArmor on Linux Mint, and the 7 GB model download.
