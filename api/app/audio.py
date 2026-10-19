@@ -5,6 +5,8 @@ import wave
 from pathlib import Path
 from typing import Protocol
 
+from app.proc import NO_WINDOW
+
 SUPPORTED_EXTENSIONS = (".mp3", ".m4a", ".wav", ".mp4")
 
 
@@ -28,7 +30,7 @@ class AfconvertDecoder:
     def to_wav(self, source: Path, dest: Path) -> None:
         cmd = ["afconvert", "-f", "WAVE", "-d", "LEI16@16000", "-c", "1", str(source), str(dest)]
         try:
-            subprocess.run(cmd, check=True, capture_output=True)
+            subprocess.run(cmd, check=True, capture_output=True, creationflags=NO_WINDOW)
         except FileNotFoundError as exc:
             raise TranscriptionError("decoder_missing") from exc
         except subprocess.CalledProcessError as exc:
@@ -68,7 +70,7 @@ class FfmpegDecoder:
             str(dest),
         ]
         try:
-            subprocess.run(cmd, check=True, capture_output=True)
+            subprocess.run(cmd, check=True, capture_output=True, creationflags=NO_WINDOW)
         except FileNotFoundError as exc:
             raise TranscriptionError("decoder_missing") from exc
         except subprocess.CalledProcessError as exc:

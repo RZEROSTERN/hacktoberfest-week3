@@ -23,6 +23,7 @@ from app.audio import (
     wav_duration,
 )
 from app.config import Settings
+from app.proc import NO_WINDOW
 
 DATA = Path(__file__).parent / "data"
 CLIPS = ["clip.mp3", "clip.m4a", "clip.wav", "clip.mp4"]
@@ -37,7 +38,7 @@ class Recorder:
 
     def __call__(self, cmd: list[str], **kwargs: Any) -> None:
         self.commands.append(cmd)
-        assert kwargs == {"check": True, "capture_output": True}
+        assert kwargs == {"check": True, "capture_output": True, "creationflags": NO_WINDOW}
         if self.error is not None:
             raise self.error
 

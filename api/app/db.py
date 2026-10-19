@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 
 from sqlalchemy import event
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import URL, Engine
 from sqlmodel import SQLModel, create_engine
 
 import app.models  # noqa: F401  (registers the tables on SQLModel.metadata)
@@ -11,7 +11,9 @@ import app.models  # noqa: F401  (registers the tables on SQLModel.metadata)
 def make_engine(data_dir: Path) -> Engine:
     """SQLite file in the data directory; tables are created on first use."""
     engine = create_engine(
-        f"sqlite:///{data_dir / 'postcall.db'}",
+        # Built from parts, not a string: a Windows path has backslashes, and a user name can hold
+        # spaces, `#` or `%`, all of which a URL string would misread.
+        URL.create("sqlite", database=str(data_dir / "postcall.db")),
         connect_args={"check_same_thread": False},  # the job worker has its own sessions
     )
 

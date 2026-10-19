@@ -9,6 +9,7 @@ from typing import Protocol
 
 from app.audio import TranscriptionError
 from app.errors import Cancelled
+from app.proc import NO_WINDOW
 
 PROGRESS_RE = re.compile(r"progress =\s*(\d+)%")
 
@@ -95,7 +96,11 @@ class WhisperCppTranscriber:
         ]  # fmt: skip
         try:
             proc = subprocess.Popen(
-                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True
+                cmd,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+                text=True,
+                creationflags=NO_WINDOW,
             )
         except OSError as exc:
             raise TranscriptionError("engine_missing") from exc
