@@ -16,8 +16,8 @@ WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
 case "$(uname -s)" in
-  MINGW*|MSYS*|CYGWIN*) EXE=.exe; EXTRA_LD="-static" ;;   # nothing but Windows' own DLLs needed at run time
-  *) EXE=""; EXTRA_LD="" ;;
+  MINGW*|MSYS*|CYGWIN*) EXE=.exe; WINDOWS=1 ;;
+  *) EXE=""; WINDOWS="" ;;
 esac
 
 curl -fsSL --retry 3 -o "$WORK/ffmpeg.tar.xz" "$FFMPEG_URL"
@@ -25,7 +25,8 @@ echo "$FFMPEG_SHA256  $WORK/ffmpeg.tar.xz" | sha256sum -c -
 tar -xJf "$WORK/ffmpeg.tar.xz" -C "$WORK"
 cd "$WORK/ffmpeg-$FFMPEG_VERSION"
 
-./configure \
+echo "compiler: $(command -v gcc || echo none)"; gcc --version | head -1 || true
+if ! ./configure \
   --disable-everything --disable-autodetect --disable-doc --disable-debug --disable-network \
   --disable-ffplay --disable-ffprobe --disable-avdevice \
   --enable-protocol=file,pipe \
@@ -34,14 +35,25 @@ cd "$WORK/ffmpeg-$FFMPEG_VERSION"
   --enable-decoder=mp3,mp3float,aac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,pcm_u8,pcm_alaw,pcm_mulaw \
   --enable-encoder=pcm_s16le \
   --enable-muxer=wav \
-  --enable-filter=abuffer,abuffersink,aresample,aformat,anull \
-  ${EXTRA_LD:+--extra-ldflags="$EXTRA_LD"}
+  --enable-filter=abuffer,abuffersink,aresample,aformat,anull; then
+  echo "---- configure failed; the end of ffbuild/config.log:" >&2
+  tail -n 60 ffbuild/config.log >&2 || true
+  exit 1
+fi
 make -j"$(nproc)" "ffmpeg$EXE"
 
 mkdir -p "$OUT"
 strip -o "$OUT/ffmpeg$EXE" "ffmpeg$EXE"
 cp COPYING.LGPLv2.1 LICENSE.md "$OUT/"
 { echo "FFmpeg $FFMPEG_VERSION, source $FFMPEG_SHA256 ($(basename "$FFMPEG_URL"))"; "$OUT/ffmpeg$EXE" -hide_banner -version; } > "$OUT/BUILDINFO.txt"
+
+# On Windows it must need nothing but the system's own DLLs: the MinGW runtimes would not be on the user's computer.
+if [ -n "$WINDOWS" ]; then
+  objdump -p "$OUT/ffmpeg$EXE" | grep "DLL Name" | sed 's/^[[:space:]]*//' | tee -a "$OUT/BUILDINFO.txt"
+  if objdump -p "$OUT/ffmpeg$EXE" | grep -qiE 'DLL Name: (libwinpthread|libgcc|libstdc|libssp)'; then
+    echo "ffmpeg.exe depends on a MinGW runtime DLL that Windows does not have" >&2; exit 1
+  fi
+fi
 
 # It must not be a GPL build.
 if grep -q -e '--enable-gpl' -e '--enable-nonfree' -e '--enable-version3' "$OUT/BUILDINFO.txt"; then

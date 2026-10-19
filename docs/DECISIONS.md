@@ -950,7 +950,8 @@ artifacts.
   and Electron. A cache can only make a build faster: downloads are checked against their pinned checksum every time.
 - **Windows specifics.** whisper-cli is built with the static MSVC runtime (no Visual C++ Redistributable needed), no
   OpenMP (it needs its own DLL) and a UTF-8 manifest linked in with `/MANIFEST:EMBED /MANIFESTINPUT`. FFmpeg is built in
-  MSYS2's UCRT64 shell with the same minimal LGPL configuration as on Linux, linked statically.
+  MSYS2's UCRT64 shell with the same minimal LGPL configuration as on Linux; the build fails if `ffmpeg.exe` needs a
+  MinGW runtime DLL (`libwinpthread`, `libgcc`, ...) that a user's Windows would not have.
 - **Linux.** whisper-cli needs a CPU with AVX2 (Intel since Haswell, 2013; AMD since 2015): it would stop with "illegal
   instruction" on an older one, which the Mint laptop test will show. AppImage needs FUSE 2 on the user's system, and on
   Ubuntu 24.04 and its derivatives the Chromium sandbox may need the `.deb` (its AppArmor profile) instead.
