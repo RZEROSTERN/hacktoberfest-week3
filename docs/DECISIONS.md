@@ -1068,3 +1068,21 @@ install first (the root `package.json` has none); it needs Node 22 or newer and 
   on 10), and **Windows users are not served from a hosted Linux server** (2026-10-14): a shared server moves clients'
   calls off their computer, the app is written for one user on one machine, and the Windows programs must be built on
   Windows anyway. See DEPLOYMENT.md sections 3.3b and 5.4.
+
+## 2026-10-28: Release 1.1.0, the first with Windows and Linux installers
+
+`release/1.1.0` from `develop`, a pull request into `master`, a merge commit, the annotated tag `v1.1.0` on it, and the
+`Release (draft)` workflow builds the installers and creates the draft; then `master` is merged back into `develop`
+through a pull request. This is the release process written in the README, run for the first time on the real tag path.
+
+- **Version.** 1.1.0, a minor version: two operating systems and the cross-platform fixes were added, nothing was removed,
+  and macOS behaves as in 1.0.0. The version is set in `desktop/package.json` and `api/pyproject.toml` (and their lockfiles);
+  the tag guard in `release.yml` refuses a tag that disagrees with them.
+- **The decision to publish.** The release checklist (`docs/RELEASE_CHECKLIST.md`) is meant to run on the three real
+  machines before the draft is published, and the CI workflow never publishes. For this release the owner chose to
+  **publish as soon as CI is green and the draft is verified** (four installers and `SHA256SUMS`, marked draft) instead of
+  waiting for that checklist. So what 1.1.0 claims is exactly what CI proved: each installer builds, its programs start,
+  and a short Spanish call is uploaded, converted and transcribed through the packaged app. The release notes and the
+  README say plainly that the Windows and Linux installers have **not been tried on real hardware**, which is what the
+  checklist is for; problems found there become 1.1.x fixes.
+- **Not part of this release:** signed installers, an NVIDIA CUDA download, RHEL-family Linux, the Mac App Store.

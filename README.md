@@ -48,11 +48,11 @@ Freelancers (developers, designers, consultants, writers) and small agencies, an
 | **Windows** | `PostCall-<version>-x64-setup.exe` | Windows 11 on a 64-bit PC (Windows 10 22H2 should work, untested), a CPU with AVX2 (Intel since 2013, AMD since 2015). |
 | **Linux** | `postcall_<version>_amd64.deb` or `PostCall-<version>-x86_64.AppImage` | A 64-bit distribution with glibc 2.35 or newer (Ubuntu 22.04, Linux Mint 21, Debian 12, Fedora 36 or newer), a CPU with AVX2. The AppImage also needs FUSE 2. |
 
-Download the file for your system from the [Releases page](https://github.com/RZEROSTERN/hacktoberfest-week3/releases) and check it against `SHA256SUMS` there. **The installers are not signed** (certificates cost money and this is a free project), so each system warns the first time; the steps are below. Release 1.0.0 contains the macOS installer only; the Windows and Linux installers are built by CI (see [Releases](#releases)) and are attached starting with the next release. They have been built and smoke-tested on CI runners of each system, but not yet tried on real hardware (see [Known limits](#known-limits)).
+Download the file for your system from the [Releases page](https://github.com/RZEROSTERN/hacktoberfest-week3/releases) and check it against `SHA256SUMS` there. **The installers are not signed** (certificates cost money and this is a free project), so each system warns the first time; the steps are below. Release 1.0.0 has the macOS installer only; **release 1.1.0 is the first with the Windows and Linux installers too**. The Windows and Linux installers were built and smoke-tested on CI runners of each system, but have not been tried on real hardware yet (see [Known limits](#known-limits)).
 
 ### macOS
 
-1. Download `PostCall-1.0.0-arm64.dmg` (306 MB).
+1. Download `PostCall-1.1.0-arm64.dmg` (308 MB).
 2. Open it and drag **PostCall** into **Applications**.
 3. **Open the app for the first time.** The app is not signed with an Apple Developer certificate (that costs money and this is a free project), so macOS blocks it the first time. Following [Apple's own instructions](https://support.apple.com/en-us/102445):
    1. Try to open PostCall, so macOS shows its warning, then close the warning.
