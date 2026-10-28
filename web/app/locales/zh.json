@@ -302,7 +302,7 @@
   "apiErrors": {
     "engine_missing": "转写引擎不可用。",
     "model_missing": "语音模型尚未下载。",
-    "decoder_missing": "缺少 macOS 音频转换器，无法读取音频文件。",
+    "decoder_missing": "缺少音频转换器，无法读取音频文件。",
     "decode_failed": "无法读取该音频文件。请尝试重新导出为 mp3、m4a 或 wav。",
     "transcribe_failed": "转写时出了问题，可以重试。",
     "interrupted": "转写过程中应用被关闭了，可以重试。",

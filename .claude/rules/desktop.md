@@ -11,11 +11,18 @@ paths:
   hash, and only `https://ollama.com` may be opened in the user's browser.
 - Always the bundled Ollama, started with a whitelisted environment (`env.ts`), `OLLAMA_HOST` on 127.0.0.1,
   its own `HOME` and models folder, `OLLAMA_NO_CLOUD=1`. Never read or start a system-wide one.
-- Lifecycle: two free ports, Ollama first, then the api, wait for both health checks. Each child leads its own
-  process group (kill the group: TERM, then KILL). A crashed service is restarted once, then a clear error.
-  The pid file lets the next start clean up after a hard kill; the api also stops when the app is gone.
+- Lifecycle: two free ports, Ollama first, then the api, wait for both health checks. On macOS and Linux each child
+  leads its own process group (kill the group: TERM, then KILL); on Windows there are no groups, so `processes.ts`
+  ends the tree with `taskkill /T /F` and sweeps the resources folder (never a program name) after a crash. A
+  crashed service is restarted once, then a clear error. The pid file lets the next start clean up after a hard kill;
+  the api also stops when the app is gone.
+- System-specific code lives in `processes.ts`, `layout.ts` and `env.ts` and takes the platform as a parameter, so
+  every system's behaviour is unit-tested from any host. No bare `process.kill(-pid)`, `ps` or POSIX path literal
+  elsewhere, and bundled programs always sit in `extraResources`, never inside the asar.
 - The api, Ollama and whisper-cli binaries are inputs from `make desktop-resources`, never committed.
-- Pin versions and checksums of what is downloaded for bundling (`scripts/fetch-ollama.sh`, `build-whisper.sh`).
+- Pin versions and checksums of what is downloaded for bundling in `scripts/versions.json` (read by `scripts/*.mjs`, the
+  same scripts CI and `make` run on macOS, Windows and Linux). Windows and Linux bundle Ollama's CPU and Vulkan
+  backends only, never the CUDA folders (the installer would pass 1.5 GB; `scripts/installer-sizes.mjs` fails above it).
 - Changing the packaged app: run `make desktop-dist`, then `desktop/scripts/shell-check.mjs` with `APP_BIN`
   pointing at an installed copy. Unit tests do not show whether the signed bundle still launches.
 

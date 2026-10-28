@@ -1,10 +1,12 @@
-import os
 import shutil
 from pathlib import Path
 
+import psutil
+
 
 def total_ram_bytes() -> int:
-    return int(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES"))
+    """Installed memory. `psutil` because `os.sysconf` does not exist on Windows."""
+    return int(psutil.virtual_memory().total)
 
 
 def free_disk_bytes(path: Path) -> int:

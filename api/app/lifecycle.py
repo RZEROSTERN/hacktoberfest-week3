@@ -1,18 +1,18 @@
 import contextlib
-import os
 import threading
 import time
 from collections.abc import Callable
 
+import psutil
+
 
 def pid_alive(pid: int) -> bool:
-    try:
-        os.kill(pid, 0)  # signal 0 only checks that the process exists
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True  # it exists, it just is not ours
-    return True
+    """Whether a process with this id exists, on any system.
+
+    Not `os.kill(pid, 0)`: that only tests for existence on Unix. On Windows every signal except the
+    two console ones terminates the process, so the watcher would have killed the desktop app.
+    """
+    return psutil.pid_exists(pid)
 
 
 def watch_parent(

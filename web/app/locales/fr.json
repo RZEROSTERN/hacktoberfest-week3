@@ -302,7 +302,7 @@
   "apiErrors": {
     "engine_missing": "Le moteur de transcription n’est pas disponible.",
     "model_missing": "Le modèle vocal n’a pas encore été téléchargé.",
-    "decoder_missing": "Le convertisseur audio de macOS est introuvable : les fichiers audio ne peuvent pas être lus.",
+    "decoder_missing": "Le convertisseur audio est introuvable : les fichiers audio ne peuvent pas être lus.",
     "decode_failed": "Le fichier audio n’a pas pu être lu. Essayez de l’exporter à nouveau en mp3, m4a ou wav.",
     "transcribe_failed": "Une erreur s’est produite pendant la transcription. Vous pouvez réessayer.",
     "interrupted": "L’application a été fermée pendant la transcription. Vous pouvez réessayer.",

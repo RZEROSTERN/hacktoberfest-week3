@@ -812,3 +812,277 @@ freelancer using it (planned for the day after the release); native-speaker revi
 render). Update `full-flow.mjs`: it looked for curly quote characters in the source quote's text, but the quote is now
 drawn with `<q>` so the marks are CSS, not text. Decide what to do about the unexplained edit-step failure above.
 
+
+## 2026-10-14: The audio converter is no longer macOS-only (first step towards Linux packages)
+
+Until now the only way to turn an mp3, m4a, wav or mp4 into the 16 kHz mono WAV that whisper.cpp reads was macOS's
+`afconvert`. A Linux package needs something that runs there, and the decoder is the one place the api still assumed
+macOS.
+
+**FFmpeg, run as a separate program.** `FfmpegDecoder` runs `ffmpeg -nostdin -hide_banner -loglevel error -y -i SRC
+-map 0:a:0 -ac 1 -ar 16000 -c:a pcm_s16le -f wav DEST`. `-nostdin` keeps it from waiting for a key inside a background
+job, and `-map 0:a:0` takes the first audio stream, so the video track of an mp4 is ignored and a file with no audio
+fails instead of producing silence. A file FFmpeg rejects becomes `decode_failed`; a missing program becomes
+`decoder_missing`, the same two codes `afconvert` already used, so the web app needs no new message.
+
+**Why a separate program and not a Python library.** PyAV would have kept everything in one process, but its wheels
+bundle FFmpeg built with libx264 and libx265, which are GPL: shipping them inside a package would change the licence of
+what we distribute. A separate FFmpeg binary, built by us with only the LGPL parts we need (decoders for mp3, aac and
+PCM; the mp3, mov and wav demuxers; the wav muxer), keeps PostCall's MIT terms and keeps the source offer simple. That
+build comes with the Linux packaging step; this step only teaches the api to use whatever FFmpeg it is pointed at.
+
+**Which decoder is used.** `default_decoder(ffmpeg)`: an explicit `POSTCALL_FFMPEG` path always wins (the Linux desktop
+app sets it to the FFmpeg it ships); otherwise macOS keeps `afconvert` (nothing changes for the macOS app, which has no
+FFmpeg), and anything else, or a Mac where `afconvert` is somehow missing, looks for `ffmpeg` on the PATH.
+
+**The message** for `decoder_missing` said "The macOS audio converter is missing". It now says "The audio converter is
+missing" in all eleven languages, since it can be either program.
+
+**Tests.** The command each decoder builds and the two failure mappings are tested with `subprocess.run` replaced (no
+program needed), and so is the choice of decoder. Three-second clips of the sample call (mp3, m4a, mp4, wav at 8 kHz
+stereo, to force the downmix and resample) in `api/tests/data/` run through the real program wherever it exists:
+`afconvert` here, FFmpeg in a Debian container (FFmpeg 7.1.5 from apt: it checks our command line, not the LGPL build,
+which is tested with the packages). All four formats come out as 16 kHz mono 16-bit WAV of the right length, and a file
+that is not audio is refused. Not covered: an mp4 that really has a video track (no way to make one without FFmpeg on
+this Mac).
+
+## 2026-10-19: Cross-platform audit (macOS, Windows 11 and Linux)
+
+The new goal is installers built by GitHub Actions for macOS arm64 (`.dmg`), Windows 11 x64 (NSIS `.exe`) and Linux
+x64 (AppImage and `.deb`, to run on Linux Mint), with the app working on all three. The owner's test machines are an
+M2 Pro Mac, a Windows 11 PC with a Ryzen 9 and an NVIDIA GeForce, and an Intel MacBook running Linux Mint with no
+dedicated GPU. This entry is the audit of everything that only worked on macOS or on POSIX, and what was done.
+
+**Decisions taken with the owner before any code changed**
+- **Engine size.** Ollama's official Windows zip and Linux archive are 1.4 GiB each (1.85 GiB unpacked on Windows),
+  almost all NVIDIA CUDA libraries (`cuda_v12` about 870 MiB zipped, `cuda_v13` about 500 MiB on Windows), so a
+  bundled installer would be about 1.7 GB, over the 1.5 GB limit set for this work. Chosen: **bundle the CPU backends
+  and the Vulkan backend, drop `cuda_v12`, `cuda_v13` and ROCm.** Ollama's GPU documentation says "Vulkan is enabled by
+  default when the backend is installed" and that most Windows vendor drivers include Vulkan, so AMD, Intel and NVIDIA
+  cards with Vulkan drivers can still be used (about 12 MiB zipped). The Windows zip's CPU backends carry their own
+  LLVM runtime and the Vulkan folder its own MSVC runtime, so removing the CUDA folders leaves nothing missing.
+  Costs, not yet measured: NVIDIA owners lose CUDA speed. The Windows test PC has an NVIDIA GeForce, so the first
+  real-hardware question is how Vulkan compares with the CPU there; an optional CUDA download in the first-launch wizard
+  is the follow-up if it matters. Mac is unaffected (Metal, 152 MiB archive).
+- **The earlier `feature/linux-packaging` branch** (Docker `.deb`/`.rpm` build) is not merged. The useful app-level parts
+  are ported into the new step branches from `develop`; the Docker pipeline and the `.rpm` target are left out because
+  native CI replaces them. The old branch is left untouched.
+
+**What was wrong, and what was done** (all fixed in this step unless it says otherwise)
+
+| # | Where | Problem | Done |
+| --- | --- | --- | --- |
+| 1 | `api/app/lifecycle.py` | `os.kill(pid, 0)` tests for a process on Unix, but on Windows any signal other than the two console ones **terminates** the target, so the parent watcher would have killed the desktop app every two seconds. | `psutil.pid_exists`. |
+| 2 | `api/app/__main__.py` | The api stopped itself by sending itself `SIGTERM`, which on Windows ends it abruptly instead of letting uvicorn shut down (running transcriptions were not stopped cleanly). | Builds a `uvicorn.Server` and sets `should_exit`. |
+| 3 | `api/app/system.py` | `os.sysconf("SC_PHYS_PAGES")` does not exist on Windows, so the model screen would have failed. | `psutil.virtual_memory().total`. |
+| 4 | `desktop/src/supervisor.ts`, `pidfile.ts` | Each program led its own process group and was stopped with `process.kill(-pid)`. Windows has no process groups, and `detached` there opens a console window. | New `processes.ts`: no `detached` on Windows, `taskkill /PID n /T /F` ends the whole tree (documented: `/T` includes children, `/F` is forceful; there is no polite signal for a console program). |
+| 5 | `desktop/src/pidfile.ts` | The leftover-process check used `ps`. | `tasklist` on Windows, matching the program's file name (the most it shows). |
+| 6 | `desktop/src/processes.ts` | Windows does not re-parent children, so helpers of a program that **crashed** (`llama-server`, `whisper-cli`) cannot be reached through it. | After an unclean last run, and at quit when a program crashed during the session, PowerShell lists the processes whose executable lives under the app's resources folder and ends them. It matches the folder, never a name, so a system-wide Ollama is never touched. Single-instance lock (already present) keeps two copies from sweeping each other. |
+| 7 | `desktop/src/layout.ts` | Program names without `.exe`; one Ollama layout. | Per system: `.exe` on Windows; Ollama is `ollama/ollama.exe` (flat) on Windows, `ollama/bin/ollama` plus `lib/ollama/` on Linux (it finds its libraries relative to itself) and `ollama/ollama` on macOS; FFmpeg is bundled on Windows and Linux (macOS has `afconvert`) and passed to the api as `POSTCALL_FFMPEG`. |
+| 8 | `desktop/src/env.ts` | The environment whitelist lacked what Windows programs need to start (`SystemRoot`, `TEMP`, `PATHEXT`, ...), and Ollama finds its home through `USERPROFILE`, not `HOME`. | Windows-only whitelist; `USERPROFILE` redirected to the app's folder like `HOME`. Nothing of the user's own environment is passed. |
+| 9 | `api/app/audio.py`, `transcribe.py` | Programs started by the api would open a visible console window on Windows (the api itself has none). | `creationflags=CREATE_NO_WINDOW` on Windows, zero elsewhere (`app/proc.py`). |
+| 10 | `api/app/db.py` | The SQLite URL was a string; a Windows path has backslashes and a user name can hold spaces, `#` or `%`. | `URL.create("sqlite", database=...)`; tested with an awkward folder. |
+| 11 | `desktop/src/protocol.ts` | On Windows `\` also separates folders and `:` opens drive letters and NTFS streams. | Requests containing either are refused on every system (no web asset has them). |
+| 12 | `desktop/src/main.ts` | The macOS app menu; no Windows app id. | File menu on Windows and Linux; `setAppUserModelId('mx.dev1.postcall')` on Windows. |
+
+**Already fine, checked and left alone:** `userData` comes from `app.getPath`, the api uses `pathlib`, both services bind
+`127.0.0.1` only (so Windows Firewall does not ask), the web app is served from `app://postcall` with no ports or
+`file://`, all bundled programs sit in `extraResources` beside the asar (never inside it, so they can run), and
+`os.replace` and `shutil.rmtree` behave on Windows.
+
+**Native libraries: the list, and why no replacement is needed.** The api's wheels all exist for Windows, macOS and
+Linux: pydantic-core, httptools, watchfiles, websockets, PyYAML, SQLAlchemy, Pillow (bundles its own libraries) and the
+new `psutil`; `uvloop` is POSIX-only and its marker in `uvicorn[standard]` already skips it on Windows. PDF export is
+ReportLab, which is pure Python with an optional accelerator, so **no GTK or Pango is needed anywhere**. SQLite comes
+with the Python build. The Electron app has no native Node modules. The programs that must be provided per system are
+Ollama (official release per system, trimmed as above), `whisper-cli` (built from the pinned whisper.cpp revision on each
+system's runner) and FFmpeg on Windows and Linux (the same minimal LGPL-only configuration used for the Linux work). On
+Linux the window needs the system's GTK 3, NSS and related libraries (declared by the `.deb`), and an AppImage needs
+FUSE 2. No dependency needs replacing, so there was no stop on that account.
+
+**Found but belongs to later steps**
+- **Non-ASCII user names on Windows** (for example "Ramírez"): `whisper-cli` opens files with the ANSI code page, so a
+  model or audio path under `C:\Users\Marco Ramírez\...` would fail. The Windows build embeds a UTF-8 application
+  manifest (`activeCodePage`), and the release checklist tests a user with an accent. This is the likeliest real-world
+  Windows bug for this app's audience, and it cannot be seen on the CI runner.
+- `whisper_threads` stays at 4 (the macOS value); a CPU-only machine (the Linux Mint laptop) may want more. To be
+  measured on that machine, not guessed.
+- The `.sh` build scripts, the `Makefile` and `shell-check.mjs` (`ps`, `lsof`) are macOS/Linux only. The build moves to
+  Node scripts (steps 2 and 4); checking a running Windows app is manual, from the release checklist (step 5).
+- The desktop unit tests spell paths with `/`; they run on macOS and Linux only for now.
+- Whisper large-v3-turbo on CPU only has not been timed on Linux or Windows; the 30-minute target in
+  `BENCHMARKS.md` was measured on Metal.
+
+**Tests added:** a guard that fails if any api module calls `os.kill`, `killpg`, `sysconf`, `getpgid` or `fork`; the
+shutdown flag instead of a signal; the database in a folder with spaces, `#`, `%` and an accent; layouts, environments,
+`taskkill`, `tasklist` and the PowerShell sweep for each system with the system injected (so they run on any host);
+the Windows reaper; and the refused request paths. The Windows-only branches themselves can only be run on Windows.
+
+## 2026-10-19: CI builds the installers for all three systems
+
+`.github/workflows/build.yml` builds a macOS arm64 `.dmg`, a Windows x64 NSIS installer, and a Linux x64 AppImage and
+`.deb` on hosted runners of each system, runs smoke tests, records the installer sizes and uploads the installers as
+artifacts.
+
+- **One set of build scripts, not YAML.** The steps are `scripts/*.mjs` (plain Node, no dependencies), the same ones
+  `make desktop-dist` runs on a Mac and the local fallback will run on any system; the workflow only calls them. The
+  macOS-only `.sh` scripts were replaced. Everything bundled is pinned in `scripts/versions.json` (Ollama per system with
+  its SHA-256, the whisper.cpp revision, the FFmpeg source, the small test model), and CI caches on that file.
+- **Runners.** macOS: `macos-14` (arm64, free for public repositories per GitHub's runner list). Windows:
+  `windows-2022` (Visual Studio 2022). Linux: **`ubuntu-22.04`**, whose C library (glibc 2.35) is the oldest of the
+  current Linux Mint releases (Mint 21 is built on Ubuntu 22.04, Mint 22 on 24.04): programs built there run on both,
+  while programs built on 24.04 would not run on Mint 21. `ubuntu-22.04` is listed as available with no deprecation notice.
+- **Every action is pinned to a full commit SHA** with the version in a comment, permissions are `contents: read`, and
+  the workflow passes `actionlint`. The input names used were read from each action's `action.yml` at that commit.
+- **When it runs.** The brief asked for pull requests from `release/*` into `master` and manual runs. GitHub documents
+  that `workflow_dispatch` "will only trigger a workflow run if the workflow file exists on the default branch", which
+  is `master`, and GitFlow forbids putting this file there before a release. So a pull request into `develop` can ask
+  for a build by carrying the label `ci-build` (the file used is the pull request's own), which is how this workflow is
+  developed and tested; it costs nothing on other pull requests because the job is skipped without the label.
+- **Smoke tests on every system** (`scripts/smoke.mjs`), first on the built programs and then on the copies inside the
+  packaged app: every program is present and starts (Ollama `--version`, whisper-cli, FFmpeg and its LGPL check), the
+  packaged api starts on a test port and answers `/health`, and through that api a short call is uploaded, converted and
+  transcribed with a small model in a folder whose name has an accent. That last one is the only automatic test of the
+  Windows UTF-8 manifest and of the converter inside the packaged app. The job fails if any of it fails.
+- **Size gate.** `scripts/installer-sizes.mjs` writes each installer's size and SHA-256 to the job summary and fails the
+  job above 1.5 GB (`maxInstallerBytes` in `versions.json`), the stop condition set for this work.
+- **Caches** for npm, uv, the pinned downloads, the compiled whisper-cli and FFmpeg (kept even when a later step fails)
+  and Electron. A cache can only make a build faster: downloads are checked against their pinned checksum every time.
+- **Windows specifics.** whisper-cli is built with the static MSVC runtime (no Visual C++ Redistributable needed), no
+  OpenMP (it needs its own DLL) and a UTF-8 manifest linked in with `/MANIFEST:EMBED /MANIFESTINPUT`. FFmpeg is built in
+  MSYS2's UCRT64 shell with the same minimal LGPL configuration as on Linux; the build fails if `ffmpeg.exe` needs a
+  MinGW runtime DLL (`libwinpthread`, `libgcc`, ...) that a user's Windows would not have.
+- **Linux.** whisper-cli needs a CPU with AVX2 (Intel since Haswell, 2013; AMD since 2015): it would stop with "illegal
+  instruction" on an older one, which the Mint laptop test will show. AppImage needs FUSE 2 on the user's system, and on
+  Ubuntu 24.04 and its derivatives the Chromium sandbox may need the `.deb` (its AppArmor profile) instead.
+
+**What the first full runs showed (run 39329201325, all three systems green after five fix rounds).** Nothing in this
+pipeline had run on Windows or Linux before; each failure was real and is now covered:
+- *Windows, tar.* Git Bash puts GNU tar first on the PATH; it read `D:\file` as a file on a host called D and cannot
+  open zip files. The scripts call `C:\Windows\System32\tar.exe` (bsdtar) on Windows.
+- *All systems, npm.* The lockfiles had been written by npm 11.6 (Node 24.13); Node 24.21's npm 11.19 refused them
+  (`@emnapi/core` and `@emnapi/runtime` missing). Both lockfiles were regenerated with 11.19 and install with either
+  version; CI pins Node to the exact `24.21.0`.
+- *Windows, FFmpeg.* `setup-msys2` installs MSYS2 (with the compiler) into its own folder, not the preinstalled
+  `C:\msys64`, so the compiler was "not found" three times in a row. The step now receives the action's
+  `msys2-location`. Then the new DLL check did its job: `ffmpeg.exe` linked `libwinpthread-1.dll`, a MinGW runtime that
+  a user's PC would not have, so it is linked statically (`-static`). Its remaining DLLs are Windows' own: `KERNEL32`,
+  `SHELL32`, `bcrypt` and the `api-ms-win-crt-*` set of the Universal C Runtime.
+
+**Measured:**
+
+| System | Installer | Size | Smoke checks (built, then packaged) | Job time |
+| --- | --- | ---: | --- | ---: |
+| macOS arm64 (`macos-14`) | `PostCall-1.0.0-arm64.dmg` | 308.4 MB | 9 and 9 | 5.5 min |
+| Windows x64 (`windows-2022`) | `PostCall-1.0.0-x64-setup.exe` | 170.0 MB | 12 and 12 | 8.9 min |
+| Linux x64 (`ubuntu-22.04`) | `PostCall-1.0.0-x86_64.AppImage` and `postcall_1.0.0_amd64.deb` | 209.9 MB and 170.4 MB | 12 and 12 | 6.2 min |
+
+All are far below the 1.5 GB limit, which confirms the CPU + Vulkan choice (full CUDA would have been about 1.7 GB).
+In every smoke test a short Spanish call is uploaded to the packaged api, converted, and transcribed by the packaged
+whisper-cli in a folder named `postcall smoke Ramírez`, giving the same text on all three systems
+("Tiene actualmente manejada junto con dos socios", from the 3-second clip). That passing on Windows is the first
+evidence that the UTF-8 manifest works, **on a CI runner**: it still has to be tried with an accented user name on the
+Windows 11 test PC. Times are with warm caches for the downloads; the compiled programs were cached after the first run.
+
+**Not proven by CI, and left to the real-hardware checklist:** that the installers install and open on a desktop
+(CI has no display), Gatekeeper and SmartScreen behaviour, the Vulkan backend on a real graphics card, the AVX2 build on
+the Intel MacBook, the Chromium sandbox and AppArmor on Linux Mint, and the 7 GB model download.
+
+## 2026-10-19: Releases are built by a tag and created only as drafts
+
+Pushing a version tag (`v1.2.3`, or `v1.2.3-rc.1`) on `master` runs `.github/workflows/release.yml`, which builds the
+three installers, writes `SHA256SUMS` and the release notes and creates a **draft** GitHub Release with the four
+installers and the checksums attached. Nothing is published by CI: the owner publishes by hand after trying the
+installers on the three real machines.
+
+- **One build definition.** `build.yml` is now also a reusable workflow (`workflow_call`, input `release`), and
+  `release.yml` calls it, so a release is built by exactly the steps that were tested on pull requests. Its concurrency
+  group includes the workflow name, so a release build and a labelled pull-request build do not cancel each other.
+- **Guards before anything is built** (job `verify`): the tag must look like a version; it must equal the version in
+  `desktop/package.json` and `api/pyproject.toml` (the installers are named from them, so a mismatch would publish a
+  `1.0.0` installer under a `v1.1.0` tag); and the tagged commit must be reachable from `master`
+  (`git merge-base --is-ancestor`). Any failure stops the run with an error naming the cause.
+- **Least privilege.** The workflow has `contents: read`. Only the last job, `release`, has `contents: write`, and it
+  can only do what it is written to do: create a draft. It refuses to touch a release that is already published
+  (an earlier **draft** of the same tag is replaced, which is what makes a re-run safe), uses `--verify-tag` so the
+  tag must already exist, marks a tag with a suffix (`-rc.1`) as a pre-release, and then checks through the API that
+  the result `draft == true` and has exactly five files (four installers and `SHA256SUMS`). There is no step that
+  publishes, and no `--latest`.
+- **`SHA256SUMS`** is in `sha256sum` format (`<hash>  <file>`, sorted), so it works with `sha256sum -c` on Linux and
+  `shasum -a 256 -c` on macOS; the notes also show a PowerShell line for Windows. The per-installer `.sha256` files
+  made by the build are not attached.
+- **Release notes** are generated (`scripts/release.mjs`, unit-tested) with the files and sizes, how to open an unsigned
+  app on each system, the first-launch download, and how to check the download. They are a starting point for the
+  owner to edit before publishing.
+- **Rehearsal.** A tag can only be pushed on `master`, which GitFlow reaches only through a release, so the workflow
+  could never be tried first. A pull request into `develop` carrying the label `ci-release-rehearsal` runs the same
+  steps with a pseudo tag `v<version>-rehearsal.<run>`: it builds, creates a real **draft** (a draft does not create a git
+  tag), checks it, and deletes it, even if an earlier step failed. What a rehearsal cannot prove is the tag guard
+  on a real tag (covered by unit tests of the check, and `--verify-tag`).
+
+## 2026-10-19: `npm run dist` is the local fallback, and it cannot drift from CI
+
+If CI is not available on a release day, `npm run dist` at the repository root builds the installer for the system it
+runs on: macOS arm64 `.dmg`, Windows x64 NSIS `.exe`, Linux x64 AppImage and `.deb`. No `make`, no dependencies to
+install first (the root `package.json` has none); it needs Node 22 or newer and runs `scripts/dist.mjs`.
+
+- **Same steps, enforced.** The nine steps are defined once (`scripts/steps.mjs`) and `.github/workflows/build.yml` runs
+  the same scripts in the same order. A test (`scripts/dist.test.mjs`) reads the workflow and fails if the two differ,
+  and also checks that the packaged-program smoke test looks in the same folder in both. `make desktop-dist` now calls
+  the same command.
+- **A check of the computer first** (`scripts/preflight.mjs`). A 20-minute build that stops at "gcc: command not found"
+  wastes the morning of a release, so the command lists what is missing with how to get it before building: Node 22+,
+  git, uv, 12 GB of free disk, and per system the compiler for whisper.cpp (Xcode command line tools and cmake on a Mac;
+  `build-essential cmake nasm zstd binutils` on Linux; CMake, Visual Studio Build Tools 2022 with the C++ workload, MSYS2
+  with the UCRT64 compiler and nasm, and Windows' own `tar.exe` on Windows). The checks are tested for each system with
+  the computer injected.
+- **Resumable.** A failing step prints how to continue (`npm run dist -- --from build-api`). `--only`, `--skip-smoke`,
+  `--list`, `--dry-run` and `--no-preflight` exist for the same days.
+- **Proven on real runners, not only on a Mac.** `.github/workflows/dist-check.yml` runs `npm run dist` on a macOS,
+  Windows and Linux runner. It is expensive, so it runs only by hand or on a `develop` pull request labelled
+  `ci-dist-check`; the label exists so the fallback is exercised whenever the build changes and does not rot unseen.
+- **Not covered:** a developer's own computer will differ from a runner (an older Visual Studio, a different MSYS2 root:
+  `MSYS2_ROOT` moves it). The README lists the one-time setup per system (step 5).
+
+## 2026-10-19: Release process, checklist and docs for three systems
+
+- **Release checklist** (`docs/RELEASE_CHECKLIST.md`): the manual part CI cannot do, on the three real machines (the M2 Pro
+  Mac, the Windows 11 Ryzen 9 PC with an NVIDIA card, the Intel MacBook with Linux Mint). It tests the draft release's own files
+  after checking their SHA-256 (builds are not bit-for-bit reproducible, so a build tested earlier is not the one that is
+  published). Per system: install and get past the warning (Gatekeeper's *Open Anyway*, SmartScreen's *More info, Run
+  anyway*, `chmod +x` and FUSE 2 for the AppImage), the first-launch download, the whole flow from upload to export,
+  quitting and force quitting with a check that no `ollama`, `postcall-api`, `whisper-cli` or `ffmpeg` is left, and
+  uninstalling (the data folder is kept on purpose: it holds 7.2 GB of models). It adds the two checks only real hardware
+  can do: a Windows user with an accent in the name, and whether the NVIDIA card is used through Vulkan.
+- **README**: per-system install instructions and requirements, the data folder of each system, the Windows/Linux hardware
+  note (CPU or Vulkan, nothing timed yet), how to build an installer locally, the release process (release PR, tag on
+  `master`, draft, checklist, publish by hand, merge back), what to do if CI is down, and honest limits: the Windows
+  and Linux installers have not been installed on real hardware.
+- **CLAUDE.md** gets the condensed commands and a Windows/Linux gotcha; **`.claude/rules/ci.md`** (scoped to `.github/**`)
+  records the rules for workflows: actions pinned to a full SHA, minimal permissions, draft-only releases, no
+  branch named "main", workflows call the repository's scripts, labels to ask for a build on a `develop` pull request.
+- **`docs/DEPLOYMENT.md`** keeps its original plan but now opens with the current status (most of Windows and Linux is
+  built; Mac App Store, signing, CUDA and RHEL are not) and says DECISIONS.md wins where they differ.
+- **Recorded from the earlier Linux work** (the branch that was not merged): RHEL-family Linux is not supported today
+  (checked in AlmaLinux 9 and 10 images, 2026-10-14: glibc 2.34 on 9, below the 2.35 the builds need; no `libXScrnSaver`
+  on 10), and **Windows users are not served from a hosted Linux server** (2026-10-14): a shared server moves clients'
+  calls off their computer, the app is written for one user on one machine, and the Windows programs must be built on
+  Windows anyway. See DEPLOYMENT.md sections 3.3b and 5.4.
+
+## 2026-10-28: Release 1.1.0, the first with Windows and Linux installers
+
+`release/1.1.0` from `develop`, a pull request into `master`, a merge commit, the annotated tag `v1.1.0` on it, and the
+`Release (draft)` workflow builds the installers and creates the draft; then `master` is merged back into `develop`
+through a pull request. This is the release process written in the README, run for the first time on the real tag path.
+
+- **Version.** 1.1.0, a minor version: two operating systems and the cross-platform fixes were added, nothing was removed,
+  and macOS behaves as in 1.0.0. The version is set in `desktop/package.json` and `api/pyproject.toml` (and their lockfiles);
+  the tag guard in `release.yml` refuses a tag that disagrees with them.
+- **The decision to publish.** The release checklist (`docs/RELEASE_CHECKLIST.md`) is meant to run on the three real
+  machines before the draft is published, and the CI workflow never publishes. For this release the owner chose to
+  **publish as soon as CI is green and the draft is verified** (four installers and `SHA256SUMS`, marked draft) instead of
+  waiting for that checklist. So what 1.1.0 claims is exactly what CI proved: each installer builds, its programs start,
+  and a short Spanish call is uploaded, converted and transcribed through the packaged app. The release notes and the
+  README say plainly that the Windows and Linux installers have **not been tried on real hardware**, which is what the
+  checklist is for; problems found there become 1.1.x fixes.
+- **Not part of this release:** signed installers, an NVIDIA CUDA download, RHEL-family Linux, the Mac App Store.

@@ -2,6 +2,7 @@ import { spawn, type ChildProcess } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { forgetService, recordService } from './pidfile'
+import { killTree, spawnOptions } from './processes'
 
 export interface ServiceSpec {
   name: string
@@ -26,14 +27,6 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-function killGroup(pid: number, signal: NodeJS.Signals): void {
-  try {
-    process.kill(-pid, signal) // the child leads its own process group, so this reaches its helpers
-  } catch {
-    // already gone
-  }
-}
-
 async function healthy(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, { signal: AbortSignal.timeout(1500) })
@@ -50,6 +43,8 @@ export class Service {
   private stopping = false
   private launching = false
   private restarts = 0
+  /** How many times the program died without being asked to, during this run of the app. */
+  crashes = 0
 
   constructor(
     readonly spec: ServiceSpec,
@@ -71,10 +66,10 @@ export class Service {
     this.stopping = true
     const child = this.child
     if (!child?.pid) return
-    killGroup(child.pid, 'SIGTERM')
+    killTree(child.pid, 'SIGTERM') // on Windows this already ends the whole tree
     const timedOut = await Promise.race([this.exited.then(() => false), sleep(STOP_GRACE_MS).then(() => true)])
     if (timedOut) {
-      killGroup(child.pid, 'SIGKILL')
+      killTree(child.pid, 'SIGKILL')
       await this.exited
     }
   }
@@ -88,8 +83,8 @@ export class Service {
     try {
       child = spawn(spec.command, spec.args ?? [], {
         env: spec.env,
-        detached: true,
         stdio: ['ignore', log, log],
+        ...spawnOptions(), // its own process group on Unix; a hidden window on Windows
       })
     } finally {
       fs.closeSync(log)
@@ -133,10 +128,11 @@ export class Service {
 
   private onExit(child: ChildProcess, code: number | null, signal: NodeJS.Signals | null): void {
     if (this.child !== child) return
-    if (child.pid) killGroup(child.pid, 'SIGKILL') // helpers (llama-server, whisper-cli) must not outlive it
+    if (child.pid) killTree(child.pid, 'SIGKILL') // helpers (llama-server, whisper-cli) must not outlive it
     this.child = null
     if (this.spec.pidFile) forgetService(this.spec.pidFile, this.spec.name)
     if (this.stopping || this.launching) return // a deliberate stop, or start() reports the failure itself
+    this.crashes += 1
     const reason = `${this.spec.name} stopped unexpectedly (${code ?? signal})`
     if (this.restarts >= this.maxRestarts) {
       this.handlers.onFatal(this.spec.name, reason)
@@ -158,9 +154,12 @@ export class Supervisor {
     }
   }
 
-  async stopAll(): Promise<void> {
+  /** Stops everything. Returns whether any program had crashed meanwhile, in which case helpers it started may be left over. */
+  async stopAll(): Promise<boolean> {
     const toStop = [...this.started].reverse()
     this.started = []
+    const crashed = toStop.some(service => service.crashes > 0)
     for (const service of toStop) await service.stop()
+    return crashed
   }
 }

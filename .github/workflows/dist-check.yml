@@ -1,0 +1,84 @@
+# Proves the local fallback works: runs `npm run dist` (scripts/dist.mjs, no make) on a runner of each system, exactly as
+# a developer would on a release day when build.yml is not available. It is expensive, so it only runs by hand
+# (once the file is on master) or on a pull request into develop carrying the label `ci-dist-check`.
+name: Local dist check
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dist:
+    name: ${{ matrix.name }}
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.pull_request.labels.*.name, 'ci-dist-check')
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: macos-arm64, runner: macos-14 }
+          - { name: windows-x64, runner: windows-2022 }
+          - { name: linux-x64, runner: ubuntu-22.04 }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.21.0
+
+      # What a developer installs once, per the README: uv, and on each system the compilers.
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      - name: Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends nasm zstd
+
+      - name: Windows build tools (MSYS2 for FFmpeg)
+        id: msys2
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
+        with:
+          msystem: UCRT64
+          update: false
+          path-type: inherit
+          install: >-
+            make diffutils xz curl
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-nasm
+
+      - name: npm run dist
+        env:
+          MSYS2_ROOT: ${{ steps.msys2.outputs.msys2-location }}
+          ELECTRON_CACHE: ${{ github.workspace }}/.dev/electron-cache
+          ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.dev/electron-builder-cache
+        run: npm run dist
+
+      - name: Upload installers
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist-check-${{ matrix.name }}
+          path: |
+            desktop/release/*.dmg
+            desktop/release/*.exe
+            desktop/release/*.AppImage
+            desktop/release/*.deb
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
